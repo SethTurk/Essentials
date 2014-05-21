@@ -7,6 +7,9 @@ import cpw.mods.fml.common.event.*;
 import org.shouthost.essentials.commands.CommandItem;
 import org.shouthost.essentials.commands.CommandMute;
 import org.shouthost.essentials.events.PlayerEvents;
+import org.shouthost.essentials.json.kits.Kit;
+import org.shouthost.essentials.json.players.Players;
+import org.shouthost.essentials.utils.Data;
 import org.shouthost.essentials.utils.Reason;
 
 import java.io.File;
@@ -20,7 +23,9 @@ public class Essentials {
 
 	public static HashMap<UUID, Reason>muteList = new HashMap<UUID, Reason>();
 	public static HashMap<UUID, Reason>banList = new HashMap<UUID, Reason>();
-	public static ArrayList usableKit = new ArrayList();
+	public static ArrayList<Kit> usableKit = new ArrayList();
+	public static ArrayList<Players> playerList = new ArrayList<Players>();
+
 	public static File base,players,kits;
 	@Instance("Essentials")
 	public static Essentials instance;
@@ -36,6 +41,7 @@ public class Essentials {
 		kits = new File(base,"kits");
 		if(!kits.exists()) kits.mkdir();
 
+		Data.LoadKits();
 	}
 
 	@EventHandler
