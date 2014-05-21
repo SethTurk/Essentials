@@ -1,5 +1,7 @@
 package org.shouthost.essentials.json.players;
 
+import java.util.List;
+
 public class Optional {
 	private boolean muted;
 	private String muteReason;
@@ -7,6 +9,7 @@ public class Optional {
 	private boolean banned;
 	private String banReason;
 	private int banTimeout;
+	private List<String> warnings;
 
 	public boolean isMuted(){
 		return muted;
@@ -54,5 +57,13 @@ public class Optional {
 
 	public void setBanTimeout(int timeout){
 		this.banTimeout = timeout;
+	}
+
+	public List<String> getWarnings(){
+		return warnings;
+	}
+
+	public void setWarnings(String reason){
+		this.warnings.add(reason);
 	}
 }

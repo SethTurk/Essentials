@@ -83,6 +83,8 @@ public class Players {
 		return optional.getBanTimeout();
 	}
 
+	public List<String> getWarning(){ return optional.getWarnings(); }
+
 	public void setMuted(boolean muted){
 		optional.setMuted(muted);
 	}
@@ -106,6 +108,8 @@ public class Players {
 	public void setBanTimeout(int timeout){
 		optional.setBanTimeout(timeout);
 	}
+
+	public void setWarning(String reason){ optional.setWarnings(reason); }
 
 
 }
