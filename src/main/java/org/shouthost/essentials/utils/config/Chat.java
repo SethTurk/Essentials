@@ -1,4 +1,4 @@
-package org.shouthost.essentials.utils;
+package org.shouthost.essentials.utils.config;
 
 import forgeperms.api.ForgePermsAPI;
 import net.minecraft.entity.player.EntityPlayer;

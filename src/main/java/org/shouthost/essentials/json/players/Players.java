@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Players {
 	private String playername;
+	private String uuid;
 	private List<Homes> homes;
 	private int logout;
 	private Location location;
@@ -16,6 +17,15 @@ public class Players {
 	public void setPlayername(String playername){
 		this.playername = playername;
 	}
+
+	public String getUuid(){
+		return uuid;
+	}
+
+	public void setUuid(String uuid){
+		this.uuid = uuid;
+	}
+
 
 	public List<Homes> getHomes(){
 		return homes;

@@ -1,5 +1,6 @@
 package org.shouthost.essentials.core;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -9,8 +10,8 @@ import org.shouthost.essentials.commands.CommandMute;
 import org.shouthost.essentials.events.PlayerEvents;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.utils.Data;
-import org.shouthost.essentials.utils.Reason;
+import org.shouthost.essentials.utils.config.Data;
+import org.shouthost.essentials.utils.config.Reason;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class Essentials {
 		kits = new File(base,"kits");
 		if(!kits.exists()) kits.mkdir();
 
-		Data.LoadKits();
+		FMLLog.getLogger().info("Testing to see if this crashes the game during PreInit");
+
 	}
 
 	@EventHandler
@@ -53,6 +55,14 @@ public class Essentials {
 	public void serverStarting(FMLServerStartingEvent event){
 		event.registerServerCommand(new CommandItem());
 		event.registerServerCommand(new CommandMute());
+
+		Data.LoadKits();
+		Data.LoadPlayers();
+	}
+
+	public void serverStarted(FMLServerStartedEvent event){
+
+
 	}
 
 	@EventHandler
