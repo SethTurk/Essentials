@@ -1,14 +1,15 @@
 package org.shouthost.essentials.json.players;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Players {
 	private String playername;
 	private String uuid;
-	private List<Homes> homes;
+	private Location location = new Location();
+	private List<Homes> homes = new ArrayList<Homes>();
 	private int logout;
-	private Location location;
-	private Optional optional;
+	private Optional optional = new Optional();
 
 	public String getPlayerName(){
 		return playername;
@@ -44,27 +45,27 @@ public class Players {
 
 
 	//Location
-	public int getPosX(){
+	public double getPosX(){
 		return location.getPosX();
 	}
 
-	public int getPosY() {
+	public double getPosY() {
 		return location.getPosY();
 	}
 
-	public int getPosZ() {
+	public double getPosZ() {
 		return location.getPosZ();
 	}
 
-	public void setPosX(int x){
+	public void setPosX(double x){
 		location.setPosX(x);
 	}
 
-	public void setPosY(int y){
+	public void setPosY(double y){
 		location.setPosY(y);
 	}
 
-	public void setPosZ(int z){
+	public void setPosZ(double z){
 		location.setPosZ(z);
 	}
 
@@ -95,6 +96,8 @@ public class Players {
 
 	public List<String> getWarning(){ return optional.getWarnings(); }
 
+	public boolean getJailed(){ return optional.getJailed(); }
+
 	public void setMuted(boolean muted){
 		optional.setMuted(muted);
 	}
@@ -121,5 +124,6 @@ public class Players {
 
 	public void setWarning(String reason){ optional.setWarnings(reason); }
 
+	public void setJailed(boolean jailed){ optional.setJailed(jailed); }
 
 }

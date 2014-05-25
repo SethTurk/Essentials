@@ -13,7 +13,7 @@ public class CommandBan extends ECommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return null;
+		return "/ban <player> [reason]";
 	}
 
 	@Override
@@ -23,12 +23,12 @@ public class CommandBan extends ECommandBase {
 
 	@Override
 	public String getPermissionNode() {
-		return "minecraft.ban";
+		return "essentials.ban";
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		return false;
+		return true;
 	}
 
 	@Override

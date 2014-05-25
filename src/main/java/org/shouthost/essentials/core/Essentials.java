@@ -1,6 +1,5 @@
 package org.shouthost.essentials.core;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -27,6 +26,8 @@ public class Essentials {
 	public static ArrayList<Kit> usableKit = new ArrayList();
 	public static ArrayList<Players> playerList = new ArrayList<Players>();
 
+	public static ArrayList<Players> globalList = new ArrayList<Players>();
+
 	public static File base,players,kits;
 	@Instance("Essentials")
 	public static Essentials instance;
@@ -41,9 +42,6 @@ public class Essentials {
 		if(!players.exists()) players.mkdir();
 		kits = new File(base,"kits");
 		if(!kits.exists()) kits.mkdir();
-
-		FMLLog.getLogger().info("Testing to see if this crashes the game during PreInit");
-
 	}
 
 	@EventHandler
@@ -60,14 +58,5 @@ public class Essentials {
 		Data.LoadPlayers();
 	}
 
-	public void serverStarted(FMLServerStartedEvent event){
-
-
-	}
-
-	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent event){
-
-	}
 
 }

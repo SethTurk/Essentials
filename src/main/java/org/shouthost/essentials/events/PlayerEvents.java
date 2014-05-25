@@ -7,11 +7,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.shouthost.essentials.core.Essentials;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.config.Chat;
+import org.shouthost.essentials.utils.config.Player;
 
 public class PlayerEvents {
 	public PlayerEvents(){
@@ -51,18 +54,36 @@ public class PlayerEvents {
 			event.setCanceled(true);
 			return;
 		}
+		event.setCanceled(true);
+		event.player.addChatMessage(new ChatComponentText(Chat.BuildUsername(event.player) + " " + event.message));
+
 	}
 
 	@SubscribeEvent
-	public void PlayerChat(ServerChatEvent event){
-		if(event.isCanceled()) return;
-		event.player.addChatMessage(new ChatComponentText(Chat.BuildUsernameFromGroup(event.player) + " " + event.message));
+	public void onLogin(PlayerLoggedInEvent event){
+		//ban section
+
+		//adding or creating their data file
+		Players player;
+		if(!Player.PlayerExistInMemory(event.player.getUniqueID())){
+			player = Player.CreatePlayer(event.player);
+		}else{
+			player = Player.FindPlayer(event.player);
+		}
+
+		//Do a check to see if username changed
+		if(player.getPlayerName() != event.player.getDisplayName()){
+			player.setPlayername(event.player.getDisplayName());
+			Player.SavePlayer(player);
+		}
+
+		//adding to list
+		Essentials.globalList.add(player);
 	}
 
-
 	@SubscribeEvent
-	public void BannedCheck(PlayerLoggedInEvent event){
-		//MinecraftServer.getServer().getConfigurationManager()
+	public void onLogout(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event){
+
 	}
 
 	@SubscribeEvent

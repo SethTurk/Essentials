@@ -1,31 +1,31 @@
 package org.shouthost.essentials.json.players;
 
 public class Location {
-	private int xPos;
-	private int yPos;
-	private int zPos;
+	private double xPos;
+	private double yPos;
+	private double zPos;
 
-	public int getPosX(){
+	public double getPosX(){
 		return xPos;
 	}
 
-	public int getPosY() {
+	public double getPosY() {
 		return yPos;
 	}
 
-	public int getPosZ() {
+	public double getPosZ() {
 		return zPos;
 	}
 
-	public void setPosX(int x){
+	public void setPosX(double x){
 		this.xPos = x;
 	}
 
-	public void setPosY(int y){
+	public void setPosY(double y){
 		this.yPos = y;
 	}
 
-	public void setPosZ(int z){
+	public void setPosZ(double z){
 		this.zPos = z;
 	}
 }

@@ -10,6 +10,7 @@ public class Optional {
 	private String banReason;
 	private int banTimeout;
 	private List<String> warnings;
+	private boolean jailed;
 
 	public boolean isMuted(){
 		return muted;
@@ -34,6 +35,8 @@ public class Optional {
 	public int getBanTimeout(){
 		return banTimeout;
 	}
+
+	public boolean getJailed(){ return jailed; }
 
 	public void setMuted(boolean muted){
 		this.muted = muted;
@@ -66,4 +69,7 @@ public class Optional {
 	public void setWarnings(String reason){
 		this.warnings.add(reason);
 	}
+
+	public void setJailed(boolean jailed) { this.jailed = jailed; }
+
 }

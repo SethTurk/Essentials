@@ -3,23 +3,39 @@ package org.shouthost.essentials.utils.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.players.Players;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.UUID;
 
 public class Player {
+
+	public static boolean PlayerExistInMemory(UUID uuid){
+		Iterator<Players> lt = Essentials.playerList.iterator();
+		while(lt.hasNext()){
+			if(lt.next().getUuid() == uuid.toString()){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static Players CreatePlayer(EntityPlayer player){
 		Players newPlayer = new Players();
 		newPlayer.setPlayername(player.getDisplayName());
 		newPlayer.setUuid(player.getUniqueID().toString());
-		newPlayer.setPosX((int) player.posX);
-		newPlayer.setPosY((int) player.posY);
-		newPlayer.setPosZ((int) player.posZ);
+		newPlayer.setPosX(player.posX);
+		newPlayer.setPosY(player.posY);
+		newPlayer.setPosZ(player.posZ);
 		newPlayer.setBanned(false);
 		newPlayer.setMuted(false);
+		newPlayer.setJailed(false);
 		Essentials.playerList.add(newPlayer);
+		if(Essentials.playerList.contains(newPlayer))
+			System.out.println("Player "+newPlayer.getPlayerName()+" with UUID "+newPlayer.getUuid()+" have been created");
 		return newPlayer;
 	}
 
@@ -71,7 +87,7 @@ public class Player {
 	}
 
 	public static void SavePlayer(Players player){
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String json = gson.toJson(player);
 		System.out.println(json);
 		File file = new File(Essentials.players, player.getUuid()+".json");
