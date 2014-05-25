@@ -35,4 +35,12 @@ public abstract class ECommandBase extends CommandBase {
 		if(canUseWithoutPermission()) return true;
 		return super.canCommandSenderUseCommand(commandSender);
 	}
+
+    @Override
+    public final void processCommand(ICommandSender commandSender, String... argumentsArray) {
+        processCommand(commandSender, new ArrayList<String>(Arrays.asList(argumentsArray)));
+    }
+
+    protected abstract void processCommand(ICommandSender commandSender, List<String> arguments);
+
 }

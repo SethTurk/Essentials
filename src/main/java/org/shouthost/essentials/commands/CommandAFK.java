@@ -4,6 +4,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 
+import java.util.List;
+
 
 public class CommandAFK extends ECommandBase {
 	@Override
@@ -32,7 +34,7 @@ public class CommandAFK extends ECommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
 	}
 }

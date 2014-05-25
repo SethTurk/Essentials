@@ -2,6 +2,8 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 
+import java.util.List;
+
 /**
  * Created by Darius on 5/20/2014.
  */
@@ -37,7 +39,7 @@ public class CommandSethome extends ECommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
 	}
 }

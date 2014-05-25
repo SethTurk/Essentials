@@ -28,7 +28,7 @@ public class CommandLag extends ECommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
 	}
 

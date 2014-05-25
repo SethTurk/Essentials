@@ -1,6 +1,14 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+
+import java.util.List;
 
 /**
  * Created by Darius on 5/20/2014.
@@ -8,12 +16,12 @@ import net.minecraft.command.ICommandSender;
 public class CommandKill extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
-		return null;
+		return "essentials.kill";
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -23,16 +31,28 @@ public class CommandKill extends ECommandBase {
 
 	@Override
 	public String getCommandName() {
-		return null;
+		return "kill";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return null;
+		return "/kill [<player>]";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
-
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+        if(args.isEmpty()) {
+            if(!(iCommandSender instanceof EntityPlayer)){
+                iCommandSender.addChatMessage(new ChatComponentText("You can not kill yourself"));
+                return;
+            }
+        }else if(!args.isEmpty()){
+            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+            if(target != null){
+                target.setDead();
+            }else{
+                iCommandSender.addChatMessage(new ChatComponentText("Player "+args.get(0)+" does not exist"));
+            }
+        }
 	}
 }

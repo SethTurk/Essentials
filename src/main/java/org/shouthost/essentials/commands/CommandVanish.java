@@ -2,6 +2,8 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 
+import java.util.List;
+
 public class CommandVanish extends ECommandBase{
 	@Override
 	public String getPermissionNode() {
@@ -29,7 +31,7 @@ public class CommandVanish extends ECommandBase{
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
 	}
 }

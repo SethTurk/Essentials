@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import org.shouthost.essentials.core.Essentials;
 
+import java.util.List;
+
 public class CommandMute extends ECommandBase{
 	@Override
 	public String getCommandName() {
@@ -18,7 +20,7 @@ public class CommandMute extends ECommandBase{
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 		Essentials.muteList.put(((EntityPlayerMP)iCommandSender).getUniqueID(), null);
 		iCommandSender.addChatMessage(new ChatComponentText("You have been muted"));
 	}

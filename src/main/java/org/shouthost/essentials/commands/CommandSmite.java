@@ -2,9 +2,8 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 
-/**
- * Created by Darius on 5/20/2014.
- */
+import java.util.List;
+
 public class CommandSmite extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
@@ -37,7 +36,7 @@ public class CommandSmite extends ECommandBase {
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] strings) {
+	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
 	}
 }
