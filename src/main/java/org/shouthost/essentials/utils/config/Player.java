@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.core.Essentials;
+import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
 
 import java.io.*;
@@ -40,13 +41,29 @@ public class Player {
 	}
 
 	public static Players FindPlayer(EntityPlayer player){
-		Iterator<Players> p = Essentials.playerList.iterator();
-		Players players = null;
-		while(p.hasNext()){
-			if(p.next().getPlayerName() == player.getDisplayName())
-				players = p.next();
+		for(Players p: Essentials.playerList){
+			if(p.getUuid() == player.getUniqueID().toString())
+				return p;
 		}
-		return players;
+		return null;
+	}
+
+	public static void SetPlayerHome(Players player, String name, int x, int y, int z){
+		Homes home = new Homes();
+		home.setName(name);
+		home.setX(x);
+		home.setY(y);
+		home.setZ(z);
+		player.setHome(home);
+	}
+
+	public static Homes GetPlayerHome(Players player, String name){
+		for(Homes home: player.getHomes()){
+			if(home.getName() == name){
+				return home;
+			}
+		}
+		return null;
 	}
 
 	public static void UpdatePlayerName(Players player, String name){
