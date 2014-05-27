@@ -1,9 +1,14 @@
 package org.shouthost.essentials.json.players;
 
 public class Location {
+	private int world;
 	private double xPos;
 	private double yPos;
 	private double zPos;
+
+	public int getWorld(){
+		return world;
+	}
 
 	public double getPosX(){
 		return xPos;
@@ -15,6 +20,10 @@ public class Location {
 
 	public double getPosZ() {
 		return zPos;
+	}
+
+	public void setWorld(int world){
+		this.world = world;
 	}
 
 	public void setPosX(double x){
