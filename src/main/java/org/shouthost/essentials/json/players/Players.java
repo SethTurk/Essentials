@@ -45,6 +45,8 @@ public class Players {
 
 
 	//Location
+	public int getWorld(){ return location.getWorld(); }
+
 	public double getPosX(){
 		return location.getPosX();
 	}
@@ -57,6 +59,8 @@ public class Players {
 		return location.getPosZ();
 	}
 
+	public void setWorld(int world){ location.setWorld(world); }
+
 	public void setPosX(double x){
 		location.setPosX(x);
 	}
@@ -65,7 +69,7 @@ public class Players {
 		location.setPosY(y);
 	}
 
-	public void setPosZ(double z){
+	public void setPosZ(double z) {
 		location.setPosZ(z);
 	}
 
