@@ -2,6 +2,8 @@ package org.shouthost.essentials.utils.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import forgeperms.api.ForgePermsAPI;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -18,13 +20,19 @@ public class Player {
 	private EntityPlayer entityPlayer;
 	private Players player;
 
+	public Player(EntityPlayerMP playerMP){
+		this((EntityPlayer)playerMP);
+	}
+
+	public Player(ICommandSender sender){
+		this((EntityPlayer) sender);
+	}
+
 	public Player(EntityPlayer player){
 		this.entityPlayer = player;
 		if(exist()){
-			System.out.println("Player Exists");
 			load();
 		}else{
-			System.out.println("Player doesnt exist");
 			create();
 		}
 	}
@@ -58,9 +66,18 @@ public class Player {
 		return this.player;
 	}
 
+	public void setHealth(int health){
+		this.entityPlayer.setHealth(health);
+	}
+
 	public void setHome(String name, int x, int y, int z){
-		Homes home = new Homes();
-		home.setName(name);
+		Homes home = null;
+		if(name.contains("home")){
+			home = getHome("home");
+		}else {
+			home = new Homes();
+			home.setName(name);
+		}
 		home.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
 		home.setX(x);
 		home.setY(y);
@@ -70,6 +87,11 @@ public class Player {
 
 	public World getWorld(){
 		return this.entityPlayer.worldObj;
+	}
+
+	public boolean has(String node){
+		if(ForgePermsAPI.permManager == null) return false;
+		return ForgePermsAPI.permManager.canAccess(this.entityPlayer.getDisplayName(), getWorld().getWorldInfo().getWorldName(), node);
 	}
 
 	public Homes getHome(String name){
