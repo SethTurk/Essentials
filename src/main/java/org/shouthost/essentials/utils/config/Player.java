@@ -4,110 +4,127 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.World;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.UUID;
 
 public class Player {
 
-	public static boolean PlayerExistInMemory(UUID uuid){
-		Iterator<Players> lt = Essentials.playerList.iterator();
-		while(lt.hasNext()){
-			if(lt.next().getUuid() == uuid.toString()){
-				return true;
-			}
+	private EntityPlayer entityPlayer;
+	private Players player;
+
+	public Player(EntityPlayer player){
+		this.entityPlayer = player;
+		if(exist()){
+			System.out.println("Player Exists");
+			load();
+		}else{
+			System.out.println("Player doesnt exist");
+			create();
 		}
+	}
+
+	private boolean exist(){
+		if(Essentials.playersList.containsKey(this.entityPlayer.getUniqueID()))
+			return true;
 		return false;
 	}
 
-	public static Players CreatePlayer(EntityPlayer player){
+	private void load(){
+		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID());
+	}
+
+	private void create(){
 		Players newPlayer = new Players();
-		newPlayer.setPlayername(player.getDisplayName());
-		newPlayer.setUuid(player.getUniqueID().toString());
-		newPlayer.setPosX(player.posX);
-		newPlayer.setPosY(player.posY);
-		newPlayer.setPosZ(player.posZ);
+		newPlayer.setPlayername(this.entityPlayer.getDisplayName());
+		newPlayer.setUuid(this.entityPlayer.getUniqueID().toString());
+		newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
+		newPlayer.setPosX(this.entityPlayer.posX);
+		newPlayer.setPosY(this.entityPlayer.posY);
+		newPlayer.setPosZ(this.entityPlayer.posZ);
 		newPlayer.setBanned(false);
 		newPlayer.setMuted(false);
 		newPlayer.setJailed(false);
-		Essentials.playerList.add(newPlayer);
-		if(Essentials.playerList.contains(newPlayer))
-			System.out.println("Player "+newPlayer.getPlayerName()+" with UUID "+newPlayer.getUuid()+" have been created");
-		return newPlayer;
+		this.player = newPlayer;
+		Essentials.playersList.put(this.entityPlayer.getUniqueID(), newPlayer);
 	}
 
-	public static Players FindPlayer(EntityPlayer player){
-		for(Players p: Essentials.playerList){
-			if(p.getUuid() == player.getUniqueID().toString())
-				return p;
-		}
-		return null;
+	public Players get(){
+		return this.player;
 	}
 
-	public static void SetPlayerHome(Players player, String name, int x, int y, int z){
+	public void setHome(String name, int x, int y, int z){
 		Homes home = new Homes();
 		home.setName(name);
+		home.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
 		home.setX(x);
 		home.setY(y);
 		home.setZ(z);
-		player.setHome(home);
+		this.player.setHome(home);
 	}
 
-	public static Homes GetPlayerHome(Players player, String name){
-		for(Homes home: player.getHomes()){
-			if(home.getName() == name){
+	public World getWorld(){
+		return this.entityPlayer.worldObj;
+	}
+
+	public Homes getHome(String name){
+		for(Homes home: this.player.getHomes()){
+			System.out.println(""+home.getName().contains(name));
+			if(home.getName().contains(name)){
 				return home;
 			}
 		}
 		return null;
 	}
 
-	public static void UpdatePlayerName(Players player, String name){
-		player.setPlayername(name);
+	public void UpdateName(Players player, String name){
+		this.player.setPlayername(name);
 	}
 
-	public static void UpdatePlayerCoords(Players player, int x, int y, int z){
-		player.setPosX(x);
-		player.setPosY(y);
-		player.setPosZ(z);
+	public void UpdateCoords(int x, int y, int z){
+		this.player.setPosX(x);
+		this.player.setPosY(y);
+		this.player.setPosZ(z);
 	}
 
-	public static void MutePlayer(Players player, String reason, int timeout){
-		if(player.isMuted()) return;
-		player.setMuted(true);
-		player.setMuteReason(reason);
-		player.setMuteTimeout(timeout);
+	public void Mute(String reason, int timeout){
+		if(this.player.isMuted()) return;
+		this.player.setMuted(true);
+		this.player.setMuteReason(reason);
+		this.player.setMuteTimeout(timeout);
 	}
 
-	public static void WarnPlayer(Players player, String reason){
-		player.setWarning(reason);
+	public void Warn(String reason){
+		this.player.setWarning(reason);
 	}
 
-	public static void BanPlayer(Players player, String reason, int timeout){
-		if(player.isBanned()) return;
-		player.setBanned(true);
-		player.setBanReason(reason);
-		player.setBanTimeout(timeout);
+	public void Ban(String reason, int timeout){
+		if(this.player.isBanned() || MinecraftServer.getServer().getConfigurationManager().getBannedPlayers().getBannedList().containsKey(this.entityPlayer)) return;
+		this.player.setBanned(true);
+		this.player.setBanReason(reason);
+		this.player.setBanTimeout(timeout);
+
 	}
 
-	public static void UnbanPlayer(Players player){
-		if(player.isBanned()) player.setBanned(false);
+	public void Unban(){
+		if(this.player.isBanned()) this.player.setBanned(false);
 	}
 
-	public static void UpdateBan(Players player, String reason, int timeout){
-		if(!player.getBanReason().contains(reason)) player.setBanReason(reason);
-		if(player.getBanTimeout() != timeout) player.setBanTimeout(timeout);
+	public void UpdateBan(String reason, int timeout){
+		if(!this.player.getBanReason().contains(reason)) this.player.setBanReason(reason);
+		if(this.player.getBanTimeout() != timeout) this.player.setBanTimeout(timeout);
 	}
 
-	public static void SavePlayer(Players player){
+	public void save(){
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String json = gson.toJson(player);
+		String json = gson.toJson(this.player);
 		System.out.println(json);
-		File file = new File(Essentials.players, player.getUuid()+".json");
+		File file = new File(Essentials.players, this.player.getUuid()+".json");
 		if(file.exists() && file.isFile()) file.delete();
 		try {
 				Writer writer = new OutputStreamWriter(new FileOutputStream(file) , "UTF-8");
@@ -117,4 +134,38 @@ public class Player {
 				e.printStackTrace();
 		}
 	}
+
+	public void sendMessage(String msg){
+		this.entityPlayer.addChatMessage(new ChatComponentText(msg));
+	}
+
+	public boolean sendMessageTo(String name, String msg){
+		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(name);
+		if(target == null){
+			this.entityPlayer.addChatMessage(new ChatComponentText("Player \""+name+"\" does not exist"));
+			return false;
+		}
+		this.entityPlayer.addChatMessage(new ChatComponentText("[me -> "+this.player.getPlayerName()+"] "+msg));
+		target.addChatMessage(new ChatComponentText("["+this.player.getPlayerName()+" -> me] "+msg));
+		return true;
+	}
+
+	public void teleportTo(World world, int x, int y, int z){
+		if(world == null) return;
+		if(this.entityPlayer.worldObj.provider.dimensionId != world.provider.dimensionId) MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) this.entityPlayer, world.provider.dimensionId);
+		this.entityPlayer.setPositionAndUpdate(x,y,z);
+		UpdateCoords(x,y,z);
+		save();
+	}
+
+	public void teleportTo(EntityPlayer target){
+		if(target == null) return;
+		teleportTo(target.worldObj, (int)target.posX, (int)target.posY, (int)target.posZ);
+	}
+
+	public float getHealth(){
+		return this.entityPlayer.getHealth();
+	}
+
+
 }

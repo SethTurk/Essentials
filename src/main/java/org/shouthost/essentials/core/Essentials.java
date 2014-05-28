@@ -1,15 +1,20 @@
 package org.shouthost.essentials.core;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.*;
-import org.shouthost.essentials.commands.CommandItem;
-import org.shouthost.essentials.commands.CommandMute;
+import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.events.PlayerEvents;
+import org.shouthost.essentials.json.books.Books;
+import org.shouthost.essentials.json.books.Page;
 import org.shouthost.essentials.json.kits.Kit;
+import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.config.Data;
+import org.shouthost.essentials.utils.config.Player;
 import org.shouthost.essentials.utils.config.Reason;
 
 import java.io.File;
@@ -21,15 +26,13 @@ import java.util.UUID;
 @Mod(name="Essentials",modid="essentials",version="")
 public class Essentials {
 
-	public static HashMap<UUID, Reason>muteList = new HashMap<UUID, Reason>();
-	public static HashMap<UUID, Reason>banList = new HashMap<UUID, Reason>();
 	public static ArrayList<Kit> usableKit = new ArrayList();
-	public static ArrayList<Players> playerList = new ArrayList<Players>();
+	public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
+	public static ArrayList<Books> book = new ArrayList<Books>();
+	public static File base,players,kits,books;
 
-	public static ArrayList<Players> globalList = new ArrayList<Players>();
-
-	public static File base,players,kits;
 	@Instance("Essentials")
+
 	public static Essentials instance;
 
 	public static PlayerEvents playerEvent;
@@ -42,6 +45,8 @@ public class Essentials {
 		if(!players.exists()) players.mkdir();
 		kits = new File(base,"kits");
 		if(!kits.exists()) kits.mkdir();
+		books = new File(base, "books");
+		if(!books.exists()) books.mkdir();
 	}
 
 	@EventHandler
@@ -53,9 +58,14 @@ public class Essentials {
 	public void serverStarting(FMLServerStartingEvent event){
 		event.registerServerCommand(new CommandItem());
 		event.registerServerCommand(new CommandMute());
-
-		Data.LoadKits();
+		event.registerServerCommand(new CommandSethome());
+		event.registerServerCommand(new CommandHome());
+		event.registerServerCommand(new CommandHeal());
+		event.registerServerCommand(new CommandLag());
+		event.registerServerCommand(new CommandBurn());
 		Data.LoadPlayers();
+		Data.LoadKits();
+		Data.LoadBooks();
 	}
 
 
