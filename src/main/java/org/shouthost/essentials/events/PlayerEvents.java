@@ -6,10 +6,12 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.shouthost.essentials.core.Essentials;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import org.shouthost.essentials.json.players.Players;
@@ -44,41 +46,26 @@ public class PlayerEvents {
 	}
 
 	@SubscribeEvent
-	public void MuteCheck(ServerChatEvent event){
-		if(Essentials.muteList.containsKey(event.player.getUniqueID()) && Essentials.muteList.get(event.player.getUniqueID()) != null){
-			event.player.addChatMessage(new ChatComponentText("You are muted for "+Essentials.muteList.get(event.player.getUniqueID()).getReason()));
-			event.setCanceled(true);
-			return;
-		}else if(Essentials.muteList.containsKey(event.player.getUniqueID()) && Essentials.muteList.get(event.player.getUniqueID()) == null){
-			event.player.addChatMessage(new ChatComponentText("You are muted"));
+	public void onServerChatEvent(ServerChatEvent event){
+		//Mute Check
+		Player player = new Player(event.player);
+		if(player.get().isMuted()){
+			if(player.get().getMuteReason() != null){
+				player.sendMessage(EnumChatFormatting.RED+"You are muted for "+player.get().getMuteReason());
+			}else{
+				player.sendMessage(EnumChatFormatting.RED+"You are muted");
+			}
 			event.setCanceled(true);
 			return;
 		}
-		event.setCanceled(true);
-		event.player.addChatMessage(new ChatComponentText(Chat.BuildUsername(event.player) + " " + event.message));
+
 
 	}
 
 	@SubscribeEvent
 	public void onLogin(PlayerLoggedInEvent event){
-		//ban section
-
-		//adding or creating their data file
-		Players player;
-		if(!Player.PlayerExistInMemory(event.player.getUniqueID())){
-			player = Player.CreatePlayer(event.player);
-		}else{
-			player = Player.FindPlayer(event.player);
-		}
-
-		//Do a check to see if username changed
-		if(player.getPlayerName() != event.player.getDisplayName()){
-			player.setPlayername(event.player.getDisplayName());
-			Player.SavePlayer(player);
-		}
-
-		//adding to list
-		Essentials.globalList.add(player);
+		//Decided to load the files on when the player is Player class is called.
+		//this will not be the best for performance but will do for now
 	}
 
 	@SubscribeEvent
@@ -88,7 +75,18 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
-		//System.out.println("Player "+event.player.getDisplayName()+" updated x"+event.player.posX+" y"+event.player.posY+" z"+event.player.posZ);
+		Player player = new Player(event.player);
+		if(player.get().getJailed()){
+			event.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public void PlayerInteractEvent(PlayerInteractEvent event){
+		Player player = new Player(event.entityPlayer);
+		if(player.get().getJailed()){
+			event.setCanceled(true);
+		}
 	}
 
 }
