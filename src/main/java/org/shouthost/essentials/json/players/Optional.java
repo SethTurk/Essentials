@@ -12,64 +12,68 @@ public class Optional {
 	private List<String> warnings;
 	private boolean jailed;
 
-	public boolean isMuted(){
+	public boolean isMuted() {
 		return muted;
 	}
 
-	public String getMuteReason(){
-		return muteReason;
-	}
-
-	public int getMuteTimeout(){
-		return muteTimeout;
-	}
-
-	public boolean isBanned(){
-		return banned;
-	}
-
-	public String getBanReason(){
-		return banReason;
-	}
-
-	public int getBanTimeout(){
-		return banTimeout;
-	}
-
-	public boolean getJailed(){ return jailed; }
-
-	public void setMuted(boolean muted){
+	public void setMuted(boolean muted) {
 		this.muted = muted;
 	}
 
-	public void setMuteReason(String reason){
+	public String getMuteReason() {
+		return muteReason;
+	}
+
+	public void setMuteReason(String reason) {
 		this.muteReason = reason;
 	}
 
-	public void setMuteTimeout(int timeout){
+	public int getMuteTimeout() {
+		return muteTimeout;
+	}
+
+	public void setMuteTimeout(int timeout) {
 		this.muteTimeout = timeout;
 	}
 
-	public void setBanned(boolean banned){
+	public boolean isBanned() {
+		return banned;
+	}
+
+	public void setBanned(boolean banned) {
 		this.banned = banned;
 	}
 
-	public void setBanReason(String reason){
+	public String getBanReason() {
+		return banReason;
+	}
+
+	public void setBanReason(String reason) {
 		this.banReason = reason;
 	}
 
-	public void setBanTimeout(int timeout){
+	public int getBanTimeout() {
+		return banTimeout;
+	}
+
+	public void setBanTimeout(int timeout) {
 		this.banTimeout = timeout;
 	}
 
-	public List<String> getWarnings(){
+	public boolean getJailed() {
+		return jailed;
+	}
+
+	public void setJailed(boolean jailed) {
+		this.jailed = jailed;
+	}
+
+	public List<String> getWarnings() {
 		return warnings;
 	}
 
-	public void setWarnings(String reason){
+	public void setWarnings(String reason) {
 		this.warnings.add(reason);
 	}
-
-	public void setJailed(boolean jailed) { this.jailed = jailed; }
 
 }

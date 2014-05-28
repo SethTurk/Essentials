@@ -1,25 +1,19 @@
 package org.shouthost.essentials.events;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import org.shouthost.essentials.core.Essentials;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.utils.config.Chat;
 import org.shouthost.essentials.utils.config.Player;
 
 public class PlayerEvents {
-	public PlayerEvents(){
+	public PlayerEvents() {
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLCommonHandler.instance().bus().register(this);
 	}
@@ -46,14 +40,14 @@ public class PlayerEvents {
 	}
 
 	@SubscribeEvent
-	public void onServerChatEvent(ServerChatEvent event){
+	public void onServerChatEvent(ServerChatEvent event) {
 		//Mute Check
 		Player player = new Player(event.player);
-		if(player.get().isMuted()){
-			if(player.get().getMuteReason() != null){
-				player.sendMessage(EnumChatFormatting.RED+"You are muted for "+player.get().getMuteReason());
-			}else{
-				player.sendMessage(EnumChatFormatting.RED+"You are muted");
+		if (player.get().isMuted()) {
+			if (player.get().getMuteReason() != null) {
+				player.sendMessage(EnumChatFormatting.RED + "You are muted for " + player.get().getMuteReason());
+			} else {
+				player.sendMessage(EnumChatFormatting.RED + "You are muted");
 			}
 			event.setCanceled(true);
 			return;
@@ -63,30 +57,14 @@ public class PlayerEvents {
 	}
 
 	@SubscribeEvent
-	public void onLogin(PlayerLoggedInEvent event){
+	public void onLogin(PlayerLoggedInEvent event) {
 		//Decided to load the files on when the player is Player class is called.
 		//this will not be the best for performance but will do for now
 	}
 
 	@SubscribeEvent
-	public void onLogout(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event){
+	public void onLogout(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {
 
-	}
-
-	@SubscribeEvent
-	public void PlayerUpdateEvent(TickEvent.PlayerTickEvent event){
-		Player player = new Player(event.player);
-		if(player.get().getJailed()){
-			event.setCanceled(true);
-		}
-	}
-
-	@SubscribeEvent
-	public void PlayerInteractEvent(PlayerInteractEvent event){
-		Player player = new Player(event.entityPlayer);
-		if(player.get().getJailed()){
-			event.setCanceled(true);
-		}
 	}
 
 }

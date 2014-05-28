@@ -11,62 +11,67 @@ public class Players {
 	private int logout;
 	private Optional optional = new Optional();
 
-	public String getPlayerName(){
+	public String getPlayerName() {
 		return playername;
 	}
 
-	public void setPlayername(String playername){
+	public void setPlayername(String playername) {
 		this.playername = playername;
 	}
 
-	public String getUuid(){
+	public String getUuid() {
 		return uuid;
 	}
 
-	public void setUuid(String uuid){
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 
 
-	public List<Homes> getHomes(){
+	public List<Homes> getHomes() {
 		return homes;
 	}
 
-	public void setHome(Homes home){
+	public void setHome(Homes home) {
 		homes.add(home);
 	}
 
-	public int getLogout(){
+	public int getLogout() {
 		return logout;
 	}
-	public void setLogout(int logout){
+
+	public void setLogout(int logout) {
 		this.logout = logout;
 	}
 
 
 	//Location
-	public int getWorld(){ return location.getWorld(); }
+	public int getWorld() {
+		return location.getWorld();
+	}
 
-	public double getPosX(){
+	public void setWorld(int world) {
+		location.setWorld(world);
+	}
+
+	public double getPosX() {
 		return location.getPosX();
+	}
+
+	public void setPosX(double x) {
+		location.setPosX(x);
 	}
 
 	public double getPosY() {
 		return location.getPosY();
 	}
 
+	public void setPosY(double y) {
+		location.setPosY(y);
+	}
+
 	public double getPosZ() {
 		return location.getPosZ();
-	}
-
-	public void setWorld(int world){ location.setWorld(world); }
-
-	public void setPosX(double x){
-		location.setPosX(x);
-	}
-
-	public void setPosY(double y){
-		location.setPosY(y);
 	}
 
 	public void setPosZ(double z) {
@@ -74,60 +79,68 @@ public class Players {
 	}
 
 	//optional
-	public boolean isMuted(){
+	public boolean isMuted() {
 		return optional.isMuted();
 	}
 
-	public String getMuteReason(){
-		return optional.getMuteReason();
-	}
-
-	public int getMuteTimeout(){
-		return optional.getMuteTimeout();
-	}
-
-	public boolean isBanned(){
-		return optional.isBanned();
-	}
-
-	public String getBanReason(){
-		return optional.getBanReason();
-	}
-
-	public int getBanTimeout(){
-		return optional.getBanTimeout();
-	}
-
-	public List<String> getWarning(){ return optional.getWarnings(); }
-
-	public boolean getJailed(){ return optional.getJailed(); }
-
-	public void setMuted(boolean muted){
+	public void setMuted(boolean muted) {
 		optional.setMuted(muted);
 	}
 
-	public void setMuteReason(String reason){
+	public String getMuteReason() {
+		return optional.getMuteReason();
+	}
+
+	public void setMuteReason(String reason) {
 		optional.setMuteReason(reason);
 	}
 
-	public void setMuteTimeout(int timeout){
+	public int getMuteTimeout() {
+		return optional.getMuteTimeout();
+	}
+
+	public void setMuteTimeout(int timeout) {
 		optional.setMuteTimeout(timeout);
 	}
 
-	public void setBanned(boolean banned){
+	public boolean isBanned() {
+		return optional.isBanned();
+	}
+
+	public void setBanned(boolean banned) {
 		optional.setBanned(banned);
 	}
 
-	public void setBanReason(String reason){
+	public String getBanReason() {
+		return optional.getBanReason();
+	}
+
+	public void setBanReason(String reason) {
 		optional.setBanReason(reason);
 	}
 
-	public void setBanTimeout(int timeout){
+	public int getBanTimeout() {
+		return optional.getBanTimeout();
+	}
+
+	public void setBanTimeout(int timeout) {
 		optional.setBanTimeout(timeout);
 	}
 
-	public void setWarning(String reason){ optional.setWarnings(reason); }
+	public List<String> getWarning() {
+		return optional.getWarnings();
+	}
 
-	public void setJailed(boolean jailed){ optional.setJailed(jailed); }
+	public void setWarning(String reason) {
+		optional.setWarnings(reason);
+	}
+
+	public boolean getJailed() {
+		return optional.getJailed();
+	}
+
+	public void setJailed(boolean jailed) {
+		optional.setJailed(jailed);
+	}
 
 }

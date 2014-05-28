@@ -1,18 +1,12 @@
 package org.shouthost.essentials.commands;
 
-import forgeperms.api.ForgePermsAPI;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
 import org.shouthost.essentials.core.Essentials;
-import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.config.Book;
-import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +14,7 @@ import java.util.List;
 public class CommandItem extends ECommandBase {
 	@Override
 	public List<String> getCommandAliases() {
-	    ArrayList<String> aliasList = new ArrayList<String>();
+		ArrayList<String> aliasList = new ArrayList<String>();
 		aliasList.add("i");
 		aliasList.add("item");
 		return aliasList;
@@ -47,7 +41,7 @@ public class CommandItem extends ECommandBase {
 		EntityItem entityitem = new EntityItem(player.worldObj, player.posX + d0, player.posY + d1, player.posZ + d2, stack);
 		entityitem.delayBeforeCanPickup = 10;
 		if (stack.hasTagCompound()) {
-			entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+			entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
 		}
 		player.worldObj.spawnEntityInWorld(entityitem);
 	}

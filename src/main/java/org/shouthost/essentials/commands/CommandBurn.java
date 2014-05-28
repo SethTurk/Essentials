@@ -4,10 +4,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 import java.util.List;
 
@@ -32,18 +30,18 @@ public class CommandBurn extends ECommandBase {
 
 	@Override
 	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if(args.isEmpty()){
-			if(!(commandSender instanceof EntityPlayer)){
+		if (args.isEmpty()) {
+			if (!(commandSender instanceof EntityPlayer)) {
 				commandSender.addChatMessage(new ChatComponentText("You can not use this command"));
 				return;
 			}
 			EntityPlayer player = (EntityPlayer) commandSender;
 			player.setFire(2);
 			return;
-		}else{
+		} else {
 			EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
-			if(target == null){
-				commandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Player is not online."));
+			if (target == null) {
+				commandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player is not online."));
 				return;
 			}
 			target.setFire(2);

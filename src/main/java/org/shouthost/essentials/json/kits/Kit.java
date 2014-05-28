@@ -7,15 +7,15 @@ public class Kit {
 	private List<KitsInternal> kit;
 	private int cooldown;
 
-	public String getKitName(){
+	public String getKitName() {
 		return name;
 	}
 
-	public int getCooldown(){
+	public int getCooldown() {
 		return cooldown;
 	}
 
-	public List<KitsInternal> getKit(){
+	public List<KitsInternal> getKit() {
 		return kit;
 	}
 

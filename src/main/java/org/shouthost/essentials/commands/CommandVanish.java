@@ -4,7 +4,7 @@ import net.minecraft.command.ICommandSender;
 
 import java.util.List;
 
-public class CommandVanish extends ECommandBase{
+public class CommandVanish extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
 		return null;

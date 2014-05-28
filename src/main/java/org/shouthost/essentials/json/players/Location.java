@@ -6,35 +6,35 @@ public class Location {
 	private double yPos;
 	private double zPos;
 
-	public int getWorld(){
+	public int getWorld() {
 		return world;
 	}
 
-	public double getPosX(){
+	public void setWorld(int world) {
+		this.world = world;
+	}
+
+	public double getPosX() {
 		return xPos;
+	}
+
+	public void setPosX(double x) {
+		this.xPos = x;
 	}
 
 	public double getPosY() {
 		return yPos;
 	}
 
+	public void setPosY(double y) {
+		this.yPos = y;
+	}
+
 	public double getPosZ() {
 		return zPos;
 	}
 
-	public void setWorld(int world){
-		this.world = world;
-	}
-
-	public void setPosX(double x){
-		this.xPos = x;
-	}
-
-	public void setPosY(double y){
-		this.yPos = y;
-	}
-
-	public void setPosZ(double z){
+	public void setPosZ(double z) {
 		this.zPos = z;
 	}
 }

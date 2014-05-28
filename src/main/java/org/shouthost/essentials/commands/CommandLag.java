@@ -1,9 +1,7 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -15,6 +13,16 @@ import java.util.List;
  * Created by Darius on 5/21/2014.
  */
 public class CommandLag extends ECommandBase {
+	private static long mean(long[] values) {
+
+		long sum = 0l;
+		for (long v : values) {
+			sum += v;
+		}
+
+		return sum / values.length;
+	}
+
 	@Override
 	public List<String> getCommandAliases() {
 		ArrayList<String> aliasList = new ArrayList<String>();
@@ -35,17 +43,17 @@ public class CommandLag extends ECommandBase {
 
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player player = new Player(iCommandSender);
+		Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) iCommandSender);
 		//Uptime
-		player.sendMessage("Uptime: "+ ManagementFactory.getRuntimeMXBean().getStartTime());//Will implement a parser for uptime
+		player.sendMessage("Uptime: " + ManagementFactory.getRuntimeMXBean().getStartTime());//Will implement a parser for uptime
 
 		//Memory
 		long maxmem = Runtime.getRuntime().totalMemory() / 1024L / 1024L;
 		long freemem = Runtime.getRuntime().freeMemory() / 1024L / 1024L;
 		long memuse = maxmem - freemem / 1024L / 1024L;
-		player.sendMessage("Maximum memory: "+maxmem+" MB.");
-		player.sendMessage("Used Memory: "+memuse+" MB.");
-		player.sendMessage("Free memory: "+freemem+" MB.");
+		player.sendMessage("Maximum memory: " + maxmem + " MB.");
+		player.sendMessage("Used Memory: " + memuse + " MB.");
+		player.sendMessage("Free memory: " + freemem + " MB.");
 
 	}
 
@@ -69,18 +77,8 @@ public class CommandLag extends ECommandBase {
 		return false;
 	}
 
-	private double getWorldTPS(World world){
+	private double getWorldTPS(World world) {
 		double worldTickTime = mean(MinecraftServer.getServer().worldTickTimes.get(world.provider.dimensionId)) * 1.0E-6D;
 		return Math.min(1000.0 / worldTickTime, 20);
-	}
-
-	private static long mean(long[] values) {
-
-		long sum = 0l;
-		for (long v : values) {
-			sum += v;
-		}
-
-		return sum / values.length;
 	}
 }

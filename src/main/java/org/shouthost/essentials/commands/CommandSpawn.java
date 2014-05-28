@@ -1,10 +1,9 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -28,12 +27,12 @@ public class CommandSpawn extends ECommandBase {
 
 	@Override
 	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if(args.isEmpty()){
-			if(!(commandSender instanceof EntityPlayer)){
+		if (args.isEmpty()) {
+			if (!(commandSender instanceof EntityPlayerMP)) {
 				commandSender.addChatMessage(new ChatComponentText("You can perform this action"));
 				throw new WrongUsageException(getCommandUsage(commandSender));
 			}
-			Player player = new Player((EntityPlayer) commandSender);
+			Player player = new Player((EntityPlayerMP) commandSender);
 
 		}
 	}

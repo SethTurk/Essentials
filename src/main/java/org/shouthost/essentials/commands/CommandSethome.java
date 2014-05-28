@@ -2,10 +2,10 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.json.players.Homes;
-import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
@@ -38,23 +38,23 @@ public class CommandSethome extends ECommandBase {
 
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		EntityPlayer p = (EntityPlayer) iCommandSender;
+		EntityPlayerMP p = (EntityPlayerMP) iCommandSender;
 		Player player = new Player(p);
-		if(args.isEmpty()){
-			player.setHome("home", (int)p.posX, (int)p.posY, (int)p.posZ);
+		if (args.isEmpty()) {
+			player.setHome("home", (int) p.posX, (int) p.posY, (int) p.posZ);
 			player.save();
-			p.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"Your home have been set!"));
+			p.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Your home have been set!"));
 			return;
-		}else{
+		} else {
 			//find if home exist
 			Homes home = player.getHome(args.get(0));
-			if(home != null) {
+			if (home != null) {
 				p.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Home '" + args.get(0) + "' already exist!"));
 				return;
-			}else if(home == null){
-				player.setHome(args.get(0), (int)p.posX, (int)p.posY, (int)p.posZ);
+			} else if (home == null) {
+				player.setHome(args.get(0), (int) p.posX, (int) p.posY, (int) p.posZ);
 				player.save();
-				p.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"Your home have been set!"));
+				p.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Your home have been set!"));
 				return;
 			}
 

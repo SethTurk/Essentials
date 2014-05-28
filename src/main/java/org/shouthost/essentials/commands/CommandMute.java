@@ -2,13 +2,11 @@ package org.shouthost.essentials.commands;
 
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
-import org.shouthost.essentials.core.Essentials;
 
 import java.util.List;
 
-public class CommandMute extends ECommandBase{
+public class CommandMute extends ECommandBase {
 	@Override
 	public String getCommandName() {
 		return "mute";

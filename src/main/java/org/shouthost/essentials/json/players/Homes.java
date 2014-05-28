@@ -7,43 +7,43 @@ public class Homes {
 	private int y;
 	private int z;
 
-	public void setName(String name){
-		this.name = name;
-	}
-
-	public String getName(){
+	public String getName() {
 		return name;
 	}
 
-	public int getX(){
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getX() {
 		return x;
 	}
 
-	public void setWorld(int dim){
-		this.world = dim;
-	}
-
-	public int getWorld(){
-		return world;
-	}
-
-	public void setX(int x){
+	public void setX(int x) {
 		this.x = x;
 	}
 
-	public int getY(){
+	public int getWorld() {
+		return world;
+	}
+
+	public void setWorld(int dim) {
+		this.world = dim;
+	}
+
+	public int getY() {
 		return y;
 	}
 
-	public void setY(int y){
+	public void setY(int y) {
 		this.y = y;
 	}
 
-	public int getZ(){
+	public int getZ() {
 		return z;
 	}
 
-	public void setZ(int z){
+	public void setZ(int z) {
 		this.z = z;
 	}
 

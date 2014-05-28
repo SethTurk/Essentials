@@ -1,16 +1,12 @@
 package org.shouthost.essentials.utils.config;
 
-import com.google.gson.stream.JsonReader;
-import net.minecraft.entity.player.EntityPlayer;
-import org.shouthost.essentials.core.Essentials;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class Data {
@@ -39,9 +35,9 @@ public class Data {
 		}
 	}
 
-	public static void LoadPlayers(){
+	public static void LoadPlayers() {
 		for (String file : Essentials.players.list()) {
-			System.out.println("Loading "+file);
+			System.out.println("Loading " + file);
 			Gson gson = new Gson();
 			if (file == null) break;
 			File f = new File(Essentials.players, file);
@@ -64,7 +60,7 @@ public class Data {
 		}
 	}
 
-	public static void LoadBooks(){
+	public static void LoadBooks() {
 		for (String file : Essentials.books.list()) {
 			Gson gson = new Gson();
 			if (file == null) break;

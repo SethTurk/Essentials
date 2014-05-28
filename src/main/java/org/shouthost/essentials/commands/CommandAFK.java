@@ -1,8 +1,6 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 
 import java.util.List;
 
