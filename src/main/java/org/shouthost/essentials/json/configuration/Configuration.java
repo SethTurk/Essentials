@@ -8,5 +8,4 @@ public class Configuration {
 	private boolean TeleportSafety;
 	private int TeleportCooldown;
 
-
 }

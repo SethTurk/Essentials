@@ -21,7 +21,7 @@ public class CommandMute extends ECommandBase{
 
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Essentials.muteList.put(((EntityPlayerMP)iCommandSender).getUniqueID(), null);
+//		Essentials.muteList.put(((EntityPlayerMP)iCommandSender).getUniqueID(), null);
 		iCommandSender.addChatMessage(new ChatComponentText("You have been muted"));
 	}
 
