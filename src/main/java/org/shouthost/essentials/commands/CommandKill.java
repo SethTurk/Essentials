@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class CommandKill extends ECommandBase {
                 iCommandSender.addChatMessage(new ChatComponentText("You can not kill yourself"));
                 return;
             }
+	        Player player = new Player(iCommandSender);
+
         }else if(!args.isEmpty()){
             EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
             if(target != null){
