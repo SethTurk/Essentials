@@ -5,6 +5,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +30,9 @@ public abstract class ECommandBase extends CommandBase {
 		if (commandSender instanceof EntityPlayer &&
 				getPermissionNode() != null &&
 				ForgePermsAPI.permManager != null) {
-			//TODO: Convert from displayname to UUID before production.
+			Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) commandSender);
 			//TODO: Do futher testing
-			return ForgePermsAPI.permManager.canAccess(((EntityPlayer) commandSender).getDisplayName(), ((EntityPlayer) commandSender).worldObj.getWorldInfo().getWorldName(), getPermissionNode());
+			return player.has(getPermissionNode());
 		}
 
 		if (canUseWithoutPermission()) return true;

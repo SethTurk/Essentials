@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
+import org.shouthost.essentials.utils.compat.Location;
 
 import java.io.*;
 import java.util.UUID;
@@ -36,9 +37,9 @@ public class Player {
 
 	private boolean exist() {
 		//first check to see if file exist
-		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString()+".json");
+		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString().replaceAll("-","")+".json");
 		if (check.exists()){
-			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID()))
+			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID().toString().replaceAll("-","")))
 				return true;
 			try {
 				loadIntoMemory(check);
@@ -57,18 +58,18 @@ public class Player {
 		br = new BufferedReader(new FileReader(file));
 		Players player = gson.fromJson(br, Players.class);
 		if (!Essentials.playersList.containsKey(player.getUuid()))
-			Essentials.playersList.put(UUID.fromString(player.getUuid()), player);
+			Essentials.playersList.put(player.getUuid(), player);
 		br.close();
 	}
 
 	private void load() {
-		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID());
+		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID().toString().replaceAll("-",""));
 	}
 
 	private void create() {
 		Players newPlayer = new Players();
 		newPlayer.setPlayername(this.entityPlayer.getDisplayName());
-		newPlayer.setUuid(this.entityPlayer.getUniqueID().toString());
+		newPlayer.setUuid(this.entityPlayer.getUniqueID().toString().replaceAll("-",""));
 		newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
 		newPlayer.setPosX(this.entityPlayer.posX);
 		newPlayer.setPosY(this.entityPlayer.posY);
@@ -77,7 +78,7 @@ public class Player {
 		newPlayer.setMuted(false);
 		newPlayer.setJailed(false);
 		this.player = newPlayer;
-		Essentials.playersList.put(this.entityPlayer.getUniqueID(), newPlayer);
+		Essentials.playersList.put(this.entityPlayer.getUniqueID().toString().replaceAll("-",""), newPlayer);
 	}
 
 	public UUID getUUID() {
@@ -102,7 +103,7 @@ public class Player {
 			home = new Homes();
 			home.setName(name);
 		}
-		home.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
+		home.setWorld(this.entityPlayer.dimension);
 		home.setX(x);
 		home.setY(y);
 		home.setZ(z);
@@ -127,6 +128,10 @@ public class Player {
 		return null;
 	}
 
+	public int getHomeCount(){
+		return get().getHomes().size();
+	}
+
 	public void UpdateName(Players player, String name) {
 		this.player.setPlayername(name);
 	}
@@ -135,6 +140,10 @@ public class Player {
 		this.player.setPosX(x);
 		this.player.setPosY(y);
 		this.player.setPosZ(z);
+	}
+
+	public void UpdateCoords(Location location){
+		UpdateCoords((int)location.getX(),(int)location.getY(),(int)location.getZ());
 	}
 
 	public void Mute(String reason, int timeout) {
@@ -162,6 +171,10 @@ public class Player {
 	public void UpdateBan(String reason, int timeout) {
 		if (!this.player.getBanReason().contains(reason)) this.player.setBanReason(reason);
 		if (this.player.getBanTimeout() != timeout) this.player.setBanTimeout(timeout);
+	}
+
+	public Location getLocation(){
+		return new Location(getWorld(),this.entityPlayer.posX,this.entityPlayer.posY,this.entityPlayer.posZ);
 	}
 
 	public void save() {
@@ -200,6 +213,11 @@ public class Player {
 		this.entityPlayer.setPositionAndUpdate(x, y, z);
 		UpdateCoords(x, y, z);
 		save();
+	}
+
+	public void teleportTo(Location location){
+		if(location == null) return;
+		teleportTo(location.getWorld(), (int)location.getX(), (int)location.getY(), (int)location.getZ());
 	}
 
 	public void teleportTo(EntityPlayer target) {

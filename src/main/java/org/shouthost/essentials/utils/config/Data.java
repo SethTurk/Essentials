@@ -50,7 +50,7 @@ public class Data {
 				}
 				Players player = gson.fromJson(br, Players.class);
 				if (!Essentials.playersList.containsKey(player.getUuid()))
-					Essentials.playersList.put(UUID.fromString(player.getUuid()), player);
+					Essentials.playersList.put(player.getUuid(), player);
 				try {
 					br.close();
 				} catch (IOException e) {

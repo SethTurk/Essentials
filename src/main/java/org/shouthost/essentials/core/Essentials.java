@@ -6,12 +6,14 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.server.MinecraftServer;
+import org.shouthost.essentials.api.IThread;
 import org.shouthost.essentials.api.ITick;
 import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.events.PlayerEvents;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
+import org.shouthost.essentials.tickhandler.IThreadEvent;
 import org.shouthost.essentials.tickhandler.ITickEvent;
 import org.shouthost.essentials.utils.config.Data;
 
@@ -22,21 +24,24 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-@Mod(name = "Essentials", modid = "essentials", version = "")
+@Mod(name = "Essentials", modid = "essentials", version = "0.0.0")
 
 public class Essentials {
 
 	public static ArrayList<Kit> usableKit = new ArrayList();
-	public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
+	public static HashMap<String, Players> playersList = new HashMap<String, Players>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
 
 	public static Essentials instance;
 
 	public static ConcurrentLinkedQueue<ITick> tasks = new ConcurrentLinkedQueue<ITick>();
+	public static ConcurrentLinkedQueue<IThread> ttasks = new ConcurrentLinkedQueue<IThread>();
+
 	public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
 	public static ITickEvent tickHandler;
+	public static IThreadEvent threadHandler;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -56,6 +61,7 @@ public class Essentials {
 	public void init(FMLInitializationEvent event) {
 		playerEvent = new PlayerEvents();
 		tickHandler = new ITickEvent();
+		threadHandler = new IThreadEvent();
 	}
 
 	@EventHandler
@@ -67,9 +73,12 @@ public class Essentials {
 		event.registerServerCommand(new CommandHeal());
 		event.registerServerCommand(new CommandLag());
 		event.registerServerCommand(new CommandBurn());
+		event.registerServerCommand(new CommandTest());
 		//Data.LoadPlayers();
 		Data.LoadKits();
 		Data.LoadBooks();
+
+		threadHandler.start();
 	}
 
 
