@@ -4,6 +4,7 @@ import forgeperms.api.ForgePermsAPI;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -30,9 +31,14 @@ public abstract class ECommandBase extends CommandBase {
 		if (commandSender instanceof EntityPlayer &&
 				getPermissionNode() != null &&
 				ForgePermsAPI.permManager != null) {
-			Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) commandSender);
+			Player player = new Player(commandSender);
 			//TODO: Do futher testing
-			return player.has(getPermissionNode());
+            if(player != null){
+                return player.has(getPermissionNode());
+            }else{
+                return ForgePermsAPI.permManager.canAccess(((EntityPlayerMP) commandSender).getDisplayName(), ((EntityPlayerMP) commandSender).worldObj.getWorldInfo().getWorldName(), getPermissionNode());
+            }
+
 		}
 
 		if (canUseWithoutPermission()) return true;

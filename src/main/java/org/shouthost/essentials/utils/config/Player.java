@@ -6,6 +6,8 @@ import forgeperms.api.ForgePermsAPI;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
@@ -22,9 +24,9 @@ public class Player {
 	private EntityPlayerMP entityPlayer;
 	private Players player;
 
-//	public Player(ICommandSender sender) {
-//		this((EntityPlayerMP) sender);
-//	}
+	public Player(ICommandSender sender) {
+		this((EntityPlayerMP) sender);
+	}
 
 	public Player(EntityPlayerMP player) {
 		this.entityPlayer = player;
@@ -37,33 +39,37 @@ public class Player {
 
 	private boolean exist() {
 		//first check to see if file exist
-		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString().replaceAll("-","")+".json");
+		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString()+".json");
 		if (check.exists()){
-			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID().toString().replaceAll("-","")))
+			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID()))
 				return true;
-			try {
-				loadIntoMemory(check);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return true;
+            loadIntoMemory(check);
+            return true;
 		}
 		return false;
 	}
 
-	private void loadIntoMemory(File file) throws IOException {
+	private void loadIntoMemory(File file){
 		if(file == null) return;
 		Gson gson = new Gson();
 		BufferedReader br = null;
-		br = new BufferedReader(new FileReader(file));
-		Players player = gson.fromJson(br, Players.class);
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Players player = gson.fromJson(br, Players.class);
 		if (!Essentials.playersList.containsKey(player.getUuid()))
-			Essentials.playersList.put(player.getUuid(), player);
-		br.close();
-	}
+			Essentials.playersList.put(UUID.fromString(player.getUuid()), player);
+        try {
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	private void load() {
-		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID().toString().replaceAll("-",""));
+		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID());
 	}
 
 	private void create() {
@@ -78,7 +84,7 @@ public class Player {
 		newPlayer.setMuted(false);
 		newPlayer.setJailed(false);
 		this.player = newPlayer;
-		Essentials.playersList.put(this.entityPlayer.getUniqueID().toString().replaceAll("-",""), newPlayer);
+		Essentials.playersList.put(this.entityPlayer.getUniqueID(), newPlayer);
 	}
 
 	public UUID getUUID() {
@@ -109,6 +115,49 @@ public class Player {
 		home.setZ(z);
 		this.player.setHome(home);
 	}
+
+    public void kick(String reason){
+        if(reason == null){
+            this.entityPlayer.playerNetServerHandler.kickPlayerFromServer("Kicked from the server");
+        }else{
+            this.entityPlayer.playerNetServerHandler.kickPlayerFromServer(reason);
+        }
+    }
+
+    public void exec(String command){
+
+    }
+
+    public void viewInventory(EntityPlayerMP target){
+        if (target == null || target.isDead){
+            target.closeScreen();
+            return;
+        }
+        this.entityPlayer.displayGUIChest(new InventoryWatch(this.entityPlayer,target));
+    }
+
+    public void giveItem(ItemStack item){
+        if(item == null) {
+            sendMessage("Error");
+            return;
+        }
+        this.entityPlayer.inventory.addItemStackToInventory(item);
+        this.entityPlayer.inventoryContainer.detectAndSendChanges();
+    }
+
+    public void giveItem(String name){
+        if(name == null) {
+            sendMessage("Error");
+            return;
+        }
+        if(Essentials.itemDB.items.containsKey(name)){
+            ItemStack item = Essentials.itemDB.items.get(name);
+            giveItem(item);
+        }else{
+            sendMessage("Error2");
+            return;
+        }
+    }
 
 	public World getWorld() {
 		return this.entityPlayer.worldObj;

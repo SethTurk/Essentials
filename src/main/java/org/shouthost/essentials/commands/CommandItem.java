@@ -1,12 +1,16 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.utils.config.Book;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +36,27 @@ public class CommandItem extends ECommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, List<String> args) {
-		EntityPlayerMP player = (EntityPlayerMP) sender;
-		float f = 0.7F;
-		float d0 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
-		float d1 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
-		float d2 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
-		ItemStack stack = Book.CreateBook(Essentials.book.get(0));
-		EntityItem entityitem = new EntityItem(player.worldObj, player.posX + d0, player.posY + d1, player.posZ + d2, stack);
-		entityitem.delayBeforeCanPickup = 10;
-		if (stack.hasTagCompound()) {
-			entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-		}
-		player.worldObj.spawnEntityInWorld(entityitem);
+        if(args.isEmpty()) throw new WrongUsageException(getCommandUsage(sender));
+        Player player = new Player(sender);
+        String itemName = null;
+        if(args.get(0).contains(":") || args.get(0).contains("_")){
+            itemName = args.get(0).replaceAll(":", " ");
+        }else{
+            itemName = args.get(0);
+        }
+        player.giveItem(itemName);
+//		EntityPlayerMP player = (EntityPlayerMP) sender;
+//		float f = 0.7F;
+//		float d0 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
+//		float d1 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
+//		float d2 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
+//		ItemStack stack = Book.CreateBook(Essentials.book.get(0));
+//		EntityItem entityitem = new EntityItem(player.worldObj, player.posX + d0, player.posY + d1, player.posZ + d2, stack);
+//		entityitem.delayBeforeCanPickup = 10;
+//		if (stack.hasTagCompound()) {
+//			entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+//		}
+//		player.worldObj.spawnEntityInWorld(entityitem);
 	}
 
 	@Override

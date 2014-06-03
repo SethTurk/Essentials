@@ -21,7 +21,7 @@ group = "org.shouthost.essentials"
 archivesBaseName = "Essentials"
 
 minecraft {
-	version = "1.7.2-10.12.1.1098"
+	version = "1.7.2-10.12.1.1103"
 }
 
 processResources {

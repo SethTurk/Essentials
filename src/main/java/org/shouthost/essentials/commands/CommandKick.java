@@ -6,12 +6,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by Darius on 5/21/2014.
- */
 public class CommandKick extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
@@ -41,17 +39,13 @@ public class CommandKick extends ECommandBase {
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 		if (args.size() <= 0) throw new WrongUsageException(getCommandUsage(iCommandSender));
-		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(1));
-		if (target == null) {
-			iCommandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player " + args.get(1) + " does not exist on the server."));
+		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+        Player player = new Player(target);
+		if (target == null || player == null) {
+			iCommandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player " + args.get(0) + " does not exist on the server."));
 			return;
 		}
-		String reason = null;
-		if (args.get(2) != null) {
-			reason = args.get(2);
-		} else {
-			reason = "Kicked from the server";
-		}
-		target.playerNetServerHandler.kickPlayerFromServer(reason);
+
+        player.kick(args.get(1));
 	}
 }
