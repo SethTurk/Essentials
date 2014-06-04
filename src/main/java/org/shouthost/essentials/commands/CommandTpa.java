@@ -4,7 +4,7 @@ import net.minecraft.command.ICommandSender;
 
 import java.util.List;
 
-public class CommandTpa extends ECommandBase{
+public class CommandTpa extends ECommandBase {
     @Override
     public String getPermissionNode() {
         return "essentials.tpa";

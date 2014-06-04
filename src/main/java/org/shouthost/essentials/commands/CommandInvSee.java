@@ -8,7 +8,7 @@ import org.shouthost.essentials.utils.config.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandInvSee extends ECommandBase{
+public class CommandInvSee extends ECommandBase {
     @Override
     public List<String> getCommandAliases() {
         ArrayList<String> aliasList = new ArrayList<String>();
@@ -34,11 +34,11 @@ public class CommandInvSee extends ECommandBase{
     @Override
     protected void processCommand(ICommandSender commandSender, List<String> args) {
         Player player = new Player((EntityPlayerMP) commandSender);
-        if(args.size() <= 0){
+        if (args.size() <= 0) {
             player.viewInventory((net.minecraft.entity.player.EntityPlayerMP) commandSender);
-        }else{
+        } else {
             EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
-            if(target == null || target.isDead){
+            if (target == null || target.isDead) {
                 return;
             }
         }

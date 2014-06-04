@@ -2,10 +2,10 @@ package org.shouthost.essentials.api;
 
 public interface IThread {
 
-	public void onTaskThread();
+    public void onTaskThread();
 
-	public void onTaskComplete();
+    public void onTaskComplete();
 
-	public boolean isTaskCompleted();
+    public boolean isTaskCompleted();
 
 }

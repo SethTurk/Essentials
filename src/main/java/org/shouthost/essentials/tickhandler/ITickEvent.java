@@ -8,26 +8,26 @@ import org.shouthost.essentials.core.Essentials;
 
 public class ITickEvent {
 
-	public ITickEvent(){
-		FMLCommonHandler.instance().bus().register(this);
-	}
+    public ITickEvent() {
+        FMLCommonHandler.instance().bus().register(this);
+    }
 
-	public void registerTask(ITick task) {
-		Essentials.tasks.offer(task);
-	}
+    public void registerTask(ITick task) {
+        Essentials.tasks.offer(task);
+    }
 
-	@SubscribeEvent
-	public void tickStart(TickEvent.ServerTickEvent event) {
+    @SubscribeEvent
+    public void tickStart(TickEvent.ServerTickEvent event) {
 
-		if (event.phase != TickEvent.Phase.START)
-			return;
+        if (event.phase != TickEvent.Phase.START)
+            return;
 
-		for (ITick task : Essentials.tasks) {
-			if (task.isTaskCompleted()) {
-				task.onTaskComplete();
-				Essentials.tasks.remove(task);
-			}
-			task.onTaskTick();
-		}
-	}
+        for (ITick task : Essentials.tasks) {
+            if (task.isTaskCompleted()) {
+                task.onTaskComplete();
+                Essentials.tasks.remove(task);
+            }
+            task.onTaskTick();
+        }
+    }
 }

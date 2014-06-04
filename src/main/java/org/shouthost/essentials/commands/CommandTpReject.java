@@ -5,7 +5,7 @@ import net.minecraft.command.ICommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandTpReject extends ECommandBase{
+public class CommandTpReject extends ECommandBase {
     @Override
     public List<String> getCommandAliases() {
         ArrayList<String> aliasList = new ArrayList<String>();
