@@ -36,6 +36,10 @@ public class Location {
         return world;
     }
 
+    public int getWorldID(){
+        return world.provider.dimensionId;
+    }
+
     public void setWorld(World world) {
         this.world = world;
     }

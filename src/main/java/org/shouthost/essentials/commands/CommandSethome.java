@@ -50,7 +50,7 @@ public class CommandSethome extends ECommandBase {
                 player.sendMessage(EnumChatFormatting.RED + "Home '" + args.get(0) + "' already exist!");
                 return;
             } else if (home == null) {
-                player.setHome(args.get(0), player.getLocation());
+                player.setHome(args.get(0), player.getPosX(), player.getPosY(), player.getPosZ());
                 player.save();
                 player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
                 return;

@@ -2,7 +2,7 @@ package org.shouthost.essentials.json.players;
 
 public class Homes {
     private String name;
-    private int world;
+    private int world = 0;
     private int x;
     private int y;
     private int z;

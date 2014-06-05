@@ -86,7 +86,7 @@ public class Player {
         Players newPlayer = new Players();
         newPlayer.setPlayername(this.entityPlayer.getDisplayName());
         newPlayer.setUuid(this.entityPlayer.getUniqueID().toString().replaceAll("-", ""));
-        newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
+        newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId); //TODO: Fix NullPointerException?
         newPlayer.setPosX(this.entityPlayer.posX);
         newPlayer.setPosY(this.entityPlayer.posY);
         newPlayer.setPosZ(this.entityPlayer.posZ);
@@ -107,7 +107,6 @@ public class Player {
         return this.player;
     }
 
-
     //this will be temp until most of whats needed gets implemented into this class
     public EntityPlayerMP getPlayer() {
         return entityPlayer;
@@ -117,7 +116,7 @@ public class Player {
 //        setHome(name, location.getX(), location.getY(), location.getZ());
 //    }
 
-    public void setHome(String name, Location loc) {
+    public void setHome(String name, int x, int y, int z) {
         Homes home = null;
         if (name.equalsIgnoreCase("home")) {
             home = getHome("home");
@@ -125,10 +124,10 @@ public class Player {
             home = new Homes();
             home.setName(name);
         }
-        home.setWorld(0);
-        home.setX(loc.getBlockX());
-        home.setY(loc.getBlockY());
-        home.setZ(loc.getBlockZ());
+        home.setWorld(getWorld().provider.dimensionId);
+        home.setX(x);
+        home.setY(y);
+        home.setZ(z);
         this.player.setHome(home);
     }
 
@@ -163,6 +162,7 @@ public class Player {
     }
 
     public void viewInventory(EntityPlayerMP target) {
+        //TODO: Add permission nodes to check to see if player if view and or modify inventory of its target
         if (target == null || target.isDead) {
             target.closeScreen();
             return;
@@ -175,6 +175,7 @@ public class Player {
             sendMessage("Error");
             return;
         }
+
         EntityItem i = getPlayer().dropPlayerItemWithRandomChoice(item, false);
         i.delayBeforeCanPickup = 0;
         i.func_145797_a(this.entityPlayer.getDisplayName());
@@ -196,20 +197,19 @@ public class Player {
     }
 
     public Homes getHome(String name) {
+        Homes h = null;
         for (Homes home : this.player.getHomes()) {
-            if (home.getName().contains(name)) {
-                return home;
+            if (home.getName().equalsIgnoreCase(name)) {
+                h = home;
             }
         }
-        return null;
+        return h;
     }
 
     public List<String> getHomeList() {
         ArrayList<String> list = new ArrayList<String>();
-        Iterator<Homes> it = player.getHomes().iterator();
-        while (it.hasNext()) {
-            String name = it.next().getName();
-            if (!list.contains(name)) list.add(name);
+        for(Homes home: get().getHomes()){
+            if (!list.contains(home.getName())) list.add(home.getName());
         }
         return list;
     }
@@ -236,7 +236,8 @@ public class Player {
         if (this.player.isMuted()) return;
         this.player.setMuted(true);
         this.player.setMuteReason(reason);
-        this.player.setMuteTimeout(timeout);
+        if(timeout > 0)
+            this.player.setMuteTimeout(timeout);
         save();
     }
 
@@ -268,17 +269,31 @@ public class Player {
     }
 
     public void save() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(this.player);
-        File file = new File(Essentials.players, this.player.getUuid() + ".json");
-        if (file.exists() && file.isFile()) file.delete();
+       final Players p = this.player;
+       Thread saveState = new Thread() {
+            @Override
+            public void run() {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(p);
+                File file = new File(Essentials.players, p.getUuid() + ".json");
+                if (file.exists() && file.isFile()) file.delete();
+                try {
+                    Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+                    writer.write(json);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        saveState.start();
         try {
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            writer.write(json);
-            writer.close();
-        } catch (IOException e) {
+            saveState.sleep(10);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        saveState.interrupt();
     }
 
     public void sendMessage(String msg) {
