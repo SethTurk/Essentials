@@ -613,7 +613,7 @@ public class Vector {
     }
 
     /**
-     * Gets a Location version of this vector with yaw and pitch being 0.
+     * Gets a Locations version of this vector with yaw and pitch being 0.
      *
      * @param world The world to link the location to.
      * @return the location
@@ -623,7 +623,7 @@ public class Vector {
     }
 
     /**
-     * Gets a Location version of this vector.
+     * Gets a Locations version of this vector.
      *
      * @param world The world to link the location to.
      * @param yaw   The desired yaw.

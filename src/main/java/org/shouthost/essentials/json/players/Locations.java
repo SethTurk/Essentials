@@ -1,7 +1,7 @@
 package org.shouthost.essentials.json.players;
 
-public class Location {
-    private int world;
+public class Locations {
+    private int world = 0;
     private double xPos;
     private double yPos;
     private double zPos;

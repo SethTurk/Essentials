@@ -112,23 +112,46 @@ public class Player {
         return entityPlayer;
     }
 
-//    public void setHome(String name, Location location){
-//        setHome(name, location.getX(), location.getY(), location.getZ());
-//    }
+	public void setHome(String name){
+		Homes home = null;
+		if (name.equalsIgnoreCase("home")) {
+			home = getHome("home");
+			if(home == null){
+				home = new Homes();
+				home.setName(name);
+			}
+		} else {
+			home = new Homes();
+			home.setName(name);
+		}
+		System.out.println(home == null);
+		//home.setWorld(0);
+		int x = (int) this.getPosX();
+		int y = (int) this.getPosY();
+		int z = (int) this.getPosZ();
+		if(home != null) {
+			home.setX(x);
+			home.setY(y);
+			home.setZ(z);
+			this.player.setHome(home);
+		}
+		save();
+	}
 
     public void setHome(String name, int x, int y, int z) {
         Homes home = null;
-        if (name.equalsIgnoreCase("home")) {
-            home = getHome("home");
-        } else {
-            home = new Homes();
-            home.setName(name);
-        }
-        home.setWorld(getWorld().provider.dimensionId);
-        home.setX(x);
-        home.setY(y);
-        home.setZ(z);
-        this.player.setHome(home);
+	    if (name.equalsIgnoreCase("home")) {
+		    home = getHome("home");
+	    } else {
+		    home = new Homes();
+		    home.setName(name);
+	    }
+	    home.setWorld(getWorld().provider.dimensionId);
+	    home.setX(x);
+	    home.setY(y);
+	    home.setZ(z);
+	    this.player.setHome(home);
+	    save();
     }
 
     public void kick(String reason) {
@@ -197,13 +220,13 @@ public class Player {
     }
 
     public Homes getHome(String name) {
-        Homes h = null;
         for (Homes home : this.player.getHomes()) {
-            if (home.getName().equalsIgnoreCase(name)) {
-                h = home;
+	        System.out.println(home.getName());
+            if (home.getName().contains(name)) {
+                return home;
             }
         }
-        return h;
+		return null;
     }
 
     public List<String> getHomeList() {
@@ -275,6 +298,7 @@ public class Player {
             public void run() {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(p);
+	            System.out.println(json);
                 File file = new File(Essentials.players, p.getUuid() + ".json");
                 if (file.exists() && file.isFile()) file.delete();
                 try {

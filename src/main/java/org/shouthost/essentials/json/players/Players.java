@@ -6,7 +6,7 @@ import java.util.List;
 public class Players {
     private String playername;
     private String uuid;
-    private Location location = new Location();
+    private Locations location = new Locations();
     private List<Homes> homes = new ArrayList<Homes>();
     private int logout;
     private Optional optional = new Optional();
@@ -27,7 +27,6 @@ public class Players {
         this.uuid = uuid;
     }
 
-
     public List<Homes> getHomes() {
         return homes;
     }
@@ -45,7 +44,7 @@ public class Players {
     }
 
 
-    //Location
+    //Locations
     public int getWorld() {
         return location.getWorld();
     }
