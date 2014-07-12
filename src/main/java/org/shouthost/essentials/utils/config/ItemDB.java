@@ -8,34 +8,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class ItemDB {
-    public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
+	public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
 
-    public ItemDB() {
-        Iterator<Item> it = Item.itemRegistry.iterator();
-        Iterator<Block> bl = Block.blockRegistry.iterator();
-        while (it.hasNext()) {
-            Item t = it.next();
-            String itemName = t.getUnlocalizedName().substring(5);
-            registerIntoMemory(itemName, t);
-        }
-        while (bl.hasNext()) {
-            Block b = bl.next();
-            String itemName = b.getLocalizedName();
-            registerIntoMemory(itemName, b);
-        }
+	public ItemDB() {
+		Iterator<Item> it = Item.itemRegistry.iterator();
+		Iterator<Block> bl = Block.blockRegistry.iterator();
+		while (it.hasNext()) {
+			Item t = it.next();
+			String itemName = t.getUnlocalizedName().substring(5);
+			registerIntoMemory(itemName, t);
+		}
+		while (bl.hasNext()) {
+			Block b = bl.next();
+			String itemName = b.getLocalizedName();
+			registerIntoMemory(itemName, b);
+		}
 
-    }
+	}
 
-    public void registerIntoMemory(String name, Item item) {
-        if (items.containsKey(name) || items.containsValue(new ItemStack(item))) return;
-        items.put(name, new ItemStack(item));
+	public void registerIntoMemory(String name, Item item) {
+		if (items.containsKey(name) || items.containsValue(new ItemStack(item))) return;
+		items.put(name, new ItemStack(item));
 
-    }
+	}
 
-    public void registerIntoMemory(String name, Block block) {
-        if (items.containsKey(name) || items.containsValue(new ItemStack(block))) return;
-        items.put(name, new ItemStack(block));
-    }
+	public void registerIntoMemory(String name, Block block) {
+		if (items.containsKey(name) || items.containsValue(new ItemStack(block))) return;
+		items.put(name, new ItemStack(block));
+	}
 
 
 }

@@ -1,16 +1,11 @@
 package org.shouthost.essentials.utils.config;
 
 import net.minecraft.block.Block;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
 import org.shouthost.essentials.utils.compat.Location;
-
-import java.io.File;
 
 public class Worlds {
 	private World world = null;
@@ -58,12 +53,12 @@ public class Worlds {
 		return world.provider.dimensionId;
 	}
 
-	public World getNativeWorld(){
+	public World getNativeWorld() {
 		return world;
 	}
 
-	public Location getLocation(){
-		return new Location(world, 0,0,0);
+	public Location getLocation() {
+		return new Location(world, 0, 0, 0);
 	}
 
 	public int regionCount() {
@@ -87,15 +82,15 @@ public class Worlds {
 		world.getChunkProvider().loadChunk(x, z);
 	}
 
-	public TileEntity getTileEntity(Location loc){
+	public TileEntity getTileEntity(Location loc) {
 		return world.getTileEntity(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
-	public Block getBlock(Location loc){
+	public Block getBlock(Location loc) {
 		return world.getBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
-	public int getBlockMetadata(Location loc){
+	public int getBlockMetadata(Location loc) {
 		return world.getBlockMetadata(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
@@ -103,26 +98,25 @@ public class Worlds {
 		world.setBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), block);
 	}
 
-	public void setBlock(Location loc, Block block, int i, int i2){
+	public void setBlock(Location loc, Block block, int i, int i2) {
 		world.setBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), block, i, i2);
 	}
 
-	public boolean isAirBlock(Location loc){
+	public boolean isAirBlock(Location loc) {
 		return world.isAirBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
-	public void setBlockToAir(Location loc){
+	public void setBlockToAir(Location loc) {
 		world.setBlockToAir(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
-	public void removeTileEntity(Location loc){
+	public void removeTileEntity(Location loc) {
 		world.removeTileEntity(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 
-	public void tick(){
+	public void tick() {
 		world.tick();
 	}
-
 
 
 }

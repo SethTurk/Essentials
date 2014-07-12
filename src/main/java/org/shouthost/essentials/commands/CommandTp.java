@@ -11,53 +11,53 @@ import org.shouthost.essentials.utils.config.Player;
 import java.util.List;
 
 public class CommandTp extends ECommandBase {
-    @Override
-    public String getPermissionNode() {
-        return "essentials.tp";
-    }
+	@Override
+	public String getPermissionNode() {
+		return "essentials.tp";
+	}
 
-    @Override
-    public boolean canConsoleUseCommand() {
-        return false;
-    }
+	@Override
+	public boolean canConsoleUseCommand() {
+		return false;
+	}
 
-    @Override
-    public boolean canCommandBlockUseCommand() {
-        return false;
-    }
+	@Override
+	public boolean canCommandBlockUseCommand() {
+		return false;
+	}
 
-    @Override
-    protected void processCommand(ICommandSender commandSender, List<String> args) {
-        if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
-        //TODO: Perform checks to see if they are teleporting to player, player -> player, or player -> coords
-        if (args.size() == 3) {
-            //teleport player to coords
-            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
-            if (target == null) throw new WrongUsageException(getCommandUsage(commandSender));
-            Player player = new Player(target);
-            int x = Integer.parseInt(args.get(1));
-            int y = Integer.parseInt(args.get(2));
-            int z = Integer.parseInt(args.get(3));
-            player.teleportTo(new Location(target.worldObj, x, y, z));
-        } else if (args.size() == 2) {
-            //teleport player -> player
-            EntityPlayerMP target1 = getPlayerFromString(args.get(0));
-            EntityPlayerMP target2 = getPlayerFromString(args.get(1));
-            //TODO: add checks for both targets to point out who is online/exist
-            if (target1 == null || target2 == null) return;
+	@Override
+	protected void processCommand(ICommandSender commandSender, List<String> args) {
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
+		//TODO: Perform checks to see if they are teleporting to player, player -> player, or player -> coords
+		if (args.size() == 3) {
+			//teleport player to coords
+			EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
+			if (target == null) throw new WrongUsageException(getCommandUsage(commandSender));
+			Player player = new Player(target);
+			int x = Integer.parseInt(args.get(1));
+			int y = Integer.parseInt(args.get(2));
+			int z = Integer.parseInt(args.get(3));
+			player.teleportTo(new Location(target.worldObj, x, y, z));
+		} else if (args.size() == 2) {
+			//teleport player -> player
+			EntityPlayerMP target1 = getPlayerFromString(args.get(0));
+			EntityPlayerMP target2 = getPlayerFromString(args.get(1));
+			//TODO: add checks for both targets to point out who is online/exist
+			if (target1 == null || target2 == null) return;
 
-            Player player = new Player(target1);
-            player.teleportTo(target2);
-        }
-    }
+			Player player = new Player(target1);
+			player.teleportTo(target2);
+		}
+	}
 
-    @Override
-    public String getCommandName() {
-        return null;
-    }
+	@Override
+	public String getCommandName() {
+		return null;
+	}
 
-    @Override
-    public String getCommandUsage(ICommandSender iCommandSender) {
-        return EnumChatFormatting.RED + "/tp [<player> [<x> <y> <z> | <player>]";
-    }
+	@Override
+	public String getCommandUsage(ICommandSender iCommandSender) {
+		return EnumChatFormatting.RED + "/tp [<player> [<x> <y> <z> | <player>]";
+	}
 }

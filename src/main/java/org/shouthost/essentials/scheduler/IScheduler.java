@@ -12,17 +12,17 @@ public class IScheduler {
 
 	private final ConcurrentLinkedQueue<Runnable> scheduledTask;
 	private final ConcurrentLinkedQueue<Thread> runningTasks;
-    private final ConcurrentLinkedQueue<Callable<Object>> tickTask;
+	private final ConcurrentLinkedQueue<Callable<Object>> tickTask;
 	private int count = 0;
 
 	public IScheduler() {
 		scheduledTask = new ConcurrentLinkedQueue<Runnable>();
 		runningTasks = new ConcurrentLinkedQueue<Thread>();
-        tickTask = new ConcurrentLinkedQueue<Callable<Object>>();
+		tickTask = new ConcurrentLinkedQueue<Callable<Object>>();
 		FMLCommonHandler.instance().bus().register(this);
 	}
 
-	public void scheduleSyncTaskToQueue(Runnable runnable){
+	public void scheduleSyncTaskToQueue(Runnable runnable) {
 		scheduledTask.offer(runnable);
 	}
 
@@ -61,10 +61,10 @@ public class IScheduler {
 
 	}
 
-    public void scheduleTickTask(Callable<Object> task){
-        if(tickTask.contains(task)) return;
-        tickTask.offer(task);
-    }
+	public void scheduleTickTask(Callable<Object> task) {
+		if (tickTask.contains(task)) return;
+		tickTask.offer(task);
+	}
 
 	public long scheduleAsyncTask(Runnable runnable) {
 		return scheduleAsyncTask(runnable, generateThreadName());
@@ -94,8 +94,8 @@ public class IScheduler {
 			}
 	}
 
-	public void cancelAllTask(){
-		for(Thread e : runningTasks){
+	public void cancelAllTask() {
+		for (Thread e : runningTasks) {
 			e.interrupt();
 			runningTasks.remove(e);
 		}
@@ -106,8 +106,8 @@ public class IScheduler {
 		return "CT-" + count;
 	}
 
-    @SubscribeEvent(priority=EventPriority.HIGHEST)
-    public void serverTick(TickEvent.ServerTickEvent event){
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void serverTick(TickEvent.ServerTickEvent event) {
 //        for(Callable<Object> task : tickTask){
 //            if(task.isScheduleOnTime()){
 //                task.onScheduleComplete();
@@ -115,6 +115,6 @@ public class IScheduler {
 //            }
 //            task.execute();
 //        }
-    }
+	}
 
 }

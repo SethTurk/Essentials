@@ -10,25 +10,25 @@ import org.shouthost.essentials.json.books.Page;
 import java.util.Iterator;
 
 public class Book {
-    public static ItemStack CreateBook(Books b) {
-        ItemStack book = new ItemStack(Items.written_book);
-        if (book.stackTagCompound == null)
-            book.stackTagCompound = new NBTTagCompound();
+	public static ItemStack CreateBook(Books b) {
+		ItemStack book = new ItemStack(Items.written_book);
+		if (book.stackTagCompound == null)
+			book.stackTagCompound = new NBTTagCompound();
 
-        NBTTagCompound bookTag = book.stackTagCompound;
+		NBTTagCompound bookTag = book.stackTagCompound;
 
-        bookTag.setString("title", b.getTitle());
-        bookTag.setString("author", b.getAuthor());
+		bookTag.setString("title", b.getTitle());
+		bookTag.setString("author", b.getAuthor());
 
-        NBTTagList bookPages = new NBTTagList();
-        bookTag.setTag("pages", bookPages);
+		NBTTagList bookPages = new NBTTagList();
+		bookTag.setTag("pages", bookPages);
 
-        Iterator<Page> page = b.getPage().iterator();
+		Iterator<Page> page = b.getPage().iterator();
 
 //		while(page.hasNext()){
 //			bookPages.appendTag(new NBTTagString(page.next().getContent()));
 //		}
 
-        return book;
-    }
+		return book;
+	}
 }
