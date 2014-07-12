@@ -1,6 +1,7 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class CommandKits extends ECommandBase {
     @Override
     public String getPermissionNode() {
-        return null;
+        return "essentials.kits";
     }
 
     @Override
@@ -25,12 +26,12 @@ public class CommandKits extends ECommandBase {
 
     @Override
     public String getCommandName() {
-        return null;
+        return "kits";
     }
 
     @Override
     public String getCommandUsage(ICommandSender iCommandSender) {
-        return null;
+        return EnumChatFormatting.RED+"/kits [<kitname>]";
     }
 
     @Override

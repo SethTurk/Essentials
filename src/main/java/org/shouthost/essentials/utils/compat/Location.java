@@ -3,8 +3,6 @@ package org.shouthost.essentials.utils.compat;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import org.shouthost.essentials.utils.NumberConversions;
-import org.shouthost.essentials.utils.Vector;
 
 public class Location {
     private World world;

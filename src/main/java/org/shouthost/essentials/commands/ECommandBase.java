@@ -5,6 +5,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -53,4 +54,7 @@ public abstract class ECommandBase extends CommandBase {
 
     protected abstract void processCommand(ICommandSender commandSender, List<String> arguments);
 
+    public EntityPlayerMP getPlayerFromString(String name){
+        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
+    }
 }

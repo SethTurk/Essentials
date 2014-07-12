@@ -2,6 +2,7 @@ package org.shouthost.essentials.commands;
 
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class CommandMute extends ECommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender iCommandSender) {
-        return null;
+        return EnumChatFormatting.RED+"/mute <player> [<time>] [<reason>]";
     }
 
     @Override

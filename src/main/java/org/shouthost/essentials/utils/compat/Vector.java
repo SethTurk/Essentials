@@ -1,7 +1,6 @@
-package org.shouthost.essentials.utils;
+package org.shouthost.essentials.utils.compat;
 
 import net.minecraft.world.World;
-import org.shouthost.essentials.utils.compat.Location;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

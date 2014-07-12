@@ -6,17 +6,16 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.server.MinecraftServer;
-import org.shouthost.essentials.api.IThread;
-import org.shouthost.essentials.api.ITick;
 import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.events.PlayerEvents;
+import org.shouthost.essentials.factory.CraftTweaksEventFactory;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.tickhandler.IThreadEvent;
-import org.shouthost.essentials.tickhandler.ITickEvent;
+import org.shouthost.essentials.scheduler.IScheduler;
 import org.shouthost.essentials.utils.config.Data;
 import org.shouthost.essentials.utils.config.ItemDB;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,19 +29,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Essentials {
 
     public static ArrayList<Kit> usableKit = new ArrayList();
+    public static IScheduler schedule;
     public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
+    public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
     public static ArrayList<Books> book = new ArrayList<Books>();
     public static File base, players, kits, books, warps;
 
     public static Essentials instance;
-
-    public static ConcurrentLinkedQueue<ITick> tasks = new ConcurrentLinkedQueue<ITick>();
-    public static ConcurrentLinkedQueue<IThread> ttasks = new ConcurrentLinkedQueue<IThread>();
-
     public static MinecraftServer server = MinecraftServer.getServer();
     public static PlayerEvents playerEvent;
-    public static ITickEvent tickHandler;
-    public static IThreadEvent threadHandler;
     public static ItemDB itemDB;
 
     @EventHandler
@@ -63,9 +58,11 @@ public class Essentials {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         playerEvent = new PlayerEvents();
-        tickHandler = new ITickEvent();
-        threadHandler = new IThreadEvent();
+/*
         itemDB = new ItemDB();
+*/
+        schedule = new IScheduler();
+        new CraftTweaksEventFactory();
     }
 
     @EventHandler
@@ -81,11 +78,11 @@ public class Essentials {
         event.registerServerCommand(new CommandSudo());
         event.registerServerCommand(new CommandVanish());
         event.registerServerCommand(new CommandKill());
+        event.registerServerCommand(new CommandMessage());
+        event.registerServerCommand(new CommandPing());
         //Data.LoadPlayers();
         Data.LoadKits();
         Data.LoadBooks();
-
-        threadHandler.start();
     }
 
 

@@ -2,38 +2,48 @@ package org.shouthost.essentials.utils.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.authlib.GameProfile;
 import forgeperms.api.ForgePermsAPI;
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
+import net.minecraftforge.common.MinecraftForge;
 import org.shouthost.essentials.core.Essentials;
+import org.shouthost.essentials.factory.event.PlayerTeleportEvent;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.compat.Location;
 
 import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 public class Player {
 
     private EntityPlayerMP entityPlayer;
     private Players player;
-
+   // private List<Homes> homes;
     public Player(ICommandSender sender) {
         this((EntityPlayerMP) sender);
     }
 
     public Player(String name) {
-        this(MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(name));
+        this(MinecraftServer.getServer().getConfigurationManager().func_152612_a(name));
     }
 
     public Player(EntityPlayerMP player) {
@@ -49,33 +59,36 @@ public class Player {
 
     private boolean exist() {
         //first check to see if file exist
-        File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString() + ".json");
+        File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString().replaceAll("-","") + ".json");
         if (check.exists()) {
-            if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID()))
+            if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID())) {
                 return true;
-            loadIntoMemory(check);
-            return true;
+            }
+            return loadIntoMemory(check);
         }
         return false;
     }
 
-    private void loadIntoMemory(File file) {
-        if (file == null) return;
+    private boolean loadIntoMemory(File file) {
+        if (file == null) return false;
         Gson gson = new Gson();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
         Players player = gson.fromJson(br, Players.class);
-        if (!Essentials.playersList.containsKey(player.getUuid()))
-            Essentials.playersList.put(UUID.fromString(player.getUuid()), player);
+        if (!Essentials.playersList.containsKey(entityPlayer.getPersistentID()))
+            Essentials.playersList.put(entityPlayer.getPersistentID(), player);
         try {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     private void load() {
@@ -86,7 +99,7 @@ public class Player {
         Players newPlayer = new Players();
         newPlayer.setPlayername(this.entityPlayer.getDisplayName());
         newPlayer.setUuid(this.entityPlayer.getUniqueID().toString().replaceAll("-", ""));
-        newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId); //TODO: Fix NullPointerException?
+        newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
         newPlayer.setPosX(this.entityPlayer.posX);
         newPlayer.setPosY(this.entityPlayer.posY);
         newPlayer.setPosZ(this.entityPlayer.posZ);
@@ -114,18 +127,19 @@ public class Player {
 
 	public void setHome(String name){
 		Homes home = null;
-		if (name.equalsIgnoreCase("home")) {
-			home = getHome("home");
-			if(home == null){
-				home = new Homes();
-				home.setName(name);
-			}
+		if (name.equalsIgnoreCase("home")){
+            home = getHome("home");
+            if(home == null) {
+                home = new Homes();
+                home.setName("home");
+            }
+
 		} else {
 			home = new Homes();
 			home.setName(name);
 		}
 		System.out.println(home == null);
-		//home.setWorld(0);
+		home.setWorld(getWorld().provider.dimensionId);
 		int x = (int) this.getPosX();
 		int y = (int) this.getPosY();
 		int z = (int) this.getPosZ();
@@ -160,6 +174,22 @@ public class Player {
         } else {
             this.entityPlayer.playerNetServerHandler.kickPlayerFromServer(reason);
         }
+    }
+
+    public void sendPacket(Packet packet){
+        this.entityPlayer.playerNetServerHandler.sendPacket(packet);
+    }
+
+    public void setGameMode(WorldSettings.GameType type){
+        this.entityPlayer.theItemInWorldManager.setGameType(type);
+    }
+
+    public WorldSettings.GameType getGameMode(){
+        return this.entityPlayer.theItemInWorldManager.getGameType();
+    }
+
+    public void delhome(Homes home){
+        this.player.getHomes().remove(home);
     }
 
     public void exec(String command) {
@@ -215,18 +245,18 @@ public class Player {
     }
 
     public boolean has(String node) {
-        if (ForgePermsAPI.permManager == null) return false;
+        if (ForgePermsAPI.permManager == null) return true;
         return ForgePermsAPI.permManager.canAccess(this.entityPlayer.getDisplayName(), getWorld().getWorldInfo().getWorldName(), node);
     }
 
     public Homes getHome(String name) {
-        for (Homes home : this.player.getHomes()) {
-	        System.out.println(home.getName());
-            if (home.getName().contains(name)) {
+        for(Homes home : this.player.getHomes()){
+	        sendMessage(home.getName());
+            if (home.getName().equalsIgnoreCase(name)) {
                 return home;
             }
         }
-		return null;
+        return null;
     }
 
     public List<String> getHomeList() {
@@ -292,13 +322,13 @@ public class Player {
     }
 
     public void save() {
-       final Players p = this.player;
-       Thread saveState = new Thread() {
+        final Players p = this.player;
+        Essentials.schedule.scheduleSyncTask(new Runnable() {
             @Override
             public void run() {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(p);
-	            System.out.println(json);
+                System.out.println(json);
                 File file = new File(Essentials.players, p.getUuid() + ".json");
                 if (file.exists() && file.isFile()) file.delete();
                 try {
@@ -308,16 +338,8 @@ public class Player {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-        };
-        saveState.start();
-        try {
-            saveState.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        saveState.interrupt();
+        });
     }
 
     public void sendMessage(String msg) {
@@ -325,13 +347,13 @@ public class Player {
     }
 
     public boolean sendMessageTo(String name, String msg) {
-        EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(name);
+        EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);//getPlayerForUsername
         if (target == null) {
-            this.entityPlayer.addChatMessage(new ChatComponentText("Player \"" + name + "\" does not exist"));
+            sendMessage("Player \"" + name + "\" does not exist");
             return false;
         }
         sendMessage("[me -> " + this.player.getPlayerName() + "] " + msg);
-        target.addChatMessage(new ChatComponentText("[" + this.player.getPlayerName() + " -> me] " + msg));
+        new Player(target).sendMessage("[" + this.player.getPlayerName() + " -> me] " + msg);
         return true;
     }
 
@@ -354,13 +376,55 @@ public class Player {
         teleportTo(new Location(target.worldObj, (int) target.posX, (int) target.posY, (int) target.posZ));
     }
 
+    public void teleport(Player ePlayer){
+        teleport(ePlayer.getLocation());
+    }
+
+    public void teleport(Location loc) {
+
+        if (getHealth() == 0 || entityPlayer.isDead) return;
+        if (entityPlayer.ridingEntity != null || entityPlayer.isRiding()) return;
+
+        Location from = getLocation();
+        Location to = loc;
+
+        PlayerTeleportEvent event = new PlayerTeleportEvent(this, from, to);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (!event.isCanceled()) {
+            teleportTo(to);
+//            if (to.getWorld() == getWorld()) {
+//                entityPlayer.setPositionAndUpdate(to.getX(), to.getY(), to.getZ());
+//            } else {
+//                MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(entityPlayer, to.getWorldID(), null);
+//                if (getWorld() == to.getWorld() && entityPlayer.dimension == to.getWorldID()) {
+//                    entityPlayer.setPositionAndUpdate(to.getX(), to.getY(), to.getZ());
+//                }
+//            }
+        }
+    }
+
     public float getHealth() {
-        return this.entityPlayer.getHealth();
+        return this.entityPlayer.isDead ? 0 : this.entityPlayer.getHealth();
     }
 
     public void setHealth(int health) {
         this.entityPlayer.setHealth(health);
     }
 
+    public InetSocketAddress getAddress() {
+        if(entityPlayer.isClientWorld()) return null;
+        SocketAddress addr = entityPlayer.playerNetServerHandler.netManager.getSocketAddress();
+        if (addr instanceof InetSocketAddress) return (InetSocketAddress) addr;
+        return null;
+    }
+
+    public void sendBlockChange(Location loc, Block block) {
+        if(loc.getWorld().isRemote) return;
+        if(entityPlayer.playerNetServerHandler.netManager == null) return;
+        S23PacketBlockChange change = new S23PacketBlockChange(loc.getBlockX(),loc.getBlockY(),loc.getBlockZ(),loc.getWorld());
+        change.field_148883_d = block;
+        change.field_148884_e = new Worlds(loc.getWorld()).getBlockMetadata(loc);
+        sendPacket(change);
+    }
 
 }

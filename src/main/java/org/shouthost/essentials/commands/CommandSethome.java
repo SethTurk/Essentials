@@ -40,6 +40,7 @@ public class CommandSethome extends ECommandBase {
         Player player = new Player((EntityPlayerMP)iCommandSender);
         if (args.isEmpty()) {
 	        String name = "home";
+            player.sendMessage(player.getHomeList().toString());
             player.setHome(name);
 //            player.save();
             player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
@@ -47,11 +48,12 @@ public class CommandSethome extends ECommandBase {
         } else {
             //find if home exist
             Homes home = player.getHome(args.get(0));
-            if (home != null && !args.get(0).equalsIgnoreCase("home")) {
+            if (home != null) {
                 player.sendMessage(EnumChatFormatting.RED + "Home '" + args.get(0) + "' already exist!");
                 return;
             } else if (home == null) {
 	            Location loc = player.getLocation();
+                player.sendMessage(player.getHomeList().toString());
 	            player.setHome(args.get(0), (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
 //                player.save();
                 player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");

@@ -1,4 +1,4 @@
-package org.shouthost.essentials.utils;
+package org.shouthost.essentials.utils.compat;
 
 import java.util.Map;
 

@@ -36,7 +36,7 @@ public class CommandReply extends ECommandBase {
 
     @Override
     public String getCommandName() {
-        return null;
+        return "reply";
     }
 
     @Override

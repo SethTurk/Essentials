@@ -40,10 +40,14 @@ public class CommandSudo extends ECommandBase {
     @Override
     public void processCommand(ICommandSender iCommandSender, List<String> args) {
         Player executor = new Player(iCommandSender);
-        if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(iCommandSender));
+        if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(iCommandSender));
         if (!args.isEmpty()) {
             Player target = new Player(args.get(0));
-            target.exec(args.get(1));
+            //TODO add arguments with the commands
+            String cPa = "";
+            for(int i = 1;i<args.size();i++)
+                cPa += args.get(i)+" ";
+            target.exec(cPa);
         }
     }
 }

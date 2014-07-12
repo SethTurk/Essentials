@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
@@ -42,19 +43,20 @@ public class CommandHeal extends ECommandBase {
     @Override
     public void processCommand(ICommandSender iCommandSender, List<String> args) {
         EntityPlayer p = (EntityPlayer) iCommandSender;
+        Player player = new Player(p);
         if (args.isEmpty()) {
             if (!(iCommandSender instanceof EntityPlayer)) return;
-            p.setHealth(200);
-            p.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "You have been healed"));
-            return;
-        } else {
-            if (!ForgePermsAPI.permManager.canAccess(p.getDisplayName(), p.worldObj.getWorldInfo().getWorldName(), getPermissionNode() + ".self")) {
-                p.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You do not have permission to this action"));
+            if (!player.has(getPermissionNode() + ".self")) {
+                player.sendMessage(EnumChatFormatting.RED + "You do not have permission to this action");
                 return;
             }
-            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+            player.setHealth(200);
+            player.sendMessage(EnumChatFormatting.GREEN + "You have been healed");
+            return;
+        } else {
+            Player target = new Player(getPlayerFromString(args.get(0)));
             if (target == null) {
-                p.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player does not exist"));
+                player.sendMessage(EnumChatFormatting.RED + "Player does not exist");
                 return;
             }
             target.setHealth(200);

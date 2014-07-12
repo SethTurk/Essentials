@@ -37,7 +37,7 @@ public class CommandInvSee extends ECommandBase {
         if (args.size() <= 0) {
             player.viewInventory((net.minecraft.entity.player.EntityPlayerMP) commandSender);
         } else {
-            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+            EntityPlayerMP target = getPlayerFromString(args.get(0));
             if (target == null || target.isDead) {
                 return;
             }

@@ -1,6 +1,7 @@
 package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
@@ -22,12 +23,13 @@ public class CommandTpa extends ECommandBase {
 
     @Override
     protected void processCommand(ICommandSender commandSender, List<String> arguments) {
+        Player player = new Player(commandSender);
 
     }
 
     @Override
     public String getCommandName() {
-        return null;
+        return "tpa";
     }
 
     @Override

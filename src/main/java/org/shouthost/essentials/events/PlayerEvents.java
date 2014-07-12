@@ -4,10 +4,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import org.shouthost.essentials.factory.event.EntityExplodeEvent;
 import org.shouthost.essentials.utils.config.Player;
 
 public class PlayerEvents {
@@ -67,6 +70,11 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public void playerInteract(PlayerInteractEvent event) {
+    }
+
+    @SubscribeEvent
+    public void explosion(EntityExplodeEvent event){
+        event.setCanceled(true);
     }
 
 }

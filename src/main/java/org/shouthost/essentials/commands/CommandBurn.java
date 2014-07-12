@@ -39,7 +39,7 @@ public class CommandBurn extends ECommandBase {
             player.setFire(2);
             return;
         } else {
-            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
             if (target == null) {
                 commandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player is not online."));
                 return;

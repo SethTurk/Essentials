@@ -39,7 +39,7 @@ public class CommandKick extends ECommandBase {
     @Override
     public void processCommand(ICommandSender iCommandSender, List<String> args) {
         if (args.size() <= 0) throw new WrongUsageException(getCommandUsage(iCommandSender));
-        EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+        EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
         Player player = new Player(target);
         if (target == null || player == null) {
             iCommandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player " + args.get(0) + " does not exist on the server."));

@@ -32,7 +32,7 @@ public class CommandTp extends ECommandBase {
         //TODO: Perform checks to see if they are teleporting to player, player -> player, or player -> coords
         if (args.size() == 3) {
             //teleport player to coords
-            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
+            EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
             if (target == null) throw new WrongUsageException(getCommandUsage(commandSender));
             Player player = new Player(target);
             int x = Integer.parseInt(args.get(1));
@@ -41,8 +41,8 @@ public class CommandTp extends ECommandBase {
             player.teleportTo(new Location(target.worldObj, x, y, z));
         } else if (args.size() == 2) {
             //teleport player -> player
-            EntityPlayerMP target1 = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(0));
-            EntityPlayerMP target2 = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args.get(1));
+            EntityPlayerMP target1 = getPlayerFromString(args.get(0));
+            EntityPlayerMP target2 = getPlayerFromString(args.get(1));
             //TODO: add checks for both targets to point out who is online/exist
             if (target1 == null || target2 == null) return;
 
