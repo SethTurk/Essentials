@@ -13,7 +13,7 @@ import java.util.List;
 public class CommandTp extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
-		return "essentials.tp";
+		return "essentials.teleport";
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class CommandTp extends ECommandBase {
 		//TODO: Perform checks to see if they are teleporting to player, player -> player, or player -> coords
 		if (args.size() == 3) {
 			//teleport player to coords
-			EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
+			EntityPlayerMP target = getPlayerFromString(args.get(0));
 			if (target == null) throw new WrongUsageException(getCommandUsage(commandSender));
 			Player player = new Player(target);
 			int x = Integer.parseInt(args.get(1));
@@ -44,7 +44,7 @@ public class CommandTp extends ECommandBase {
 			EntityPlayerMP target1 = getPlayerFromString(args.get(0));
 			EntityPlayerMP target2 = getPlayerFromString(args.get(1));
 			//TODO: add checks for both targets to point out who is online/exist
-			if (target1 == null || target2 == null) return;
+			if (target1 == null || target2 == null) throw new WrongUsageException(getCommandUsage(commandSender));
 
 			Player player = new Player(target1);
 			player.teleportTo(target2);
@@ -53,11 +53,11 @@ public class CommandTp extends ECommandBase {
 
 	@Override
 	public String getCommandName() {
-		return null;
+		return "tp";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return EnumChatFormatting.RED + "/tp [<player> [<x> <y> <z> | <player>]";
+		return EnumChatFormatting.RED + "/tp [player] [<x> <y> <z>]";
 	}
 }

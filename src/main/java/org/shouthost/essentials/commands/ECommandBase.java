@@ -3,6 +3,7 @@ package org.shouthost.essentials.commands;
 import forgeperms.api.ForgePermsAPI;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -49,10 +50,11 @@ public abstract class ECommandBase extends CommandBase {
 
 	@Override
 	public final void processCommand(ICommandSender commandSender, String... argumentsArray) {
+		if (!(commandSender instanceof EntityPlayer) && !canConsoleUseCommand()) throw new WrongUsageException(getCommandUsage(commandSender));
 		processCommand(commandSender, new ArrayList<String>(Arrays.asList(argumentsArray)));
 	}
 
-	protected abstract void processCommand(ICommandSender commandSender, List<String> arguments);
+	protected abstract void processCommand(ICommandSender commandSender, List<String> args);
 
 	public EntityPlayerMP getPlayerFromString(String name) {
 		return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);

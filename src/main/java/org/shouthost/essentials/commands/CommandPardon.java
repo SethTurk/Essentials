@@ -2,6 +2,7 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,12 +11,12 @@ import java.util.List;
 public class CommandPardon extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
-		return null;
+		return "essentials.pardon";
 	}
 
 	@Override
 	public boolean canConsoleUseCommand() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -25,16 +26,23 @@ public class CommandPardon extends ECommandBase {
 
 	@Override
 	public String getCommandName() {
-		return null;
+		return "pardon";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return null;
+		return "/pardon <player>";
 	}
 
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 
+	}
+
+	@Override
+	public List getCommandAliases() {
+		ArrayList aliases = new ArrayList();
+		aliases.add("unban");
+		return aliases;
 	}
 }

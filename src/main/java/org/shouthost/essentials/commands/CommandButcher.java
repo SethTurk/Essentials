@@ -8,6 +8,7 @@ import java.util.List;
  * Created by Darius on 5/20/2014.
  */
 public class CommandButcher extends ECommandBase {
+	//TODO: Will this command stay or go?
 	@Override
 	public String getCommandName() {
 		return "butcher";

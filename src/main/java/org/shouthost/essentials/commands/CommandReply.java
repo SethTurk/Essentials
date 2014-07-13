@@ -16,7 +16,7 @@ public class CommandReply extends ECommandBase {
 
 	@Override
 	public String getPermissionNode() {
-		return null;
+		return "essentials.message.reply";
 	}
 
 	@Override
@@ -41,6 +41,6 @@ public class CommandReply extends ECommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return null;
+		return "/reply <message>";
 	}
 }

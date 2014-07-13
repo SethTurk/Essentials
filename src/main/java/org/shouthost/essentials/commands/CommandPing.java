@@ -20,7 +20,7 @@ public class CommandPing extends ECommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return null;
+		return "/ping";
 	}
 
 	@Override

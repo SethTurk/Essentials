@@ -57,22 +57,12 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public void onLogin(PlayerLoggedInEvent event) {
-		//Decided to load the files on when the player is Player class is called.
-		//this will not be the best for performance but will do for now
+		//TODO:Decided to load the files on when the player is Player class is called.
 	}
 
 	@SubscribeEvent
 	public void onLogout(cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {
 
-	}
-
-	@SubscribeEvent
-	public void playerInteract(PlayerInteractEvent event) {
-	}
-
-	@SubscribeEvent
-	public void explosion(EntityExplodeEvent event) {
-		event.setCanceled(true);
 	}
 
 }

@@ -1,19 +1,18 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandSpawn extends ECommandBase {
+public class CommandRefresh extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
-		return "essentials.spawn";
+		return "essentials.refresh";
 	}
 
 	@Override
@@ -28,21 +27,20 @@ public class CommandSpawn extends ECommandBase {
 
 	@Override
 	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if (!(commandSender instanceof EntityPlayerMP)) {
-			commandSender.addChatMessage(new ChatComponentText("You can perform this action"));
+		if(args.isEmpty() || (args.size() == 1 && !(commandSender instanceof EntityPlayerMP) && !canConsoleUseCommand()))
 			throw new WrongUsageException(getCommandUsage(commandSender));
-		}
-		Player player = new Player(!args.isEmpty() ? getPlayerFromString(args.get(0)) : commandSender);
-		//TODO: Work on spawn
+		Player player = new Player(args.size() == 2 ? getPlayerFromString(args.get(0)) : commandSender);
+		player.refresh(Integer.parseInt(args.size() == 2 ? args.get(1) : args.get(0)));
+		player.sendMessage(EnumChatFormatting.GREEN+"chunks have been refreshed");
 	}
 
 	@Override
 	public String getCommandName() {
-		return "spawn";
+		return "refresh";
 	}
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return "/spawn [<player>]";
+		return "/refresh [<player>] [<radius>]";
 	}
 }

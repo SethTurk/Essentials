@@ -6,6 +6,7 @@ import forgeperms.api.ForgePermsAPI;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,10 +15,17 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.MinecraftForge;
 import org.shouthost.essentials.core.Essentials;
+import org.shouthost.essentials.factory.event.LightningStrikeEvent;
 import org.shouthost.essentials.factory.event.PlayerTeleportEvent;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
@@ -29,6 +37,7 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 public class Player {
 
@@ -187,7 +196,7 @@ public class Player {
 	}
 
 	public void delhome(Homes home) {
-		this.player.getHomes().remove(home);
+		if(getHome(home.getName()) != null) this.player.getHomes().remove(home);
 	}
 
 	public void exec(String command) {
@@ -326,7 +335,6 @@ public class Player {
 			public void run() {
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				String json = gson.toJson(p);
-				System.out.println(json);
 				File file = new File(Essentials.players, p.getUuid() + ".json");
 				if (file.exists() && file.isFile()) file.delete();
 				try {
@@ -347,12 +355,67 @@ public class Player {
 	public boolean sendMessageTo(String name, String msg) {
 		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);//getPlayerForUsername
 		if (target == null) {
-			sendMessage("Player \"" + name + "\" does not exist");
+			sendMessage(EnumChatFormatting.RED+"Player \"" + name + "\" does not exist");
 			return false;
 		}
 		sendMessage("[me -> " + this.player.getPlayerName() + "] " + msg);
 		new Player(target).sendMessage("[" + this.player.getPlayerName() + " -> me] " + msg);
 		return true;
+	}
+
+	public void spawn(){
+		//TODO: work on getting default spawn
+		WorldInfo info = MinecraftServer.getServer().getEntityWorld().getWorldInfo();
+
+	}
+
+	public void strike(Player target){
+		strike(target.getLocation());
+	}
+
+	public Location getViewLocationAt(){
+
+		return null;
+	}
+
+	public void strike(Location loc){
+		LightningStrikeEvent event = new LightningStrikeEvent(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		MinecraftForge.EVENT_BUS.post(event);
+		if(event.isCanceled()) return;
+		loc.getWorld().addWeatherEffect(new EntityLightningBolt(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()));
+	}
+
+	public void strike(){
+		strike(this);
+	}
+
+	public int refresh(int r) {
+		final WorldServer worldServer = (WorldServer) entityPlayer.worldObj;
+		final int radius = r != 0 ? (r <= 30 ? r : 30) : 20;
+		final int centerX = getLocation().getBlockX();
+		final int centerY = getLocation().getBlockY();
+		final int centerZ = getLocation().getBlockZ();
+				ArrayList<Chunk> c = new ArrayList<Chunk>();
+				for (int x = centerX - radius; x < centerX + radius; x++) {
+					for (int y = centerY - radius; y < centerY + radius; y++) {
+						for (int z = centerZ - radius; z < centerZ + radius; z++) {
+							Chunk chunk = worldServer.getChunkFromBlockCoords(x,z);
+							if (!c.contains(chunk)) {
+								if(!worldServer.isAirBlock(x,y,z)) {
+									c.add(chunk);
+									worldServer.getPlayerManager().markBlockForUpdate(x, y, x);
+								}
+							}
+						}
+					}
+				}
+		if(entityPlayer.getHeldItem() != null)
+			entityPlayer.updateHeldItem();
+		if(entityPlayer.isRiding()) {
+			entityPlayer.updateRidden();
+			entityPlayer.updateRiderPosition();
+		}
+		return c.size();
 	}
 
 	public void teleportTo(World world, int x, int y, int z) {
@@ -390,15 +453,12 @@ public class Player {
 		MinecraftForge.EVENT_BUS.post(event);
 		if (!event.isCanceled()) {
 			teleportTo(to);
-//            if (to.getWorld() == getWorld()) {
-//                entityPlayer.setPositionAndUpdate(to.getX(), to.getY(), to.getZ());
-//            } else {
-//                MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(entityPlayer, to.getWorldID(), null);
-//                if (getWorld() == to.getWorld() && entityPlayer.dimension == to.getWorldID()) {
-//                    entityPlayer.setPositionAndUpdate(to.getX(), to.getY(), to.getZ());
-//                }
-//            }
 		}
+	}
+
+	public void warpTo(String name){
+		for(Warp warp : Essentials.warpList)
+			if(warp.name.equalsIgnoreCase(name)) teleport(warp.loc);
 	}
 
 	public float getHealth() {

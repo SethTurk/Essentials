@@ -40,6 +40,7 @@ public class CommandInvSee extends ECommandBase {
 			if (target == null || target.isDead) {
 				return;
 			}
+			player.viewInventory(target);
 		}
 	}
 

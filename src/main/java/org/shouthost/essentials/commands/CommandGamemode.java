@@ -57,7 +57,7 @@ public class CommandGamemode extends ECommandBase {
 
 	@Override
 	public String getPermissionNode() {
-		return "minecraft.command.gamemode";
+		return "essentials.gamemode";
 	}
 
 	@Override

@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class ItemDB {
-	public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
 
+	public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
+	@Deprecated
 	public ItemDB() {
 		Iterator<Item> it = Item.itemRegistry.iterator();
 		Iterator<Block> bl = Block.blockRegistry.iterator();
@@ -26,12 +27,14 @@ public class ItemDB {
 
 	}
 
+	@Deprecated
 	public void registerIntoMemory(String name, Item item) {
 		if (items.containsKey(name) || items.containsValue(new ItemStack(item))) return;
 		items.put(name, new ItemStack(item));
 
 	}
 
+	@Deprecated
 	public void registerIntoMemory(String name, Block block) {
 		if (items.containsKey(name) || items.containsValue(new ItemStack(block))) return;
 		items.put(name, new ItemStack(block));

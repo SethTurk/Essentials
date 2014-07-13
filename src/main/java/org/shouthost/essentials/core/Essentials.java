@@ -12,9 +12,11 @@ import org.shouthost.essentials.factory.CraftTweaksEventFactory;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
+import org.shouthost.essentials.json.warps.Warps;
 import org.shouthost.essentials.scheduler.IScheduler;
 import org.shouthost.essentials.utils.config.Data;
 import org.shouthost.essentials.utils.config.ItemDB;
+import org.shouthost.essentials.utils.config.Warp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class Essentials {
 	public static IScheduler schedule;
 	public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
 	public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
+	public static HashMap<UUID, UUID> replyList = new HashMap<UUID, UUID>();
+	public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
 
@@ -78,9 +82,13 @@ public class Essentials {
 		event.registerServerCommand(new CommandKill());
 		event.registerServerCommand(new CommandMessage());
 		event.registerServerCommand(new CommandPing());
-		//Data.LoadPlayers();
+		event.registerServerCommand(new CommandWarp());
+		event.registerServerCommand(new CommandRefresh());
+		event.registerServerCommand(new CommandSmite());
+		Data.LoadPlayers();
 		Data.LoadKits();
 		Data.LoadBooks();
+		Data.LoadWarps();
 	}
 
 
