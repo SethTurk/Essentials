@@ -115,6 +115,7 @@ public class Worlds {
 	}
 
 	public void tick() {
+		//TODO: Make this tick everything from tile entities, to the world itself
 		world.tick();
 	}
 

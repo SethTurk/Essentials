@@ -36,7 +36,7 @@ public class Data {
 		}
 	}
 
-	public static void LoadPlayers() {
+	/*public static void LoadPlayers() {
 		for (String file : Essentials.players.list()) {
 			System.out.println("Loading " + file);
 			Gson gson = new Gson();
@@ -59,7 +59,7 @@ public class Data {
 				}
 			}
 		}
-	}
+	}*/
 
 	public static void LoadBooks() {
 		for (String file : Essentials.books.list()) {

@@ -85,7 +85,8 @@ public class Essentials {
 		event.registerServerCommand(new CommandWarp());
 		event.registerServerCommand(new CommandRefresh());
 		event.registerServerCommand(new CommandSmite());
-		Data.LoadPlayers();
+		event.registerServerCommand(new CommandSetWarp());
+		//Data.LoadPlayers();
 		Data.LoadKits();
 		Data.LoadBooks();
 		Data.LoadWarps();

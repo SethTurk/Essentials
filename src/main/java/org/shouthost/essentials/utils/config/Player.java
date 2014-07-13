@@ -206,7 +206,7 @@ public class Player {
 	}
 
 	public Location getLocation() {
-		return new Location(getWorld(), getPosX(), getPosY(), getPosZ());
+		return new Location(getWorld(), getPosX(), getPosY(), getPosZ(), entityPlayer.getRotationYawHead(), entityPlayer.getEyeHeight());
 	}
 
 	public double getPosX() {
