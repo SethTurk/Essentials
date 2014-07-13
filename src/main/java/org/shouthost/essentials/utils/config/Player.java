@@ -418,18 +418,23 @@ public class Player {
 		return c.size();
 	}
 
-	public void teleportTo(World world, int x, int y, int z) {
+	public void teleportTo(World world, int x, int y, int z, float yaw, float pitch){
 		if (world == null) return;
 		if (this.entityPlayer.worldObj.provider.dimensionId != world.provider.dimensionId)
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) this.entityPlayer, world.provider.dimensionId);
 		this.entityPlayer.setPositionAndUpdate(x, y, z);
+		entityPlayer.setPositionAndRotation(x,y,z,yaw,pitch);
 		updateCoords(x, y, z);
 		save();
 	}
 
+	public void teleportTo(World world, int x, int y, int z) {
+		teleportTo(world,x,y,z,0,0);
+	}
+
 	public void teleportTo(Location location) {
 		if (location == null) return;
-		teleportTo(location.getWorld(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
+		teleportTo(location.getWorld(), (int) location.getX(), (int) location.getY(), (int) location.getZ(), location.getYaw(), location.getPitch());
 	}
 
 	public void teleportTo(EntityPlayer target) {
