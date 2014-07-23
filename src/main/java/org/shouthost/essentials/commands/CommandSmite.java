@@ -2,7 +2,6 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -45,9 +44,9 @@ public class CommandSmite extends ECommandBase {
 
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		if(args.size() == 1 && !(iCommandSender instanceof EntityPlayerMP))
+		if (args.size() == 1 && !(iCommandSender instanceof EntityPlayerMP))
 			throw new WrongUsageException(getCommandUsage(iCommandSender));
 		Player player = new Player(!args.isEmpty() ? (getPlayerFromString(args.get(0)) != null ? getPlayerFromString(args.get(0)) : iCommandSender) : iCommandSender);
-		player.strike();
+		player.strike(player.getEyeLocation(false));
 	}
 }

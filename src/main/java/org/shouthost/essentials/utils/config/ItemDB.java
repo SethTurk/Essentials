@@ -10,6 +10,7 @@ import java.util.Iterator;
 public class ItemDB {
 
 	public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();
+
 	@Deprecated
 	public ItemDB() {
 		Iterator<Item> it = Item.itemRegistry.iterator();

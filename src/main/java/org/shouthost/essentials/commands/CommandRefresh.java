@@ -2,7 +2,6 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.utils.config.Player;
@@ -27,11 +26,11 @@ public class CommandRefresh extends ECommandBase {
 
 	@Override
 	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if(args.isEmpty() || (args.size() == 1 && !(commandSender instanceof EntityPlayerMP) && !canConsoleUseCommand()))
+		if (args.isEmpty() || (args.size() == 1 && !(commandSender instanceof EntityPlayerMP) && !canConsoleUseCommand()))
 			throw new WrongUsageException(getCommandUsage(commandSender));
 		Player player = new Player(args.size() == 2 ? getPlayerFromString(args.get(0)) : commandSender);
 		player.refresh(Integer.parseInt(args.size() == 2 ? args.get(1) : args.get(0)));
-		player.sendMessage(EnumChatFormatting.GREEN+"chunks have been refreshed");
+		player.sendMessage(EnumChatFormatting.GREEN + "chunks have been refreshed");
 	}
 
 	@Override

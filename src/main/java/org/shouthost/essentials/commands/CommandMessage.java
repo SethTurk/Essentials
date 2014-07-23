@@ -2,6 +2,7 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
@@ -39,8 +40,11 @@ public class CommandMessage extends ECommandBase {
 		String msg = "";
 		for (int i = 1; i < args.size(); i++)
 			msg += args.get(i) + " ";
-		player.sendMessage(msg);
-		player.sendMessageTo(args.get(0), msg);
+		EntityPlayerMP target = getPlayerFromString(args.get(0));
+		//player.sendMessage(msg);
+		player.sendMessageTo(target.getDisplayName(), msg);
+
+
 	}
 
 	@Override

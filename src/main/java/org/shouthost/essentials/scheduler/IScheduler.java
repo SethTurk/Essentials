@@ -26,6 +26,11 @@ public class IScheduler {
 		scheduledTask.offer(runnable);
 	}
 
+	public void scheduleAsyncTaskDelay(Runnable runnable, long seconds) {
+		final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+		exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
+	}
+
 	public Object scheduleSyncTask(Callable callable) {
 		return scheduleSyncTask(callable, generateThreadName());
 	}
@@ -103,7 +108,7 @@ public class IScheduler {
 
 	private String generateThreadName() {
 		count += 1;
-		return "CT-" + count;
+		return "ESS-" + count;
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -3,12 +3,14 @@ package org.shouthost.essentials.events;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import forgeperms.api.ForgePermsAPI;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import org.shouthost.essentials.factory.event.EntityExplodeEvent;
 import org.shouthost.essentials.utils.config.Player;
 
 public class PlayerEvents {
@@ -19,27 +21,30 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public void nameFormat(PlayerEvent.NameFormat event) {
-//		StringBuilder sb = new StringBuilder();
-//		World world = event.entityPlayer.worldObj;
-//		String worldName = world.getWorldInfo().getWorldName();
-//		if(worldName != null) {
-//			System.out.println(worldName +"~~~~~~~~~~~");
-//			//String group = ForgePermsAPI.chatManager.getPrimaryGroup(worldName, event.username);
-//			//if (group != null) {
-//				String groupPrefix = ForgePermsAPI.chatManager.getPlayerPrefix(worldName,event.displayname);
-//				//String groupSuffix = ForgePermsAPI.chatManager.getGroupSuffix(worldName, "default");
-//				sb.append(groupPrefix);//.append(event.username);//.append(groupSuffix);//.append(RESET);
-//				event.displayname = sb.toString() + event.displayname;
-//			//}
-//		}
-//		String name = Chat.BuildUsernameFromGroup(event.entityPlayer);
-//		if(name != null){
-//			event.displayname = name;
-//		}
+		//if(event.entityPlayer.worldObj.isRemote) return;
+		StringBuilder sb = new StringBuilder();
+		World world = event.entityPlayer.worldObj;
+		String worldName = world.provider.getDimensionName();
+		if (worldName != null) {
+			String group = ForgePermsAPI.chatManager.getPrimaryGroup(worldName, event.username);
+			String prefix = ForgePermsAPI.chatManager.getGroupPrefix(worldName, group);
+			sb.append(prefix);
+			String fin = sb.toString() + event.username;
+			System.out.println(EnumChatFormatting.GREEN);
+			event.displayname = (EnumChatFormatting.GREEN + fin);
+		}
+		//event.displayname = EnumChatFormatting.GREEN+event.username;
+	}
+
+	public String format(String data) {
+
+		return null;
 	}
 
 	@SubscribeEvent
 	public void onServerChatEvent(ServerChatEvent event) {
+		event.player.refreshDisplayName();
+		event.setCanceled(true);
 		//Mute Check
 		Player player = new Player(event.player);
 		if (player.get().isMuted()) {
@@ -51,6 +56,7 @@ public class PlayerEvents {
 			event.setCanceled(true);
 			return;
 		}
+		MinecraftServer.getServer().addChatMessage(new ChatComponentText(event.username + " : " + event.message));
 
 
 	}

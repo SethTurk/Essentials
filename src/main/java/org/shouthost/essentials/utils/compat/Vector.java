@@ -415,6 +415,17 @@ public class Vector {
 	 * @param x The new X component.
 	 * @return This vector.
 	 */
+	public Vector setX(int x) {
+		this.x = x;
+		return this;
+	}
+
+	/**
+	 * Set the X component.
+	 *
+	 * @param x The new X component.
+	 * @return This vector.
+	 */
 	public Vector setX(double x) {
 		this.x = x;
 		return this;
@@ -448,6 +459,17 @@ public class Vector {
 	 */
 	public double getY() {
 		return y;
+	}
+
+	/**
+	 * Set the Y component.
+	 *
+	 * @param y The new Y component.
+	 * @return This vector.
+	 */
+	public Vector setY(int y) {
+		this.y = y;
+		return this;
 	}
 
 	/**
@@ -497,6 +519,17 @@ public class Vector {
 	 * @param z The new Z component.
 	 * @return This vector.
 	 */
+	public Vector setZ(int z) {
+		this.z = z;
+		return this;
+	}
+
+	/**
+	 * Set the Z component.
+	 *
+	 * @param z The new Z component.
+	 * @return This vector.
+	 */
 	public Vector setZ(double z) {
 		this.z = z;
 		return this;
@@ -521,39 +554,6 @@ public class Vector {
 	 */
 	public int getBlockZ() {
 		return NumberConversions.floor(z);
-	}
-
-	/**
-	 * Set the X component.
-	 *
-	 * @param x The new X component.
-	 * @return This vector.
-	 */
-	public Vector setX(int x) {
-		this.x = x;
-		return this;
-	}
-
-	/**
-	 * Set the Y component.
-	 *
-	 * @param y The new Y component.
-	 * @return This vector.
-	 */
-	public Vector setY(int y) {
-		this.y = y;
-		return this;
-	}
-
-	/**
-	 * Set the Z component.
-	 *
-	 * @param z The new Z component.
-	 * @return This vector.
-	 */
-	public Vector setZ(int z) {
-		this.z = z;
-		return this;
 	}
 
 	/**

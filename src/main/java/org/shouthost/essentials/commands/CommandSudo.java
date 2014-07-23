@@ -44,7 +44,7 @@ public class CommandSudo extends ECommandBase {
 		if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(iCommandSender));
 		if (!args.isEmpty()) {
 			EntityPlayerMP t = getPlayerFromString(args.get(0));
-			if(t == null) throw new WrongUsageException(getCommandUsage(iCommandSender));
+			if (t == null) throw new WrongUsageException(getCommandUsage(iCommandSender));
 			Player target = new Player(t);
 			//TODO add arguments with the commands
 			String cPa = "";

@@ -12,10 +12,10 @@ import org.shouthost.essentials.factory.CraftTweaksEventFactory;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.json.warps.Warps;
 import org.shouthost.essentials.scheduler.IScheduler;
-import org.shouthost.essentials.utils.config.Data;
+import org.shouthost.essentials.utils.config.DataUtils;
 import org.shouthost.essentials.utils.config.ItemDB;
+import org.shouthost.essentials.utils.config.Player;
 import org.shouthost.essentials.utils.config.Warp;
 
 import java.io.File;
@@ -24,15 +24,15 @@ import java.util.HashMap;
 import java.util.UUID;
 
 
-@Mod(name = "Essentials", modid = "essentials", version = "0.0.0")
+@Mod(name = "Essentials", modid = "essentials", version = "0.0.0", acceptableRemoteVersions = "*")
 
 public class Essentials {
 
 	public static ArrayList<Kit> usableKit = new ArrayList();
 	public static IScheduler schedule;
 	public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
+	public static HashMap<UUID, Player> playerList = new HashMap<UUID, Player>();
 	public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
-	public static HashMap<UUID, UUID> replyList = new HashMap<UUID, UUID>();
 	public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
@@ -69,7 +69,11 @@ public class Essentials {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandAFK());
+		event.registerServerCommand(new CommandBan());
+		event.registerServerCommand(new CommandGive());
 		event.registerServerCommand(new CommandItem());
+		event.registerServerCommand(new CommandKick());
 		event.registerServerCommand(new CommandMute());
 		event.registerServerCommand(new CommandSethome());
 		event.registerServerCommand(new CommandHome());
@@ -86,10 +90,11 @@ public class Essentials {
 		event.registerServerCommand(new CommandRefresh());
 		event.registerServerCommand(new CommandSmite());
 		event.registerServerCommand(new CommandSetWarp());
+		event.registerServerCommand(new CommandDelhome());
 		//Data.LoadPlayers();
-		Data.LoadKits();
-		Data.LoadBooks();
-		Data.LoadWarps();
+		DataUtils.LoadKits();
+		DataUtils.LoadBooks();
+		DataUtils.LoadWarps();
 	}
 
 

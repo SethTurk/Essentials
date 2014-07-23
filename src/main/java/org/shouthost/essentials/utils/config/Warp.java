@@ -16,26 +16,26 @@ public class Warp {
 	public final String name;
 	public final Location loc;
 
-	public Warp(Warps warp){
+	public Warp(Warps warp) {
 		this(warp.getName(), MinecraftServer.getServer().worldServerForDimension(warp.getWorld()), warp.getX(), warp.getY(), warp.getZ(), warp.getYaw(), warp.getPitch());
 	}
 
-	public Warp(String name, Location location){
+	public Warp(String name, Location location) {
 		this(name, location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 	}
 
-	public Warp(String name, World world, double x, double y, double z){
-		this(name,world, x, y, z, 0, 0);
+	public Warp(String name, World world, double x, double y, double z) {
+		this(name, world, x, y, z, 0, 0);
 	}
 
-	public Warp(String name, World world, double x, double y, double z, float yaw, float pitch){
+	public Warp(String name, World world, double x, double y, double z, float yaw, float pitch) {
 		this.name = name;
 		this.loc = new Location(world, x, y, z, yaw, pitch);
-		if(!Essentials.warpList.contains(this))
+		if (!Essentials.warpList.contains(this))
 			Essentials.warpList.add(this);
 	}
 
-	public void save(){
+	public void save() {
 		final Warps warp = new Warps();
 		warp.setName(name);
 		warp.setWorld(loc.getWorldID());
@@ -63,8 +63,8 @@ public class Warp {
 				return true;
 			}
 		});
-		if(!isSaved){
-			System.out.println("[ERROR] - Could not save warp "+ name);
+		if (!isSaved) {
+			System.out.println("[ERROR] - Could not save warp " + name);
 		}
 	}
 }

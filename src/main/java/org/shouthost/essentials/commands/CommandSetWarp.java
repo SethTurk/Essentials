@@ -26,11 +26,11 @@ public class CommandSetWarp extends ECommandBase {
 
 	@Override
 	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if(args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
 		Player player = new Player(commandSender);
-		Warp warp = new Warp(args.get(0),player.getLocation());
+		Warp warp = new Warp(args.get(0), player.getLocation());
 		warp.save();
-		player.sendMessage(EnumChatFormatting.GREEN+"Warp '"+args.get(0)+"' have been created");
+		player.sendMessage(EnumChatFormatting.GREEN + "Warp '" + args.get(0) + "' have been created");
 	}
 
 	@Override
@@ -40,6 +40,6 @@ public class CommandSetWarp extends ECommandBase {
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender) {
-		return EnumChatFormatting.RED+"/setwarp <name>";
+		return EnumChatFormatting.RED + "/setwarp <name>";
 	}
 }

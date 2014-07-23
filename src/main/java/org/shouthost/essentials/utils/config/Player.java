@@ -10,14 +10,15 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
@@ -35,9 +36,9 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 public class Player {
 
@@ -56,11 +57,8 @@ public class Player {
 	public Player(EntityPlayerMP player) {
 		if (player != null) {
 			this.entityPlayer = player;
-			if (exist()) {
-				load();
-			} else {
-				create();
-			}
+			if (exist()) load();
+			else create();
 		}
 	}
 
@@ -68,9 +66,7 @@ public class Player {
 		//first check to see if file exist
 		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString().replaceAll("-", "") + ".json");
 		if (check.exists()) {
-			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID())) {
-				return true;
-			}
+			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID())) return true;
 			return loadIntoMemory(check);
 		}
 		return false;
@@ -87,8 +83,12 @@ public class Player {
 			return false;
 		}
 		Players player = gson.fromJson(br, Players.class);
-		if (!Essentials.playersList.containsKey(entityPlayer.getPersistentID()))
+		if (!Essentials.playersList.containsKey(entityPlayer.getPersistentID())) {
 			Essentials.playersList.put(entityPlayer.getPersistentID(), player);
+		}
+		if (!Essentials.playerList.containsKey(entityPlayer.getPersistentID())) {
+			Essentials.playerList.put(entityPlayer.getPersistentID(), this);
+		}
 		try {
 			br.close();
 		} catch (IOException e) {
@@ -121,6 +121,9 @@ public class Player {
 		return UUID.fromString(get().getUuid());
 	}
 
+	public String getPlayerName() {
+		return this.entityPlayer.getDisplayName();
+	}
 
 	//TODO finish implementing everything so we dont have to call this directly
 	public Players get() {
@@ -196,7 +199,7 @@ public class Player {
 	}
 
 	public void delhome(Homes home) {
-		if(getHome(home.getName()) != null) this.player.getHomes().remove(home);
+		if (getHome(home.getName()) != null) this.player.getHomes().remove(home);
 	}
 
 	public void exec(String command) {
@@ -348,88 +351,105 @@ public class Player {
 		});
 	}
 
+	public void sendMessage(String... lines) {
+		sendMessage(new ArrayList<String>(Arrays.asList(lines)));
+	}
+
+	public void sendMessage(ArrayList<String> lines) {
+		for (String line : lines) sendMessage(line);
+	}
+
 	public void sendMessage(String msg) {
+		if (msg.contains("\n")) {
+			sendMessage(msg.split("\n"));
+			return;
+		}
 		this.entityPlayer.addChatMessage(new ChatComponentText(msg));
 	}
 
 	public boolean sendMessageTo(String name, String msg) {
-		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);//getPlayerForUsername
+		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
+		return target != null ? sendMessageTo(new Player(name), msg) : false;
+	}
+
+	public boolean sendMessageTo(Player target, String msg) {
 		if (target == null) {
-			sendMessage(EnumChatFormatting.RED+"Player \"" + name + "\" does not exist");
+			sendMessage(EnumChatFormatting.RED + "Player does not exist");
 			return false;
 		}
-		sendMessage("[me -> " + this.player.getPlayerName() + "] " + msg);
-		new Player(target).sendMessage("[" + this.player.getPlayerName() + " -> me] " + msg);
+		sendMessage(String.format("[me -> " + getPlayerName() + "] %s", msg));
+		target.sendMessage(String.format("[" + getPlayerName() + " -> me] %s", msg));
+
 		return true;
 	}
 
-	public void spawn(){
+	public void spawn() {
 		//TODO: work on getting default spawn
 		WorldInfo info = MinecraftServer.getServer().getEntityWorld().getWorldInfo();
 
 	}
 
-	public void strike(Player target){
+	public void strike(Player target) {
 		strike(target.getLocation());
 	}
 
-	public Location getViewLocationAt(){
+	public Location getViewLocationAt() {
 
 		return null;
 	}
 
-	public void strike(Location loc){
+	public void strike(Location loc) {
 		LightningStrikeEvent event = new LightningStrikeEvent(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		MinecraftForge.EVENT_BUS.post(event);
-		if(event.isCanceled()) return;
+		if (event.isCanceled()) return;
 		loc.getWorld().addWeatherEffect(new EntityLightningBolt(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()));
 	}
 
-	public void strike(){
+	public void strike() {
 		strike(this);
 	}
 
 	public int refresh(int r) {
-		final WorldServer worldServer = (WorldServer) entityPlayer.worldObj;
-		final int radius = r != 0 ? (r <= 30 ? r : 30) : 20;
-		final int centerX = getLocation().getBlockX();
-		final int centerY = getLocation().getBlockY();
-		final int centerZ = getLocation().getBlockZ();
-				ArrayList<Chunk> c = new ArrayList<Chunk>();
-				for (int x = centerX - radius; x < centerX + radius; x++) {
-					for (int y = centerY - radius; y < centerY + radius; y++) {
-						for (int z = centerZ - radius; z < centerZ + radius; z++) {
-							Chunk chunk = worldServer.getChunkFromBlockCoords(x,z);
-							if (!c.contains(chunk)) {
-								if(!worldServer.isAirBlock(x,y,z)) {
-									c.add(chunk);
-									worldServer.getPlayerManager().markBlockForUpdate(x, y, x);
-								}
-							}
+		WorldServer worldServer = (WorldServer) entityPlayer.worldObj;
+		int radius = r != 0 ? (r <= 30 ? r : 30) : 20;
+		int centerX = getLocation().getBlockX();
+		int centerY = getLocation().getBlockY();
+		int centerZ = getLocation().getBlockZ();
+		ArrayList<Chunk> c = new ArrayList<Chunk>();
+		for (int x = centerX - radius; x < centerX + radius; x++) {
+			for (int y = centerY - radius; y < centerY + radius; y++) {
+				for (int z = centerZ - radius; z < centerZ + radius; z++) {
+					Chunk chunk = worldServer.getChunkFromBlockCoords(x, z);
+					if (!c.contains(chunk)) {
+						if (!worldServer.isAirBlock(x, y, z)) {
+							c.add(chunk);
+							worldServer.getPlayerManager().markBlockForUpdate(x, y, x);
 						}
 					}
 				}
-		if(entityPlayer.getHeldItem() != null)
+			}
+		}
+		if (entityPlayer.getHeldItem() != null)
 			entityPlayer.updateHeldItem();
-		if(entityPlayer.isRiding()) {
+		if (entityPlayer.isRiding()) {
 			entityPlayer.updateRidden();
 			entityPlayer.updateRiderPosition();
 		}
 		return c.size();
 	}
 
-	public void teleportTo(World world, int x, int y, int z, float yaw, float pitch){
+	public void teleportTo(World world, int x, int y, int z, float yaw, float pitch) {
 		if (world == null) return;
 		if (this.entityPlayer.worldObj.provider.dimensionId != world.provider.dimensionId)
 			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) this.entityPlayer, world.provider.dimensionId);
 		this.entityPlayer.setPositionAndUpdate(x, y, z);
-		entityPlayer.setPositionAndRotation(x,y,z,yaw,pitch);
+		entityPlayer.setPositionAndRotation(x, y, z, yaw, pitch);
 		updateCoords(x, y, z);
 		save();
 	}
 
 	public void teleportTo(World world, int x, int y, int z) {
-		teleportTo(world,x,y,z,0,0);
+		teleportTo(world, x, y, z, 0, 0);
 	}
 
 	public void teleportTo(Location location) {
@@ -461,9 +481,9 @@ public class Player {
 		}
 	}
 
-	public void warpTo(String name){
-		for(Warp warp : Essentials.warpList)
-			if(warp.name.equalsIgnoreCase(name)) teleport(warp.loc);
+	public void warpTo(String name) {
+		for (Warp warp : Essentials.warpList)
+			if (warp.name.equalsIgnoreCase(name)) teleport(warp.loc);
 	}
 
 	public float getHealth() {
@@ -487,7 +507,38 @@ public class Player {
 		S23PacketBlockChange change = new S23PacketBlockChange(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld());
 		change.field_148883_d = block;
 		change.field_148884_e = new Worlds(loc.getWorld()).getBlockMetadata(loc);
+
 		sendPacket(change);
+	}
+
+	public void sendSound(Location loc, String name, float volume, float pitch) {
+		if (loc.getWorld().isRemote) return;
+		if (entityPlayer.playerNetServerHandler.netManager == null) return;
+		S29PacketSoundEffect sound = new S29PacketSoundEffect(name, loc.getX(), loc.getY(), loc.getZ(), volume, pitch);
+		sendPacket(sound);
+	}
+
+	public void sendEffect(String particle, Location loc, double width, double motionX, double motionZ) {
+		//TODO: Work on effects
+		//S28PacketEffect effects = new S28PacketEffect(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), );
+//		sendPacket(effects);
+		entityPlayer.worldObj.spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), width, motionX, motionZ);
+	}
+
+	public Location getEyeLocation(boolean air) {
+		MovingObjectPosition loc = entityPlayer.rayTrace(100, 1.5F);
+		Location n = new Location(getWorld(), loc.blockX, loc.blockY, loc.blockZ);
+		if (n.getBlock().equals(Blocks.air) && !air) {
+			//iterate down until block isnt air since we dont want to get air block
+			Block block = n.getBlock();
+			int y = n.getBlockY();
+			while (block.equals(Blocks.air)) {
+				y--;
+				block = getWorld().getBlock(loc.blockX, y, loc.blockZ);
+			}
+			return new Location(getWorld(), loc.blockX, y, loc.blockZ);
+		}
+		return n;
 	}
 
 }

@@ -3,6 +3,7 @@ package org.shouthost.essentials.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.lang.management.ManagementFactory;
@@ -44,16 +45,27 @@ public class CommandLag extends ECommandBase {
 	@Override
 	public void processCommand(ICommandSender iCommandSender, List<String> args) {
 		Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) iCommandSender);
+
 		//Uptime
-		player.sendMessage("Uptime: " + ManagementFactory.getRuntimeMXBean().getStartTime());//Will implement a parser for uptime
+		Long uptime = ManagementFactory.getRuntimeMXBean().getStartTime();
 
 		//Memory
 		long maxmem = Runtime.getRuntime().totalMemory() / 1024L / 1024L;
 		long freemem = Runtime.getRuntime().freeMemory() / 1024L / 1024L;
 		long memuse = maxmem - freemem / 1024L / 1024L;
+
+		player.sendMessage("Uptime: " + uptime);//Will implement a parser for uptime
 		player.sendMessage("Maximum memory: " + maxmem + " MB.");
 		player.sendMessage("Used Memory: " + memuse + " MB.");
 		player.sendMessage("Free memory: " + freemem + " MB.");
+
+		for (WorldServer world : MinecraftServer.getServer().worldServers) {
+			String dim = world.provider.getDimensionName();
+			int loadedChunksCount = world.theChunkProviderServer.getLoadedChunkCount();
+			int loadedEntityCount = world.loadedEntityList.size();
+			int loadedTileCount = world.loadedTileEntityList.size();
+			player.sendMessage("World \"" + dim + "\": " + loadedChunksCount + " chunks, " + loadedEntityCount + " entities, " + loadedTileCount + " tiles.");
+		}
 
 	}
 

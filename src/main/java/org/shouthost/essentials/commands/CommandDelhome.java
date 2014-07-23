@@ -8,9 +8,6 @@ import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by darius on 7/11/14.
- */
 public class CommandDelhome extends ECommandBase {
 	@Override
 	public String getPermissionNode() {
@@ -34,7 +31,7 @@ public class CommandDelhome extends ECommandBase {
 		Homes home = player.getHome(args.get(0));
 		if (home != null) {
 			player.delhome(home);
-			if (player.getHome(args.get(0)) == null) {
+			if (home == null && player.getHome(args.get(0)) == null) {
 				player.sendMessage(EnumChatFormatting.GREEN + "Home '" + args.get(0) + "' has been deleted");
 				return;
 			}

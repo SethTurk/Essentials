@@ -238,4 +238,8 @@ public class Location {
 		return new Vector(x, y, z);
 	}
 
+	@Override
+	public String toString() {
+		return "x " + getBlockX() + " y" + getBlockY() + " z" + getBlockZ();
+	}
 }

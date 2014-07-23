@@ -50,7 +50,8 @@ public abstract class ECommandBase extends CommandBase {
 
 	@Override
 	public final void processCommand(ICommandSender commandSender, String... argumentsArray) {
-		if (!(commandSender instanceof EntityPlayer) && !canConsoleUseCommand()) throw new WrongUsageException(getCommandUsage(commandSender));
+		if (!(commandSender instanceof EntityPlayer) && !canConsoleUseCommand())
+			throw new WrongUsageException(getCommandUsage(commandSender));
 		processCommand(commandSender, new ArrayList<String>(Arrays.asList(argumentsArray)));
 	}
 

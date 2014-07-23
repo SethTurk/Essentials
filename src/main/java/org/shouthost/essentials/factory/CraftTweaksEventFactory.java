@@ -5,12 +5,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.common.MinecraftForge;
 import org.shouthost.essentials.factory.event.EntityExplodeEvent;
 import org.shouthost.essentials.factory.event.InventoryOpenEvent;
+import org.shouthost.essentials.factory.event.LightningStrikeEvent;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.Iterator;
@@ -55,7 +57,7 @@ public class CraftTweaksEventFactory {
 
 		@SubscribeEvent
 		public void onEntityExplodeTick(TickEvent.WorldTickEvent event) {
-			List<Entity> list = event.world.getLoadedEntityList();
+			List<Entity> list = event.world.loadedEntityList;
 			Iterator<Entity> it = list.iterator();
 			while (it.hasNext()) {
 				Entity entity = it.next();
@@ -84,6 +86,13 @@ public class CraftTweaksEventFactory {
 							tnt.setDead();
 							//new Worlds(tnt.worldObj).setBlockToAir(new Location(tnt.worldObj, tnt.posX, tnt.posY, tnt.posZ));
 						}
+					}
+				} else if (entity instanceof EntityLightningBolt) {
+					EntityLightningBolt lightning = (EntityLightningBolt) entity;
+					LightningStrikeEvent ev = new LightningStrikeEvent(lightning.worldObj, (int) lightning.posX, (int) lightning.posY, (int) lightning.posZ);
+					MinecraftForge.EVENT_BUS.post(ev);
+					if (ev.isCanceled()) {
+						lightning.setDead();
 					}
 				}
 			}
