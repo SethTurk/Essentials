@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.Iterator;
 
+@Deprecated
 public class ItemDB {
 
 	public HashMap<String, ItemStack> items = new HashMap<String, ItemStack>();

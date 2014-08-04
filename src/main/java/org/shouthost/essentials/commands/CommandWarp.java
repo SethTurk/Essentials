@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandWarp extends ECommandBase {
+public class CommandWarp extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.warp";
@@ -25,11 +24,12 @@ public class CommandWarp extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if (args.isEmpty() || (!(commandSender instanceof EntityPlayerMP) && args.size() == 1))
-			throw new WrongUsageException(getCommandUsage(commandSender));
-		Player player = new Player(args.size() == 2 ? getPlayerFromString(args.get(0)) : commandSender);
-		player.warpTo(args.size() == 2 ? args.get(1) : args.get(0));
+	protected void processCommand(Player player, List<String> args) {
+		if (args.isEmpty() || (!(player instanceof EntityPlayerMP) && args.size() == 1))
+			throw new WrongUsageException(getCommandUsage(player));
+		//TODO: change it so you can send a player to a warp point
+//		Player player = new Player(args.size() == 2 ? getPlayerFromString(args.get(0)) : commandSender);
+		player.warpTo(args.get(0));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class CommandWarp extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return EnumChatFormatting.RED + "/warp [<player>] <name>";
 	}
 }

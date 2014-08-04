@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CommandVanish extends ECommandBase {
+public class CommandVanish extends Command {
 	private ArrayList<UUID> vanishList = new ArrayList<UUID>();
 
 	@Override
@@ -41,21 +40,20 @@ public class CommandVanish extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) iCommandSender);
-		if (vanishList.contains(player.getPlayer().getUniqueID())) {
-			vanishList.remove(player.getPlayer().getUniqueID());
-			MinecraftServer.getServer().getConfigurationManager().playerEntityList.add(player.getPlayer());
-			player.getPlayer().removePotionEffect(Potion.invisibility.id);
+	public void processCommand(Player player, List<String> args) {
+		if (vanishList.contains(player.getUniqueID())) {
+			vanishList.remove(player.getUniqueID());
+			MinecraftServer.getServer().getConfigurationManager().playerEntityList.add(player);
+			player.removePotionEffect(Potion.invisibility.id);
 		} else {
-			vanishList.add(player.getPlayer().getUniqueID());
-			MinecraftServer.getServer().getConfigurationManager().playerEntityList.remove(player.getPlayer());
-			player.getPlayer().addPotionEffect(new PotionEffect(Potion.invisibility.id, 90000, 90000));
+			vanishList.add(player.getUniqueID());
+			MinecraftServer.getServer().getConfigurationManager().playerEntityList.remove(player);
+			player.addPotionEffect(new PotionEffect(Potion.invisibility.id, 90000, 90000));
 		}
 
 	}

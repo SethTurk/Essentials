@@ -1,6 +1,6 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Darius on 5/20/2014.
  */
-public class CommandPardon extends ECommandBase {
+public class CommandPardon extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.pardon";
@@ -30,12 +30,12 @@ public class CommandPardon extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/pardon <player>";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+	public void processCommand(Player player, List<String> args) {
 
 	}
 

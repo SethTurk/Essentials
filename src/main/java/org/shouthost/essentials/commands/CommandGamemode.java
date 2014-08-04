@@ -1,9 +1,7 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldSettings;
 import org.shouthost.essentials.utils.config.Player;
@@ -14,7 +12,7 @@ import java.util.List;
 /**
  * Created by Darius on 5/20/2014.
  */
-public class CommandGamemode extends ECommandBase {
+public class CommandGamemode extends Command {
 	@Override
 	public List getCommandAliases() {
 		ArrayList cmd = new ArrayList();
@@ -28,18 +26,17 @@ public class CommandGamemode extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return EnumChatFormatting.RED + "/gamemode [<player>] <mode>";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(iCommandSender));
-		if (args.size() == 1 && !(iCommandSender instanceof EntityPlayerMP)) {
-			iCommandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You can only change the mode of a player"));
+	public void processCommand(Player player, List<String> args) {
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
+		if (args.size() == 1 && !(player instanceof EntityPlayerMP)) {
+			player.sendMessage(EnumChatFormatting.RED + "You can only change the mode of a player");
 			return;
-		} else if (args.size() == 1 && iCommandSender instanceof EntityPlayerMP) {
-			Player player = new Player(iCommandSender);
+		} else if (args.size() == 1 && player instanceof EntityPlayerMP) {
 			String mode = args.get(0);
 			if (mode.equalsIgnoreCase("s") || mode.equalsIgnoreCase("survival") || mode.equalsIgnoreCase("0")) {
 				player.setGameMode(WorldSettings.GameType.SURVIVAL);

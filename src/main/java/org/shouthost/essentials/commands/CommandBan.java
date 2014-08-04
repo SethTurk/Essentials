@@ -1,25 +1,22 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by Darius on 5/20/2014.
- */
-public class CommandBan extends ECommandBase {
+public class CommandBan extends Command {
 	@Override
 	public String getCommandName() {
 		return "ban";
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/ban <player> [reason]";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+	public void processCommand(Player player, List<String> args) {
 
 	}
 

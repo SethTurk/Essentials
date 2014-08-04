@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.json.players.Homes;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandDelhome extends ECommandBase {
+public class CommandDelhome extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.command.home.delete";
@@ -25,9 +24,8 @@ public class CommandDelhome extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
-		Player player = new Player(commandSender);
+	protected void processCommand(Player player, List<String> args) {
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
 		Homes home = player.getHome(args.get(0));
 		if (home != null) {
 			player.delhome(home);
@@ -37,7 +35,7 @@ public class CommandDelhome extends ECommandBase {
 			}
 		} else {
 			player.sendMessage(EnumChatFormatting.RED + "'" + args.get(0) + "' is not a valid home entry");
-			throw new WrongUsageException(getCommandUsage(commandSender));
+			throw new WrongUsageException(getCommandUsage(player));
 		}
 	}
 
@@ -47,7 +45,7 @@ public class CommandDelhome extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return EnumChatFormatting.RED + "/delhome <home>";
 	}
 }

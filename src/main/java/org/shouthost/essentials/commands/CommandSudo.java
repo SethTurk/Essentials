@@ -1,13 +1,12 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandSudo extends ECommandBase {
+public class CommandSudo extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.sudo";
@@ -34,17 +33,16 @@ public class CommandSudo extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/sudo <player> <command>";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player executor = new Player(iCommandSender);
-		if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(iCommandSender));
+	public void processCommand(Player player, List<String> args) {
+		if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(player));
 		if (!args.isEmpty()) {
 			EntityPlayerMP t = getPlayerFromString(args.get(0));
-			if (t == null) throw new WrongUsageException(getCommandUsage(iCommandSender));
+			if (t == null) throw new WrongUsageException(getCommandUsage(player));
 			Player target = new Player(t);
 			//TODO add arguments with the commands
 			String cPa = "";

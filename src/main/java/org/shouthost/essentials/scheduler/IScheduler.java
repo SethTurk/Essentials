@@ -6,48 +6,42 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class IScheduler {
 
-	private final ConcurrentLinkedQueue<Runnable> scheduledTask;
-	private final ConcurrentLinkedQueue<Thread> runningTasks;
-	private final ConcurrentLinkedQueue<Callable<Object>> tickTask;
+	private final ConcurrentLinkedQueue<Runnable> scheduledTask = new ConcurrentLinkedQueue<Runnable>();
+	;
+	private final ConcurrentLinkedQueue<Thread> runningTasks = new ConcurrentLinkedQueue<Thread>();
 	private int count = 0;
 
 	public IScheduler() {
-		scheduledTask = new ConcurrentLinkedQueue<Runnable>();
-		runningTasks = new ConcurrentLinkedQueue<Thread>();
-		tickTask = new ConcurrentLinkedQueue<Callable<Object>>();
 		FMLCommonHandler.instance().bus().register(this);
 	}
 
+	//TODO:create an queue executor for scheduling runnable task
 	public void scheduleSyncTaskToQueue(Runnable runnable) {
 		scheduledTask.offer(runnable);
 	}
 
-	public void scheduleAsyncTaskDelay(Runnable runnable, long seconds) {
-		final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-		exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
-	}
-
-	public Object scheduleSyncTask(Callable callable) {
-		return scheduleSyncTask(callable, generateThreadName());
-	}
-
-	public Object scheduleSyncTask(Callable callable, String name) {
-		Object val = null;
-		ExecutorService service = Executors.newFixedThreadPool(5);
-		Future<Object> future = service.submit(callable);
-		try {
-			val = future.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return val;
-	}
+//	public Object scheduleSyncTask(Callable callable) {
+//		return scheduleSyncTask(callable, generateThreadName());
+//	}
+//
+//	public Object scheduleSyncTask(Callable callable, String name) {
+//		Object val = null;
+//		ExecutorService service = Executors.newFixedThreadPool(5);
+//		Future<Object> future = service.submit(callable);
+//		try {
+//			val = future.get();
+//		} catch (InterruptedException e) {
+//		} catch (ExecutionException e) {
+//		}
+//		return val;
+//	}
 
 	public void scheduleSyncTask(Runnable runnable) {
 		scheduleSyncTask(runnable, generateThreadName());
@@ -55,20 +49,24 @@ public class IScheduler {
 
 	public void scheduleSyncTask(Runnable runnable, String name) {
 		Thread thread = new Thread(runnable, name);
-		runningTasks.offer(thread);
+		runningTasks.offer(thread);//TODO: V
 		thread.start();
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
-		runningTasks.remove(thread);
-
+		runningTasks.remove(thread);//TODO: ^ is this really needed?
 	}
 
-	public void scheduleTickTask(Callable<Object> task) {
-		if (tickTask.contains(task)) return;
-		tickTask.offer(task);
+	//TODO:Redo scheduleTickTask
+	public void scheduleTickTask(Runnable task) {
+		if (scheduledTask.contains(task)) return;
+		scheduledTask.offer(task);
+	}
+
+	public void scheduleAsyncTaskDelay(Runnable runnable, long seconds) {
+		final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+		exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
 	}
 
 	public long scheduleAsyncTask(Runnable runnable) {
@@ -99,7 +97,7 @@ public class IScheduler {
 			}
 	}
 
-	public void cancelAllTask() {
+	public void cancelAsyncTask() {
 		for (Thread e : runningTasks) {
 			e.interrupt();
 			runningTasks.remove(e);

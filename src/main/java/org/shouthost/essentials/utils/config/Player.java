@@ -2,6 +2,7 @@ package org.shouthost.essentials.utils.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.authlib.GameProfile;
 import forgeperms.api.ForgePermsAPI;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandManager;
@@ -16,6 +17,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
@@ -24,10 +26,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.MinecraftForge;
 import org.shouthost.essentials.core.Essentials;
-import org.shouthost.essentials.factory.event.LightningStrikeEvent;
-import org.shouthost.essentials.factory.event.PlayerTeleportEvent;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.compat.Location;
@@ -38,13 +37,9 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
-public class Player {
-
-	private EntityPlayerMP entityPlayer;
+public class Player extends EntityPlayerMP {
 	private Players player;
-
 	// private List<Homes> homes;
 	public Player(ICommandSender sender) {
 		this((EntityPlayerMP) sender);
@@ -55,18 +50,22 @@ public class Player {
 	}
 
 	public Player(EntityPlayerMP player) {
+		super(player.mcServer, player.getServerForPlayer(), player.getGameProfile(), player.theItemInWorldManager);
 		if (player != null) {
-			this.entityPlayer = player;
 			if (exist()) load();
 			else create();
 		}
 	}
 
+	public Player(MinecraftServer p_i45285_1_, WorldServer p_i45285_2_, GameProfile p_i45285_3_, ItemInWorldManager p_i45285_4_) {
+		super(p_i45285_1_, p_i45285_2_, p_i45285_3_, p_i45285_4_);
+	}
+
 	private boolean exist() {
 		//first check to see if file exist
-		File check = new File(Essentials.players, this.entityPlayer.getUniqueID().toString().replaceAll("-", "") + ".json");
+		File check = new File(Essentials.players, this.getUniqueID().toString().replaceAll("-", "") + ".json");
 		if (check.exists()) {
-			if (Essentials.playersList.containsKey(this.entityPlayer.getUniqueID())) return true;
+			if (Essentials.playersList.containsKey(this.getUniqueID())) return true;
 			return loadIntoMemory(check);
 		}
 		return false;
@@ -83,11 +82,11 @@ public class Player {
 			return false;
 		}
 		Players player = gson.fromJson(br, Players.class);
-		if (!Essentials.playersList.containsKey(entityPlayer.getPersistentID())) {
-			Essentials.playersList.put(entityPlayer.getPersistentID(), player);
+		if (!Essentials.playersList.containsKey(this.getPersistentID())) {
+			Essentials.playersList.put(this.getPersistentID(), player);
 		}
-		if (!Essentials.playerList.containsKey(entityPlayer.getPersistentID())) {
-			Essentials.playerList.put(entityPlayer.getPersistentID(), this);
+		if (!Essentials.playerList.containsKey(this.getPersistentID())) {
+			Essentials.playerList.put(this.getPersistentID(), this);
 		}
 		try {
 			br.close();
@@ -99,40 +98,31 @@ public class Player {
 	}
 
 	private void load() {
-		this.player = Essentials.playersList.get(this.entityPlayer.getUniqueID());
+		this.player = Essentials.playersList.get(this.getUniqueID());
 	}
 
 	private void create() {
 		Players newPlayer = new Players();
-		newPlayer.setPlayername(this.entityPlayer.getDisplayName());
-		newPlayer.setUuid(this.entityPlayer.getUniqueID().toString().replaceAll("-", ""));
-		newPlayer.setWorld(this.entityPlayer.worldObj.provider.dimensionId);
-		newPlayer.setPosX(this.entityPlayer.posX);
-		newPlayer.setPosY(this.entityPlayer.posY);
-		newPlayer.setPosZ(this.entityPlayer.posZ);
+		newPlayer.setPlayername(this.getDisplayName());
+		newPlayer.setUuid(this.getUniqueID().toString().replaceAll("-", ""));
+		newPlayer.setWorld(this.worldObj.provider.dimensionId);
+		newPlayer.setPosX(this.posX);
+		newPlayer.setPosY(this.posY);
+		newPlayer.setPosZ(this.posZ);
 		newPlayer.setBanned(false);
 		newPlayer.setMuted(false);
 		newPlayer.setJailed(false);
 		this.player = newPlayer;
-		Essentials.playersList.put(this.entityPlayer.getUniqueID(), newPlayer);
-	}
-
-	public UUID getUUID() {
-		return UUID.fromString(get().getUuid());
+		Essentials.playersList.put(this.getUniqueID(), newPlayer);
 	}
 
 	public String getPlayerName() {
-		return this.entityPlayer.getDisplayName();
+		return this.getDisplayName();
 	}
 
 	//TODO finish implementing everything so we dont have to call this directly
 	public Players get() {
 		return this.player;
-	}
-
-	//this will be temp until most of whats needed gets implemented into this class
-	public EntityPlayerMP getPlayer() {
-		return entityPlayer;
 	}
 
 	public void setHome(String name) {
@@ -180,22 +170,22 @@ public class Player {
 
 	public void kick(String reason) {
 		if (reason == null) {
-			this.entityPlayer.playerNetServerHandler.kickPlayerFromServer("Kicked from the server");
+			this.playerNetServerHandler.kickPlayerFromServer("Kicked from the server");
 		} else {
-			this.entityPlayer.playerNetServerHandler.kickPlayerFromServer(reason);
+			this.playerNetServerHandler.kickPlayerFromServer(reason);
 		}
 	}
 
 	public void sendPacket(Packet packet) {
-		this.entityPlayer.playerNetServerHandler.sendPacket(packet);
+		this.playerNetServerHandler.sendPacket(packet);
 	}
 
 	public WorldSettings.GameType getGameMode() {
-		return this.entityPlayer.theItemInWorldManager.getGameType();
+		return this.theItemInWorldManager.getGameType();
 	}
 
 	public void setGameMode(WorldSettings.GameType type) {
-		this.entityPlayer.theItemInWorldManager.setGameType(type);
+		this.theItemInWorldManager.setGameType(type);
 	}
 
 	public void delhome(Homes home) {
@@ -205,32 +195,33 @@ public class Player {
 	public void exec(String command) {
 		//TODO: make player execute a command ?
 		ICommandManager sender = MinecraftServer.getServer().getCommandManager();
-		sender.executeCommand((ICommandSender) this.entityPlayer, command);
+		sender.executeCommand((ICommandSender) this, command);
 	}
 
+
 	public Location getLocation() {
-		return new Location(getWorld(), getPosX(), getPosY(), getPosZ(), entityPlayer.getRotationYawHead(), entityPlayer.getEyeHeight());
+		return new Location(getWorld(), getPosX(), getPosY(), getPosZ(), getRotationYawHead(), getEyeHeight());
 	}
 
 	public double getPosX() {
-		return this.entityPlayer.posX;
+		return this.posX;
 	}
 
 	public double getPosY() {
-		return this.entityPlayer.posY;
+		return this.posY;
 	}
 
 	public double getPosZ() {
-		return this.entityPlayer.posZ;
+		return this.posZ;
 	}
 
-	public void viewInventory(EntityPlayerMP target) {
+	public void viewInventory(Player target) {
 		//TODO: Add permission nodes to check to see if player if view and or modify inventory of its target
 		if (target == null || target.isDead) {
 			target.closeScreen();
 			return;
 		}
-		this.entityPlayer.displayGUIChest(new InventoryWatch(this.entityPlayer, target));
+		this.displayGUIChest(new InventoryWatch(this, target));
 	}
 
 	public void giveItem(ItemStack item) {
@@ -239,24 +230,24 @@ public class Player {
 			return;
 		}
 
-		EntityItem i = getPlayer().dropPlayerItemWithRandomChoice(item, false);
+		EntityItem i = this.dropPlayerItemWithRandomChoice(item, false);
 		i.delayBeforeCanPickup = 0;
-		i.func_145797_a(this.entityPlayer.getDisplayName());
+		i.func_145797_a(this.getDisplayName());
 
 	}
 
 	public void suicide() {
-		if (this.entityPlayer.isDead) return;
-		getPlayer().setDead();
+		if (this.isDead) return;
+		this.setDead();
 	}
 
 	public World getWorld() {
-		return this.entityPlayer.worldObj;
+		return this.worldObj;
 	}
 
 	public boolean has(String node) {
 		if (ForgePermsAPI.permManager == null) return true;
-		return ForgePermsAPI.permManager.canAccess(this.entityPlayer.getDisplayName(), getWorld().getWorldInfo().getWorldName(), node);
+		return ForgePermsAPI.permManager.canAccess(this.getDisplayName(), getWorld().getWorldInfo().getWorldName(), node);
 	}
 
 	public Homes getHome(String name) {
@@ -308,6 +299,14 @@ public class Player {
 		if (!this.player.isMuted()) return;
 		this.player.setMuted(false);
 		save();
+	}
+
+	public String getMuteReaosn() {
+		return player.getMuteReason();
+	}
+
+	public String getBannedReason() {
+		return player.getBanReason();
 	}
 
 	public void warn(String reason) {
@@ -364,7 +363,7 @@ public class Player {
 			sendMessage(msg.split("\n"));
 			return;
 		}
-		this.entityPlayer.addChatMessage(new ChatComponentText(msg));
+		this.addChatMessage(new ChatComponentText(msg));
 	}
 
 	public boolean sendMessageTo(String name, String msg) {
@@ -399,9 +398,6 @@ public class Player {
 	}
 
 	public void strike(Location loc) {
-		LightningStrikeEvent event = new LightningStrikeEvent(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		MinecraftForge.EVENT_BUS.post(event);
-		if (event.isCanceled()) return;
 		loc.getWorld().addWeatherEffect(new EntityLightningBolt(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()));
 	}
 
@@ -410,7 +406,7 @@ public class Player {
 	}
 
 	public int refresh(int r) {
-		WorldServer worldServer = (WorldServer) entityPlayer.worldObj;
+		WorldServer worldServer = (WorldServer) this.worldObj;
 		int radius = r != 0 ? (r <= 30 ? r : 30) : 20;
 		int centerX = getLocation().getBlockX();
 		int centerY = getLocation().getBlockY();
@@ -429,21 +425,21 @@ public class Player {
 				}
 			}
 		}
-		if (entityPlayer.getHeldItem() != null)
-			entityPlayer.updateHeldItem();
-		if (entityPlayer.isRiding()) {
-			entityPlayer.updateRidden();
-			entityPlayer.updateRiderPosition();
+		if (this.getHeldItem() != null)
+			this.updateHeldItem();
+		if (this.isRiding()) {
+			this.updateRidden();
+			this.updateRiderPosition();
 		}
 		return c.size();
 	}
 
 	public void teleportTo(World world, int x, int y, int z, float yaw, float pitch) {
 		if (world == null) return;
-		if (this.entityPlayer.worldObj.provider.dimensionId != world.provider.dimensionId)
-			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) this.entityPlayer, world.provider.dimensionId);
-		this.entityPlayer.setPositionAndUpdate(x, y, z);
-		entityPlayer.setPositionAndRotation(x, y, z, yaw, pitch);
+		if (this.worldObj.provider.dimensionId != world.provider.dimensionId)
+			MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension(this, world.provider.dimensionId);
+		this.setPositionAndUpdate(x, y, z);
+		this.setPositionAndRotation(x, y, z, yaw, pitch);
 		updateCoords(x, y, z);
 		save();
 	}
@@ -468,17 +464,13 @@ public class Player {
 
 	public void teleport(Location loc) {
 
-		if (getHealth() == 0 || entityPlayer.isDead) return;
-		if (entityPlayer.ridingEntity != null || entityPlayer.isRiding()) return;
+		if (getHealth() == 0 || this.isDead) return;
+		if (this.ridingEntity != null || this.isRiding()) return;
 
 		Location from = getLocation();
 		Location to = loc;
+		teleportTo(to);
 
-		PlayerTeleportEvent event = new PlayerTeleportEvent(this, from, to);
-		MinecraftForge.EVENT_BUS.post(event);
-		if (!event.isCanceled()) {
-			teleportTo(to);
-		}
 	}
 
 	public void warpTo(String name) {
@@ -486,24 +478,16 @@ public class Player {
 			if (warp.name.equalsIgnoreCase(name)) teleport(warp.loc);
 	}
 
-	public float getHealth() {
-		return this.entityPlayer.isDead ? 0 : this.entityPlayer.getHealth();
-	}
-
-	public void setHealth(int health) {
-		this.entityPlayer.setHealth(health);
-	}
-
 	public InetSocketAddress getAddress() {
-		if (entityPlayer.isClientWorld()) return null;
-		SocketAddress addr = entityPlayer.playerNetServerHandler.netManager.getSocketAddress();
+		if (this.isClientWorld()) return null;
+		SocketAddress addr = this.playerNetServerHandler.netManager.getSocketAddress();
 		if (addr instanceof InetSocketAddress) return (InetSocketAddress) addr;
 		return null;
 	}
 
 	public void sendBlockChange(Location loc, Block block) {
 		if (loc.getWorld().isRemote) return;
-		if (entityPlayer.playerNetServerHandler.netManager == null) return;
+		if (this.playerNetServerHandler.netManager == null) return;
 		S23PacketBlockChange change = new S23PacketBlockChange(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld());
 		change.field_148883_d = block;
 		change.field_148884_e = new Worlds(loc.getWorld()).getBlockMetadata(loc);
@@ -513,7 +497,7 @@ public class Player {
 
 	public void sendSound(Location loc, String name, float volume, float pitch) {
 		if (loc.getWorld().isRemote) return;
-		if (entityPlayer.playerNetServerHandler.netManager == null) return;
+		if (this.playerNetServerHandler.netManager == null) return;
 		S29PacketSoundEffect sound = new S29PacketSoundEffect(name, loc.getX(), loc.getY(), loc.getZ(), volume, pitch);
 		sendPacket(sound);
 	}
@@ -522,11 +506,11 @@ public class Player {
 		//TODO: Work on effects
 		//S28PacketEffect effects = new S28PacketEffect(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), );
 //		sendPacket(effects);
-		entityPlayer.worldObj.spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), width, motionX, motionZ);
+		this.worldObj.spawnParticle(particle, loc.getX(), loc.getY(), loc.getZ(), width, motionX, motionZ);
 	}
 
 	public Location getEyeLocation(boolean air) {
-		MovingObjectPosition loc = entityPlayer.rayTrace(100, 1.5F);
+		MovingObjectPosition loc = this.rayTrace(100, 1.5F);
 		Location n = new Location(getWorld(), loc.blockX, loc.blockY, loc.blockZ);
 		if (n.getBlock().equals(Blocks.air) && !air) {
 			//iterate down until block isnt air since we dont want to get air block

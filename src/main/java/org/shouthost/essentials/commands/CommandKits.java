@@ -1,14 +1,11 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by Darius on 5/20/2014.
- */
-public class CommandKits extends ECommandBase {
+public class CommandKits extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.kits";
@@ -30,12 +27,12 @@ public class CommandKits extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return EnumChatFormatting.RED + "/kits [<kitname>]";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+	public void processCommand(Player player, List<String> args) {
 
 	}
 }

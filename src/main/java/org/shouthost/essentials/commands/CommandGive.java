@@ -1,13 +1,13 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
 /**
  * Created by Darius on 5/20/2014.
  */
-public class CommandGive extends ECommandBase {
+public class CommandGive extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.give";
@@ -29,12 +29,12 @@ public class CommandGive extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+	public void processCommand(Player player, List<String> args) {
 
 	}
 }

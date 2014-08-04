@@ -1,11 +1,11 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandTpReject extends ECommandBase {
+public class CommandTpReject extends Command {
 	@Override
 	public List<String> getCommandAliases() {
 		ArrayList<String> aliasList = new ArrayList<String>();
@@ -29,7 +29,7 @@ public class CommandTpReject extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> arguments) {
+	protected void processCommand(Player player, List<String> arguments) {
 
 	}
 
@@ -39,7 +39,7 @@ public class CommandTpReject extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 }

@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
@@ -9,7 +8,7 @@ import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandHome extends ECommandBase {
+public class CommandHome extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.home";
@@ -31,21 +30,27 @@ public class CommandHome extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) iCommandSender);
-		if (player.getPlayer().isRiding()) {
+	public void processCommand(final Player player, List<String> args) {
+		if (player.isRiding()) {
 			player.sendMessage(EnumChatFormatting.RED + "You are not allowed to go home while riding an entity");
 			return;
 		}
 		if (args.isEmpty()) {
 			Homes home = player.getHome("home");
-			if (home == null) {
+			if (home == null && player.getHomeCount() == 0) {
 				player.sendMessage(EnumChatFormatting.RED + "You have no set home!");
+				return;
+			} else if (home == null && player.getHomeCount() == 0) {
+				String h = "";
+				for (String hm : player.getHomeList()) {
+					h = h + " " + hm;
+				}
+				player.sendMessage(EnumChatFormatting.YELLOW + h);
 				return;
 			}
 
@@ -57,7 +62,6 @@ public class CommandHome extends ECommandBase {
 			player.teleportTo(world, home.getX(), home.getY(), home.getZ());
 			return;
 		} else if (!args.isEmpty()) {
-			//check to see if world exist before attempting to teleport
 			Homes home = player.getHome(args.get(0));
 			if (home == null) {
 				player.sendMessage(EnumChatFormatting.RED + "You have no set home!");

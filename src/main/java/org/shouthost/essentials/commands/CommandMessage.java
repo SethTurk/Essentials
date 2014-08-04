@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.utils.config.Player;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandMessage extends ECommandBase {
+public class CommandMessage extends Command {
 
 	@Override
 	public List<String> getCommandAliases() {
@@ -34,9 +33,8 @@ public class CommandMessage extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(commandSender));
-		Player player = new Player(commandSender);
+	protected void processCommand(Player player, List<String> args) {
+		if (args.isEmpty() || args.size() < 2) throw new WrongUsageException(getCommandUsage(player));
 		String msg = "";
 		for (int i = 1; i < args.size(); i++)
 			msg += args.get(i) + " ";
@@ -53,7 +51,7 @@ public class CommandMessage extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/message [player] [message]";
 	}
 

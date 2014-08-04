@@ -1,7 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.utils.compat.Location;
@@ -9,7 +7,7 @@ import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandSethome extends ECommandBase {
+public class CommandSethome extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.home.set";
@@ -31,18 +29,17 @@ public class CommandSethome extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player player = new Player((EntityPlayerMP) iCommandSender);
+	public void processCommand(Player player, List<String> args) {
 		if (args.isEmpty()) {
 			String name = "home";
 			player.sendMessage(player.getHomeList().toString());
 			player.setHome(name);
-//            player.save();
+			player.save();
 			player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
 			return;
 		} else {
@@ -55,7 +52,7 @@ public class CommandSethome extends ECommandBase {
 				Location loc = player.getLocation();
 				player.sendMessage(player.getHomeList().toString());
 				player.setHome(args.get(0), (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
-//                player.save();
+				player.save();
 				player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
 				return;
 			}

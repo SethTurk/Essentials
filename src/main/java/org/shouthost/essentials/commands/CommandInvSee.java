@@ -1,13 +1,11 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandInvSee extends ECommandBase {
+public class CommandInvSee extends Command {
 	@Override
 	public List<String> getCommandAliases() {
 		ArrayList<String> aliasList = new ArrayList<String>();
@@ -31,12 +29,11 @@ public class CommandInvSee extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		Player player = new Player((EntityPlayerMP) commandSender);
+	protected void processCommand(Player player, List<String> args) {
 		if (args.size() <= 0) {
-			player.viewInventory((net.minecraft.entity.player.EntityPlayerMP) commandSender);
+			player.viewInventory(player);
 		} else {
-			EntityPlayerMP target = getPlayerFromString(args.get(0));
+			Player target = new Player(args.get(0));
 			if (target == null || target.isDead) {
 				return;
 			}
@@ -50,7 +47,7 @@ public class CommandInvSee extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 }

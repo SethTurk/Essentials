@@ -18,6 +18,7 @@ import org.shouthost.essentials.utils.compat.Location;
  * This may soon change so that it can support blocks, entities (creatures), possibly even item entites.
  */
 
+@Deprecated//TODO: Switch to BlockSnapshot when @bloodmc releases forge with the place event
 public class Snapshot {
 	public Worlds world;
 	private Location location;

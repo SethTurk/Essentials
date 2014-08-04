@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
 import org.shouthost.essentials.utils.config.Player;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandItem extends ECommandBase {
+public class CommandItem extends Command {
 	@Override
 	public List<String> getCommandAliases() {
 		ArrayList<String> aliasList = new ArrayList<String>();
@@ -23,23 +22,22 @@ public class CommandItem extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/item";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, List<String> args) {
-		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(sender));
-		Player player = new Player(sender);
+	public void processCommand(Player player, List<String> args) {
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
 		//TODO: rethink method for getItemByName()
 		ItemStack item = null;
 		if (args.size() == 1) {
-			item = new ItemStack(getItemByText(sender, args.get(0)), 64, 64);
+			item = new ItemStack(getItemByText(player, args.get(0)), 64, 64);
 		} else if (args.size() == 2) {
 			int stackSize = Integer.parseInt(args.get(1));
 			System.out.println("ItemStack size = " + stackSize);
 			//int i = parseIntBounded(sender, args.get(1), stackSize, stackSize);
-			item = new ItemStack(getItemByText(sender, args.get(0)), stackSize, stackSize);
+			item = new ItemStack(getItemByText(player, args.get(0)), stackSize, stackSize);
 		}
 		if (item == null) return;
 		player.giveItem(item);

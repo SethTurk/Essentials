@@ -1,13 +1,10 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by Darius on 5/20/2014.
- */
-public class CommandButcher extends ECommandBase {
+public class CommandButcher extends Command {
 	//TODO: Will this command stay or go?
 	@Override
 	public String getCommandName() {
@@ -15,13 +12,19 @@ public class CommandButcher extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-
+	public void processCommand(Player player, List<String> args) {
+		boolean passive = false;
+		boolean hostile = true;
+		final int radius = 10;
+		if (!args.isEmpty()) {
+			if (args.contains("+p") && !args.contains("-p")) passive = true;
+			if (args.contains("+h") && !args.contains("-h")) hostile = true;
+		}
 	}
 
 	@Override

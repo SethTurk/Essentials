@@ -8,7 +8,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.server.MinecraftServer;
 import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.events.PlayerEvents;
-import org.shouthost.essentials.factory.CraftTweaksEventFactory;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
@@ -60,11 +59,7 @@ public class Essentials {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		playerEvent = new PlayerEvents();
-/*
-        itemDB = new ItemDB();
-*/
 		schedule = new IScheduler();
-		new CraftTweaksEventFactory();
 	}
 
 	@EventHandler
@@ -91,6 +86,7 @@ public class Essentials {
 		event.registerServerCommand(new CommandSmite());
 		event.registerServerCommand(new CommandSetWarp());
 		event.registerServerCommand(new CommandDelhome());
+		event.registerServerCommand(new CommandButcher());
 		//Data.LoadPlayers();
 		DataUtils.LoadKits();
 		DataUtils.LoadBooks();

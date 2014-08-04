@@ -21,8 +21,8 @@ group = "org.shouthost.essentials"
 archivesBaseName = "Essentials"
 
 minecraft {
-	version = "1.7.10-10.13.0.1179"
-	assetDir = "run/assets"
+    version = "1.7.10-10.13.0.1197"
+    assetDir = "run/assets"
 }
 
 processResources {

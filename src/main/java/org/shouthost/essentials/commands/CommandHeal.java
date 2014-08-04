@@ -1,16 +1,12 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-/**
- * Created by Darius on 5/20/2014.
- */
-public class CommandHeal extends ECommandBase {
+public class CommandHeal extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.heal";
@@ -32,16 +28,14 @@ public class CommandHeal extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/heal [<player>]";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		EntityPlayer p = (EntityPlayer) iCommandSender;
-		Player player = new Player(p);
+	public void processCommand(Player player, List<String> args) {
 		if (args.isEmpty()) {
-			if (!(iCommandSender instanceof EntityPlayer)) return;
+			if (!(player instanceof EntityPlayer)) return;
 			if (!player.has(getPermissionNode() + ".self")) {
 				player.sendMessage(EnumChatFormatting.RED + "You do not have permission to this action");
 				return;

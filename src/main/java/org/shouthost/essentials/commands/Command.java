@@ -6,7 +6,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import org.shouthost.essentials.utils.config.Player;
 
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ECommandBase extends CommandBase {
+public abstract class Command extends CommandBase {
 
 	public abstract String getPermissionNode();
 
@@ -25,6 +24,13 @@ public abstract class ECommandBase extends CommandBase {
 	public boolean canUseWithoutPermission() {
 		return false;
 	}
+
+	@Override
+	public String getCommandUsage(ICommandSender iCommandSender) {
+		return getCommandUsage(new Player(iCommandSender));
+	}
+
+	public abstract String getCommandUsage(Player player);
 
 	@Override
 	public boolean canCommandSenderUseCommand(ICommandSender commandSender) {
@@ -52,12 +58,12 @@ public abstract class ECommandBase extends CommandBase {
 	public final void processCommand(ICommandSender commandSender, String... argumentsArray) {
 		if (!(commandSender instanceof EntityPlayer) && !canConsoleUseCommand())
 			throw new WrongUsageException(getCommandUsage(commandSender));
-		processCommand(commandSender, new ArrayList<String>(Arrays.asList(argumentsArray)));
+		processCommand(new Player(commandSender), new ArrayList<String>(Arrays.asList(argumentsArray)));
 	}
 
-	protected abstract void processCommand(ICommandSender commandSender, List<String> args);
+	protected abstract void processCommand(Player player, List<String> args);
 
-	public EntityPlayerMP getPlayerFromString(String name) {
-		return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
+	public Player getPlayerFromString(String name) {
+		return new Player(name);
 	}
 }

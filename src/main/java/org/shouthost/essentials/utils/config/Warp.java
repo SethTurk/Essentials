@@ -9,7 +9,6 @@ import org.shouthost.essentials.json.warps.Warps;
 import org.shouthost.essentials.utils.compat.Location;
 
 import java.io.*;
-import java.util.concurrent.Callable;
 
 public class Warp {
 	//TODO: Rethink on using this class for warps or not
@@ -45,26 +44,18 @@ public class Warp {
 		warp.setYaw(loc.getYaw());
 		warp.setPitch(loc.getPitch());
 
-		Boolean isSaved = (Boolean) Essentials.schedule.scheduleSyncTask(new Callable() {
-			@Override
-			public Boolean call() throws Exception {
-				Gson gson = new GsonBuilder().setPrettyPrinting().create();
-				String json = gson.toJson(warp);
-				File file = new File(Essentials.warps, warp.getName() + ".json");
-				if (file.exists() && file.isFile()) file.delete();
-				try {
-					Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-					writer.write(json);
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return false;
-				}
-				return true;
-			}
-		});
-		if (!isSaved) {
-			System.out.println("[ERROR] - Could not save warp " + name);
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(warp);
+		File file = new File(Essentials.warps, warp.getName() + ".json");
+		if (file.exists() && file.isFile()) file.delete();
+		try {
+			Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+			writer.write(json);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
 	}
 }

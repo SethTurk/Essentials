@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -10,10 +9,7 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Darius on 5/21/2014.
- */
-public class CommandLag extends ECommandBase {
+public class CommandLag extends Command {
 	private static long mean(long[] values) {
 
 		long sum = 0l;
@@ -38,14 +34,12 @@ public class CommandLag extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		Player player = new Player((net.minecraft.entity.player.EntityPlayerMP) iCommandSender);
-
+	public void processCommand(Player player, List<String> args) {
 		//Uptime
 		Long uptime = ManagementFactory.getRuntimeMXBean().getStartTime();
 

@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.utils.config.Player;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Warp;
 
 import java.util.List;
 
-public class CommandSetWarp extends ECommandBase {
+public class CommandSetWarp extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.setwarp";
@@ -25,9 +24,8 @@ public class CommandSetWarp extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(commandSender));
-		Player player = new Player(commandSender);
+	protected void processCommand(Player player, List<String> args) {
+		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
 		Warp warp = new Warp(args.get(0), player.getLocation());
 		warp.save();
 		player.sendMessage(EnumChatFormatting.GREEN + "Warp '" + args.get(0) + "' have been created");
@@ -39,7 +37,7 @@ public class CommandSetWarp extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return EnumChatFormatting.RED + "/setwarp <name>";
 	}
 }

@@ -1,7 +1,6 @@
 package org.shouthost.essentials.utils.config;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -11,10 +10,10 @@ import net.minecraft.item.ItemStack;
  */
 
 public class InventoryWatch implements IInventory {
-	private final EntityPlayerMP viewer;
-	private final EntityPlayerMP player;
+	private final Player viewer;
+	private final Player player;
 
-	public InventoryWatch(EntityPlayerMP viewer, EntityPlayerMP player) {
+	public InventoryWatch(Player viewer, Player player) {
 		this.viewer = viewer;
 		this.player = player;
 	}

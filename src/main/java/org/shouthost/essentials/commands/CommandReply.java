@@ -1,11 +1,11 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandReply extends ECommandBase {
+public class CommandReply extends Command {
 
 	@Override
 	public List<String> getCommandAliases() {
@@ -30,7 +30,7 @@ public class CommandReply extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> arguments) {
+	protected void processCommand(Player player, List<String> arguments) {
 
 	}
 
@@ -40,7 +40,7 @@ public class CommandReply extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/reply <message>";
 	}
 }

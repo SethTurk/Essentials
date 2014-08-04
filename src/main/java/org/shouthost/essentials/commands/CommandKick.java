@@ -1,16 +1,12 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-public class CommandKick extends ECommandBase {
+public class CommandKick extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.kick";
@@ -32,20 +28,19 @@ public class CommandKick extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/kick <player> [reason]";
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
-		if (args.size() <= 0) throw new WrongUsageException(getCommandUsage(iCommandSender));
-		EntityPlayerMP target = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args.get(0));
-		Player player = new Player(target);
-		if (player == null) {
-			iCommandSender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Player " + args.get(0) + " does not exist on the server."));
+	public void processCommand(Player player, List<String> args) {
+		if (args.size() <= 0) throw new WrongUsageException(getCommandUsage(player));
+		Player target = new Player(args.get(0));
+		if (target == null) {
+			player.sendMessage(EnumChatFormatting.RED + "Player " + args.get(0) + " does not exist on the server.");
 			return;
 		}
 
-		player.kick(args.get(1));
+		target.kick(args.get(1));
 	}
 }

@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.utils.config.Player;
@@ -8,7 +7,7 @@ import org.shouthost.essentials.utils.config.Utils;
 
 import java.util.List;
 
-public class CommandTpAccept extends ECommandBase {
+public class CommandTpAccept extends Command {
 	@Override
 	public String getPermissionNode() {
 		return "essentials.tpa.accept";
@@ -25,13 +24,12 @@ public class CommandTpAccept extends ECommandBase {
 	}
 
 	@Override
-	protected void processCommand(ICommandSender commandSender, List<String> args) {
-		Player player = new Player(commandSender);
-		if (Essentials.tpRequest.containsKey(player.getUUID())) {
-			Player target = Utils.getPlayerFromUUID(Essentials.tpRequest.get(player.getUUID()));
+	protected void processCommand(Player player, List<String> args) {
+		if (Essentials.tpRequest.containsKey(player.getPersistentID())) {
+			Player target = Utils.getPlayerFromUUID(Essentials.tpRequest.get(player.getPersistentID()));
 			target.sendMessage("" + player.getPlayerName() + " accepted request");
 			player.teleport(target.getLocation());
-			Essentials.tpRequest.remove(player.getUUID());
+			Essentials.tpRequest.remove(player.getPersistentID());
 			return;
 		} else {
 			player.sendMessage(EnumChatFormatting.RED + "You have no request available at this time");
@@ -44,7 +42,7 @@ public class CommandTpAccept extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return "/tpaccept";
 	}
 }

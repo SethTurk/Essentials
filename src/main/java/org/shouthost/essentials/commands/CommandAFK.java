@@ -1,11 +1,10 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.command.ICommandSender;
+import org.shouthost.essentials.utils.config.Player;
 
 import java.util.List;
 
-
-public class CommandAFK extends ECommandBase {
+public class CommandAFK extends Command {
 	@Override
 	public String getPermissionNode() {
 		return null;
@@ -27,12 +26,12 @@ public class CommandAFK extends ECommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender) {
+	public String getCommandUsage(Player player) {
 		return null;
 	}
 
 	@Override
-	public void processCommand(ICommandSender iCommandSender, List<String> args) {
+	public void processCommand(Player player, List<String> args) {
 
 	}
 }
