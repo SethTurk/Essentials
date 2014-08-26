@@ -24,10 +24,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.players.Homes;
 import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.utils.InventoryWatch;
-import org.shouthost.essentials.utils.Location;
-import org.shouthost.essentials.utils.Warp;
-import org.shouthost.essentials.utils.Worlds;
+import org.shouthost.essentials.utils.*;
 import org.shouthost.permissionforge.api.IHandler;
 
 import java.io.*;
@@ -36,6 +33,7 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class Player {
     private Players player;
@@ -44,10 +42,7 @@ public class Player {
     public Player(EntityPlayer player) {
         if (player != null) {
             ePlayer = (EntityPlayerMP) player;
-            if (player != null) {
-                if (exist()) load();
-                else create();
-            }
+            createOrLoadPlayer();
         }
     }
 
@@ -55,52 +50,77 @@ public class Player {
         this((EntityPlayer) sender);
     }
 
-    private boolean exist() {
-        //first check to see if file exist
-        File check = new File(Essentials.players, ePlayer.getUniqueID().toString().replaceAll("-", "") + ".json");
-        if (check.exists()) {
-            if (Essentials.playersList.containsKey(ePlayer.getUniqueID())) return true;
-            try {
-                return loadIntoMemory(check);
-            } catch (IOException e) {
-                e.printStackTrace();
+//    private boolean exist() {
+//        //first check to see if file exist
+//        //TODO rewrite
+//        File file = new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json");
+//
+//        if (check.exists()) {
+//            if (Essentials.playersList.containsKey(ePlayer.getUniqueID())) return true;
+//                return loadIntoMemory(check);
+//        }
+//        return false;
+//    }
+//
+//    private boolean loadIntoMemory(File file) {
+//        if (file == null) return false;
+//        //BufferedReader br = new BufferedReader(new FileReader(file));
+//        this.player = gson.fromJson(FileUtils.loadFile(file.getName()), Players.class);
+//        if (!Essentials.playersList.containsKey(ePlayer.getPersistentID())) {
+//            Essentials.playersList.put(ePlayer.getPersistentID(), this.player);
+//        }
+//        if (!Essentials.playerList.containsKey(ePlayer.getPersistentID())) {
+//            Essentials.playerList.put(ePlayer.getPersistentID(), this);
+//        }
+//        return true;
+//    }
+//
+//    private void load() {
+//        this.player = Essentials.playersList.get(ePlayer.getUniqueID());
+//    }
+
+    /**
+     * When a player login to the server for the first time
+     * we want to create the player file which will include
+     * the basics information for this mod. If the player
+     * already exist, we want to check to see if the file
+     * exist that is marked with the player UUID and if it
+     * does to load that file in memory.
+     */
+    private void createOrLoadPlayer() {
+        //First check to see if player exist in memory
+        if (Essentials.playersList.containsKey(ePlayer.getUniqueID())) {
+            player = Essentials.playersList.get(ePlayer.getUniqueID());
+            return;
+        }
+        //check and see if player file exist
+        if (FileUtils.doesFileExist(new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json"))) {
+            Gson gson = new Gson();
+            BufferedReader br = FileUtils.loadFile(new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json"));
+            player = gson.fromJson(br, Players.class);
+            if (!Essentials.playersList.containsKey(ePlayer.getPersistentID())) {
+                Essentials.playersList.put(ePlayer.getPersistentID(), player);
             }
+            if (!Essentials.playerList.containsKey(ePlayer.getPersistentID())) {
+                Essentials.playerList.put(ePlayer.getPersistentID(), this);
+            }
+            return;
         }
-        return false;
+        //If all else fails then create new player
+
+
+        player = new Players();
+        player.setPlayername(ePlayer.getDisplayName());
+        player.setUuid(ePlayer.getUniqueID().toString());
+        player.setWorld(ePlayer.worldObj.provider.dimensionId);
+        player.setPosX(ePlayer.posX);
+        player.setPosY(ePlayer.posY);
+        player.setPosZ(ePlayer.posZ);
+        Essentials.playersList.put(ePlayer.getUniqueID(), player);
     }
 
-    private boolean loadIntoMemory(File file) throws IOException {
-        if (file == null) return false;
-        Gson gson = new Gson();
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        this.player = gson.fromJson(br, Players.class);
-        if (!Essentials.playersList.containsKey(ePlayer.getPersistentID())) {
-            Essentials.playersList.put(ePlayer.getPersistentID(), this.player);
-        }
-        if (!Essentials.playerList.containsKey(ePlayer.getPersistentID())) {
-            Essentials.playerList.put(ePlayer.getPersistentID(), this);
-        }
-        br.close();
-        return true;
-    }
-
-    private void load() {
-        this.player = Essentials.playersList.get(ePlayer.getUniqueID());
-    }
-
-    private void create() {
-        Players newPlayer = new Players();
-        newPlayer.setPlayername(ePlayer.getDisplayName());
-        newPlayer.setUuid(ePlayer.getUniqueID().toString().replaceAll("-", ""));
-        newPlayer.setWorld(ePlayer.worldObj.provider.dimensionId);
-        newPlayer.setPosX(ePlayer.posX);
-        newPlayer.setPosY(ePlayer.posY);
-        newPlayer.setPosZ(ePlayer.posZ);
-        newPlayer.setBanned(false);
-        newPlayer.setMuted(false);
-        newPlayer.setJailed(false);
-        this.player = newPlayer;
-        Essentials.playersList.put(ePlayer.getUniqueID(), newPlayer);
+    private void createOrLoadPlayer(UUID uuid) {
+        //TODO?
     }
 
     public String getPlayerName() {
@@ -113,7 +133,7 @@ public class Player {
     }
 
     public void setHome(String name) {
-        Homes home = null;
+        Homes home = null;//(name.equalsIgnoreCase("home") ? (getHome("home") != null ? getHome("Home") : new Homes().setName("home")) : new Homes());
         if (name.equalsIgnoreCase("home")) {
             home = getHome("home");
             if (home == null) {
@@ -129,23 +149,17 @@ public class Player {
         int x = (int) this.getPosX();
         int y = (int) this.getPosY();
         int z = (int) this.getPosZ();
-        if (home != null) {
-            home.setX(x);
-            home.setY(y);
-            home.setZ(z);
-            this.player.setHome(home);
-        }
+        home.setX(x);
+        home.setY(y);
+        home.setZ(z);
+        this.player.setHome(home);
+
         save();
     }
 
     public void setHome(String name, int x, int y, int z) {
-        Homes home = null;
-        if (name.equalsIgnoreCase("home")) {
-            home = getHome("home");
-        } else {
-            home = new Homes();
-            home.setName(name);
-        }
+        Homes home = (name.equalsIgnoreCase("home") ? getHome("home") : new Homes());
+        home.setName(name);
         home.setWorld(getWorld().provider.dimensionId);
         home.setX(x);
         home.setY(y);
@@ -155,11 +169,7 @@ public class Player {
     }
 
     public void kick(String reason) {
-        if (reason == null) {
-            ePlayer.playerNetServerHandler.kickPlayerFromServer("Kicked from the server");
-        } else {
-            ePlayer.playerNetServerHandler.kickPlayerFromServer(reason);
-        }
+        ePlayer.playerNetServerHandler.kickPlayerFromServer(reason != null ? reason : "Kicked from the server");
     }
 
     public void sendPacket(Packet packet) {
@@ -176,10 +186,10 @@ public class Player {
 
     public void delhome(Homes home) {
         if (getHome(home.getName()) != null) this.player.getHomes().remove(home);
+        save();
     }
 
     public void exec(String command) {
-        //TODO: make player execute a command ?
         MinecraftServer.getServer().getCommandManager().executeCommand((ICommandSender) this, command);
     }
 

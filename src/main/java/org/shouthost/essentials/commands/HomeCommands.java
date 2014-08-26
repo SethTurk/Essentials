@@ -26,14 +26,14 @@ public class HomeCommands extends CommandListener {
             //if (home == null)
             if (home == null && player.getHomeCount() == 0) {
                 player.sendMessage(EnumChatFormatting.RED + "You have no set home!");
-            } else if (home == null && player.getHomeCount() > 0) {
+            } else if (home != null && player.getHomeCount() > 1) {
                 StringBuilder sb = new StringBuilder();
                 player.sendMessage(EnumChatFormatting.GREEN + "List of Homes:");
                 for (String hm : player.getHomeList()) {
                     sb.append(hm).append(" ");
                 }
                 player.sendMessage(EnumChatFormatting.YELLOW + sb.toString());
-            } else {
+            } else if (home != null) {
                 WorldServer world = MinecraftServer.getServer().worldServerForDimension(home.getWorld());
                 if (world == null) {
                     player.sendMessage(EnumChatFormatting.RED + "Dimension `" + home.getWorld() + " does not exist");

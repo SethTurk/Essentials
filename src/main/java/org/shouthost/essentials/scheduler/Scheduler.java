@@ -6,49 +6,29 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Scheduler {
 
-    private final ConcurrentLinkedQueue<Runnable> scheduledTask = new ConcurrentLinkedQueue<Runnable>();
-    private final ConcurrentLinkedQueue<Thread> runningTasks = new ConcurrentLinkedQueue<Thread>();
+    private final ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
     private int count = 0;
 
     public Scheduler() {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    //TODO:create an queue executor for scheduling runnable task
-    public void scheduleSyncTaskToQueue(Runnable runnable) {
-        scheduledTask.offer(runnable);
-    }
-
     public void scheduleSyncTask(Runnable runnable) {
-        scheduleSyncTask(runnable, generateThreadName());
+        exec.submit(runnable);
     }
 
+    @Deprecated
     public void scheduleSyncTask(Runnable runnable, String name) {
-        Thread thread = new Thread(runnable, name);
-        runningTasks.offer(thread);
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-        }
-        runningTasks.remove(thread);
-    }
-
-    //TODO:Redo scheduleTickTask
-    public void scheduleTickTask(Runnable task) {
-        if (scheduledTask.contains(task)) return;
-        scheduledTask.offer(task);
+        exec.execute(runnable);
     }
 
     public void scheduleAsyncTaskDelay(Runnable runnable, long seconds) {
-        final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
         exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
     }
 
@@ -56,39 +36,7 @@ public class Scheduler {
 
     }
 
-    public long scheduleAsyncTask(Runnable runnable) {
-        return scheduleAsyncTask(runnable, generateThreadName());
-    }
-
-    public long scheduleAsyncTask(Runnable runnable, String name) {
-        if (runnable == null) return -1;
-        Thread thread = new Thread(runnable, name);
-        thread.start();
-        runningTasks.offer(thread);
-        return thread.getId();
-    }
-
-    public void cancelAsyncTask(String name) {
-        for (Thread e : runningTasks)
-            if (e.getName().equalsIgnoreCase(name)) {
-                e.interrupt();
-                runningTasks.remove(e);
-            }
-    }
-
-    public void cancelAsyncTask(long id) {
-        for (Thread e : runningTasks)
-            if (e.getId() == id) {
-                e.interrupt();
-                runningTasks.remove(e);
-            }
-    }
-
     public void cancelAsyncTask() {
-        for (Thread e : runningTasks) {
-            e.interrupt();
-            runningTasks.remove(e);
-        }
     }
 
     private String generateThreadName() {
@@ -98,13 +46,7 @@ public class Scheduler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverTick(TickEvent.ServerTickEvent event) {
-//        for(Callable<Object> task : tickTask){
-//            if(task.isScheduleOnTime()){
-//                task.onScheduleComplete();
-//                tickTask.remove(task);
-//            }
-//            task.execute();
-//        }
+
     }
 
 }
