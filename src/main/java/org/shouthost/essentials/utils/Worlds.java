@@ -1,14 +1,14 @@
-package org.shouthost.essentials.utils.config;
+package org.shouthost.essentials.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
-import org.shouthost.essentials.utils.compat.Location;
 
 public class Worlds {
-	private World world = null;
+    //TODO: Purge soon?
+    private World world = null;
 
 	public Worlds(World world) {
 		this.world = world;
@@ -62,17 +62,8 @@ public class Worlds {
 	}
 
 	public int regionCount() {
-		final int[] count = {0};
-		/*CraftTweaks.scheduler.scheduleSyncTask(new Runnable() {
-			@Override
-			public void run() {
-				File file = new File(MinecraftServer.getServer().worldServerForDimension(world.provider.dimensionId).getChunkSaveLocation(), "regions");
-				if (file.isDirectory() && file.exists())
-					count[0] = file.list().length;
-			}
-		});*/
-		return count[0];
-	}
+        return 0;
+    }
 
 	public boolean isChunkLoaded(int x, int z) {
 		return world.getChunkFromChunkCoords(x, z).isChunkLoaded;
@@ -113,11 +104,4 @@ public class Worlds {
 	public void removeTileEntity(Location loc) {
 		world.removeTileEntity(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
-
-	public void tick() {
-		//TODO: Make this tick everything from tile entities, to the world itself
-		world.tick();
-	}
-
-
 }

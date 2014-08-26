@@ -4,15 +4,15 @@ import org.shouthost.essentials.entity.Player;
 
 import java.util.List;
 
-public class CommandWhois extends Command {
+public class CommandFly extends Command {
     @Override
     public String getPermissionNode() {
-        return "essentials.command.whois";
+        return "essentials.command.fly";
     }
 
     @Override
     public boolean canConsoleUseCommand() {
-        return true;
+        return false;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class CommandWhois extends Command {
 
     @Override
     public String getCommandUsage(Player player) {
-        return "/whois <player>";
+        return "/fly";
     }
 
     @Override
@@ -32,6 +32,6 @@ public class CommandWhois extends Command {
 
     @Override
     public String getCommandName() {
-        return "whois";
+        return "fly";
     }
 }

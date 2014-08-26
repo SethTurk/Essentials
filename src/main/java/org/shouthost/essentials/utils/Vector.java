@@ -1,4 +1,4 @@
-package org.shouthost.essentials.utils.compat;
+package org.shouthost.essentials.utils;
 
 import net.minecraft.world.World;
 
@@ -415,8 +415,8 @@ public class Vector {
 	 * @param x The new X component.
 	 * @return This vector.
 	 */
-	public Vector setX(int x) {
-		this.x = x;
+    public Vector setX(float x) {
+        this.x = x;
 		return this;
 	}
 
@@ -426,8 +426,8 @@ public class Vector {
 	 * @param x The new X component.
 	 * @return This vector.
 	 */
-	public Vector setX(double x) {
-		this.x = x;
+    public Vector setX(int x) {
+        this.x = x;
 		return this;
 	}
 
@@ -437,8 +437,8 @@ public class Vector {
 	 * @param x The new X component.
 	 * @return This vector.
 	 */
-	public Vector setX(float x) {
-		this.x = x;
+    public Vector setX(double x) {
+        this.x = x;
 		return this;
 	}
 
@@ -467,8 +467,8 @@ public class Vector {
 	 * @param y The new Y component.
 	 * @return This vector.
 	 */
-	public Vector setY(int y) {
-		this.y = y;
+    public Vector setY(float y) {
+        this.y = y;
 		return this;
 	}
 
@@ -478,8 +478,8 @@ public class Vector {
 	 * @param y The new Y component.
 	 * @return This vector.
 	 */
-	public Vector setY(double y) {
-		this.y = y;
+    public Vector setY(int y) {
+        this.y = y;
 		return this;
 	}
 
@@ -489,8 +489,8 @@ public class Vector {
 	 * @param y The new Y component.
 	 * @return This vector.
 	 */
-	public Vector setY(float y) {
-		this.y = y;
+    public Vector setY(double y) {
+        this.y = y;
 		return this;
 	}
 
@@ -519,8 +519,8 @@ public class Vector {
 	 * @param z The new Z component.
 	 * @return This vector.
 	 */
-	public Vector setZ(int z) {
-		this.z = z;
+    public Vector setZ(float z) {
+        this.z = z;
 		return this;
 	}
 
@@ -530,8 +530,8 @@ public class Vector {
 	 * @param z The new Z component.
 	 * @return This vector.
 	 */
-	public Vector setZ(double z) {
-		this.z = z;
+    public Vector setZ(int z) {
+        this.z = z;
 		return this;
 	}
 
@@ -541,8 +541,8 @@ public class Vector {
 	 * @param z The new Z component.
 	 * @return This vector.
 	 */
-	public Vector setZ(float z) {
-		this.z = z;
+    public Vector setZ(double z) {
+        this.z = z;
 		return this;
 	}
 

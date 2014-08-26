@@ -1,4 +1,4 @@
-package org.shouthost.essentials.utils.compat;
+package org.shouthost.essentials.utils;
 
 public final class NumberConversions {
 	private NumberConversions() {

@@ -1,14 +1,14 @@
 package org.shouthost.essentials.commands;
 
-import org.shouthost.essentials.utils.config.Player;
+import org.shouthost.essentials.entity.Player;
 
 import java.util.List;
 
 public class CommandAFK extends Command {
 	@Override
 	public String getPermissionNode() {
-		return null;
-	}
+        return "essentials.command.afk";
+    }
 
 	@Override
 	public boolean canConsoleUseCommand() {

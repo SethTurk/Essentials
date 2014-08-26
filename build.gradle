@@ -5,7 +5,7 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-	maven {
+        maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
@@ -21,18 +21,18 @@ group = "org.shouthost.essentials"
 archivesBaseName = "Essentials"
 
 minecraft {
-    version = "1.7.10-10.13.0.1197"
-    assetDir = "run/assets"
+    version = "1.7.10-10.13.0.1207"
+    runDir = "run/"
 }
 
 processResources {
-	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version':project.version, 'mcversion':project.minecraft.version
-	}
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
 }
 
 

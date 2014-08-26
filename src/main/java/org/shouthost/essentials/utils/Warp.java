@@ -1,4 +1,4 @@
-package org.shouthost.essentials.utils.config;
+package org.shouthost.essentials.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,13 +6,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.json.warps.Warps;
-import org.shouthost.essentials.utils.compat.Location;
 
 import java.io.*;
 
 public class Warp {
-	//TODO: Rethink on using this class for warps or not
-	public final String name;
+    //TODO: Redo
+    public final String name;
 	public final Location loc;
 
 	public Warp(Warps warp) {

@@ -2,45 +2,45 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
-import org.shouthost.essentials.utils.config.Player;
+import org.shouthost.essentials.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandItem extends Command {
-	@Override
-	public List<String> getCommandAliases() {
-		ArrayList<String> aliasList = new ArrayList<String>();
-		aliasList.add("i");
-		aliasList.add("item");
-		return aliasList;
-	}
+    @Override
+    public List<String> getCommandAliases() {
+        ArrayList<String> aliasList = new ArrayList<String>();
+        aliasList.add("i");
+        aliasList.add("item");
+        return aliasList;
+    }
 
-	@Override
-	public String getCommandName() {
-		return "item";
-	}
+    @Override
+    public String getCommandName() {
+        return "item";
+    }
 
-	@Override
-	public String getCommandUsage(Player player) {
-		return "/item";
-	}
+    @Override
+    public String getCommandUsage(Player player) {
+        return "/item";
+    }
 
-	@Override
-	public void processCommand(Player player, List<String> args) {
-		if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
-		//TODO: rethink method for getItemByName()
-		ItemStack item = null;
-		if (args.size() == 1) {
-			item = new ItemStack(getItemByText(player, args.get(0)), 64, 64);
-		} else if (args.size() == 2) {
-			int stackSize = Integer.parseInt(args.get(1));
-			System.out.println("ItemStack size = " + stackSize);
-			//int i = parseIntBounded(sender, args.get(1), stackSize, stackSize);
-			item = new ItemStack(getItemByText(player, args.get(0)), stackSize, stackSize);
-		}
-		if (item == null) return;
-		player.giveItem(item);
+    @Override
+    public void processCommand(Player player, List<String> args) {
+        if (args.isEmpty()) throw new WrongUsageException(getCommandUsage(player));
+        //TODO: rethink method for getItemByName()
+        ItemStack item = null;
+        if (args.size() == 1) {
+            item = new ItemStack(getItemByText(player.getPlayer(), args.get(0)), 64, 64);
+        } else if (args.size() == 2) {
+            int stackSize = Integer.parseInt(args.get(1));
+            System.out.println("ItemStack size = " + stackSize);
+            //int i = parseIntBounded(sender, args.get(1), stackSize, stackSize);
+            item = new ItemStack(getItemByText(player.getPlayer(), args.get(0)), stackSize, stackSize);
+        }
+        if (item == null) return;
+        player.giveItem(item);
 //		EntityPlayerMP player = (EntityPlayerMP) sender;
 //		float f = 0.7F;
 //		float d0 = player.worldObj.rand.nextFloat() * f + (1.0F - f) * 0.5F;
@@ -53,25 +53,25 @@ public class CommandItem extends Command {
 //			entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
 //		}
 //		player.worldObj.spawnEntityInWorld(entityitem);
-	}
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return "essentials.item";
-	}
+    @Override
+    public String getPermissionNode() {
+        return "essentials.command.item";
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canConsoleUseCommand() {
+        return false;
+    }
 
-	@Override
-	public boolean canCommandBlockUseCommand() {
-		return false;
-	}
+    @Override
+    public boolean canCommandBlockUseCommand() {
+        return false;
+    }
 
-	@Override
-	public boolean canUseWithoutPermission() {
-		return false;
-	}
+    @Override
+    public boolean canUseWithoutPermission() {
+        return false;
+    }
 }

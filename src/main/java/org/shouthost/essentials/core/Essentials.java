@@ -7,15 +7,14 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.server.MinecraftServer;
 import org.shouthost.essentials.commands.*;
+import org.shouthost.essentials.entity.Player;
 import org.shouthost.essentials.events.PlayerEvents;
 import org.shouthost.essentials.json.books.Books;
 import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
-import org.shouthost.essentials.scheduler.IScheduler;
-import org.shouthost.essentials.utils.config.DataUtils;
-import org.shouthost.essentials.utils.config.ItemDB;
-import org.shouthost.essentials.utils.config.Player;
-import org.shouthost.essentials.utils.config.Warp;
+import org.shouthost.essentials.scheduler.Scheduler;
+import org.shouthost.essentials.utils.DataUtils;
+import org.shouthost.essentials.utils.Warp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,18 +27,18 @@ import java.util.UUID;
 public class Essentials {
 
 	public static ArrayList<Kit> usableKit = new ArrayList();
-	public static IScheduler schedule;
-	public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
+    public static Scheduler schedule;
+    public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
 	public static HashMap<UUID, Player> playerList = new HashMap<UUID, Player>();
 	public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
-	public static ArrayList<Warp> warpList = new ArrayList<Warp>();
+    public static ArrayList<Player> isFlying = new ArrayList<>();
+    public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
 
 	public static Essentials instance;
 	public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
-	public static ItemDB itemDB;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -58,9 +57,9 @@ public class Essentials {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		playerEvent = new PlayerEvents();
-		schedule = new IScheduler();
-	}
+        //playerEvent = new PlayerEvents();
+        schedule = new Scheduler();
+    }
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {

@@ -1,6 +1,6 @@
 package org.shouthost.essentials.commands;
 
-import org.shouthost.essentials.utils.config.Player;
+import org.shouthost.essentials.entity.Player;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ public class CommandBan extends Command {
 
 	@Override
 	public String getPermissionNode() {
-		return "essentials.ban";
-	}
+        return "essentials.command.ban";
+    }
 
 	@Override
 	public boolean canConsoleUseCommand() {
