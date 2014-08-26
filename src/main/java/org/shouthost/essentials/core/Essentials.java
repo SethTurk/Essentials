@@ -26,19 +26,20 @@ import java.util.UUID;
 
 public class Essentials {
 
-	public static ArrayList<Kit> usableKit = new ArrayList();
+    public static ArrayList<Kit> usableKit = new ArrayList<Kit>();
     public static Scheduler schedule;
     public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
 	public static HashMap<UUID, Player> playerList = new HashMap<UUID, Player>();
 	public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
-    public static ArrayList<Player> isFlying = new ArrayList<>();
+    public static ArrayList<Player> isFlying = new ArrayList<Player>();
     public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
-
-	public static Essentials instance;
-	public static MinecraftServer server = MinecraftServer.getServer();
+    public static ArrayList<UUID> vanishList = new ArrayList<UUID>();
+    public static Essentials instance;
+    public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
+    private ArrayList<CommandListener> cmdList = new ArrayList<CommandListener>();
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -57,35 +58,20 @@ public class Essentials {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-        //playerEvent = new PlayerEvents();
         schedule = new Scheduler();
+        cmdList.add(new BansCommands());
+        cmdList.add(new HomeCommands());
+        cmdList.add(new ItemCommands());
+        cmdList.add(new MessageCommands());
+        cmdList.add(new TeleportCommands());
+        cmdList.add(new ToolCommands());
+        cmdList.add(new UtilsCommands());
     }
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandAFK());
-		event.registerServerCommand(new CommandBan());
-		event.registerServerCommand(new CommandGive());
-		event.registerServerCommand(new CommandItem());
-		event.registerServerCommand(new CommandKick());
-		event.registerServerCommand(new CommandMute());
-		event.registerServerCommand(new CommandSethome());
-		event.registerServerCommand(new CommandHome());
-		event.registerServerCommand(new CommandHeal());
-		event.registerServerCommand(new CommandLag());
-		event.registerServerCommand(new CommandBurn());
-		event.registerServerCommand(new CommandInvSee());
-		event.registerServerCommand(new CommandSudo());
-		event.registerServerCommand(new CommandVanish());
-		event.registerServerCommand(new CommandKill());
-		event.registerServerCommand(new CommandMessage());
-		event.registerServerCommand(new CommandPing());
-		event.registerServerCommand(new CommandWarp());
-		event.registerServerCommand(new CommandRefresh());
-		event.registerServerCommand(new CommandSmite());
-		event.registerServerCommand(new CommandSetWarp());
-		event.registerServerCommand(new CommandDelhome());
-		event.registerServerCommand(new CommandButcher());
+        CommandManager.registerCommands(cmdList);
+
 		//Data.LoadPlayers();
 		DataUtils.LoadKits();
 		DataUtils.LoadBooks();

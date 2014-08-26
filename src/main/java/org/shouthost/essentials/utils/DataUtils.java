@@ -71,16 +71,11 @@ public class DataUtils {
             if (file == null) break;
             File f = new File(Essentials.books, file);
             if (f.exists() && f.isFile()) {
-                BufferedReader br = null;
                 try {
-                    br = new BufferedReader(new FileReader(f));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Books b = gson.fromJson(br, Books.class);
-                if (!Essentials.book.contains(b))
-                    Essentials.book.add(b);
-                try {
+                    BufferedReader br = new BufferedReader(new FileReader(f));
+                    Books b = gson.fromJson(br, Books.class);
+                    if (!Essentials.book.contains(b))
+                        Essentials.book.add(b);
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -94,23 +89,20 @@ public class DataUtils {
             Gson gson = new Gson();
             if (file == null) break;
             File f = new File(Essentials.warps, file);
-            if (f.exists() && f.isFile()) {
-                BufferedReader br = null;
+            if (f.exists() && f.isFile())
+
                 try {
-                    br = new BufferedReader(new FileReader(f));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Warps b = gson.fromJson(br, Warps.class);
-                Warp warp = new Warp(b);
-                if (!Essentials.warpList.contains(warp))
-                    Essentials.warpList.add(warp);
-                try {
+
+                    BufferedReader br = new BufferedReader(new FileReader(f));
+                    Warps b = gson.fromJson(br, Warps.class);
+                    Warp warp = new Warp(b);
+                    if (!Essentials.warpList.contains(warp))
+                        Essentials.warpList.add(warp);
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+
         }
     }
 }

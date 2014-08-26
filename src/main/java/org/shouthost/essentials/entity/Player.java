@@ -292,7 +292,7 @@ public class Player {
         save();
     }
 
-    public String getMuteReaosn() {
+    public String getMuteReason() {
         return player.getMuteReason();
     }
 

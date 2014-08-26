@@ -52,6 +52,10 @@ public class Scheduler {
         exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
     }
 
+    public void scheduleAsyncTimerTask(Runnable runnable, long delay, long seconds) {
+
+    }
+
     public long scheduleAsyncTask(Runnable runnable) {
         return scheduleAsyncTask(runnable, generateThreadName());
     }

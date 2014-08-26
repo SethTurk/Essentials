@@ -5,11 +5,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.shouthost.essentials.entity.Player;
 
-/*
- * Taken from ServerTools
- * Will apply some modification to add "events" and calls to allow modification to inventory
- */
-
 public class InventoryWatch implements IInventory {
     private final Player viewer;
     private final Player player;
