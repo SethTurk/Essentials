@@ -16,25 +16,26 @@ public class UtilsCommands extends CommandListener {
 
     @Commands(name = "refresh",
             permission = "essentials.command.refresh",
-            syntax = "",
+            syntax = "Resend chunks around you",
             description = "",
             commandblocks = false,
             console = false)
     public static void refresh(Player player, List<String> args) {
         if (args.size() == 2) {
             Player player2 = getPlayerFromString(args.get(0));
-            player2.refresh(Integer.parseInt(args.get(1)));
-            player2.sendMessage(EnumChatFormatting.GREEN + "chunks have been refreshed");
+            int count = player2.refresh(Integer.parseInt(args.get(1)));
+            player2.sendMessage(EnumChatFormatting.GREEN + String.valueOf(count) + "chunks have been refreshed");
         } else {
-            player.refresh(Integer.parseInt(args.get(0)));
-            player.sendMessage(EnumChatFormatting.GREEN + "chunks have been refreshed");
+            int count = player.refresh(Integer.parseInt(args.get(0)));
+            player.sendMessage(EnumChatFormatting.GREEN + String.valueOf(count) + "chunks have been refreshed");
         }
     }
 
     @Commands(name = "sudo",
             permission = "essentials.command.sudo",
             syntax = "<player> <command>",
-            description = "",
+            alias = {"do", "make"},
+            description = "Force a player to issue a command",
             commandblocks = false,
             console = false)
     public static void sudo(Player player, List<String> args) {
@@ -48,7 +49,8 @@ public class UtilsCommands extends CommandListener {
     @Commands(name = "smite",
             permission = "essentials.command.smite",
             syntax = "[player]",
-            description = "",
+            alias = {"lightning", "thor", "strike"},
+            description = "Strike a player or entity with lightning",
             commandblocks = false,
             console = false)
     public static void smite(Player player, List<String> args) {
@@ -63,9 +65,8 @@ public class UtilsCommands extends CommandListener {
     @Commands(name = "inventorysee",
             permission = "essentials.command.inventorysee",
             syntax = "[player]",
-            description = "",
-            commandblocks = false,
-            console = false)
+            alias = {"invsee"},
+            description = "Able to see players inventory")
     public static void invsee(Player player, List<String> args) {
         if (args.isEmpty()) {
             player.viewInventory(player);
@@ -140,7 +141,7 @@ public class UtilsCommands extends CommandListener {
     @Commands(name = "kill",
             permission = "essentials.command.kill",
             syntax = "[player]",
-            description = "",
+            description = "To kill a player (and soon an entity)",
             commandblocks = false,
             console = false)
     public static void kill(Player player, List<String> args) {

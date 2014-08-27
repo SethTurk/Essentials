@@ -23,8 +23,7 @@ public class Scheduler {
         exec.submit(runnable);
     }
 
-    @Deprecated
-    public void scheduleSyncTask(Runnable runnable, String name) {
+    public void scheduleAsyncTask(Runnable runnable) {
         exec.execute(runnable);
     }
 

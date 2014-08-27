@@ -18,4 +18,6 @@ public @interface Commands {
     boolean console() default false;
 
     boolean commandblocks() default false;
+
+    boolean disableInProduction() default false;
 }

@@ -27,7 +27,7 @@ import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.utils.*;
 import org.shouthost.permissionforge.api.IHandler;
 
-import java.io.*;
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.UUID;
 public class Player {
     private Players player;
     private EntityPlayerMP ePlayer;
-
+    private UUID uuid;
     public Player(EntityPlayer player) {
         if (player != null) {
             ePlayer = (EntityPlayerMP) player;
@@ -46,38 +46,16 @@ public class Player {
         }
     }
 
+    public Player(UUID uuid) {
+        if (uuid != null) {
+            this.uuid = uuid;
+            createOrLoadPlayer(this.uuid);
+        }
+    }
+
     public Player(ICommandSender sender) {
         this((EntityPlayer) sender);
     }
-
-//    private boolean exist() {
-//        //first check to see if file exist
-//        //TODO rewrite
-//        File file = new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json");
-//
-//        if (check.exists()) {
-//            if (Essentials.playersList.containsKey(ePlayer.getUniqueID())) return true;
-//                return loadIntoMemory(check);
-//        }
-//        return false;
-//    }
-//
-//    private boolean loadIntoMemory(File file) {
-//        if (file == null) return false;
-//        //BufferedReader br = new BufferedReader(new FileReader(file));
-//        this.player = gson.fromJson(FileUtils.loadFile(file.getName()), Players.class);
-//        if (!Essentials.playersList.containsKey(ePlayer.getPersistentID())) {
-//            Essentials.playersList.put(ePlayer.getPersistentID(), this.player);
-//        }
-//        if (!Essentials.playerList.containsKey(ePlayer.getPersistentID())) {
-//            Essentials.playerList.put(ePlayer.getPersistentID(), this);
-//        }
-//        return true;
-//    }
-//
-//    private void load() {
-//        this.player = Essentials.playersList.get(ePlayer.getUniqueID());
-//    }
 
     /**
      * When a player login to the server for the first time
@@ -89,19 +67,19 @@ public class Player {
      */
     private void createOrLoadPlayer() {
         //First check to see if player exist in memory
-        if (Essentials.playersList.containsKey(ePlayer.getUniqueID())) {
-            player = Essentials.playersList.get(ePlayer.getUniqueID());
+        if (Essentials.playersList.getIfPresent(ePlayer.getUniqueID()) != null) {
+            player = Essentials.playersList.getIfPresent(ePlayer.getUniqueID());
             return;
         }
         //check and see if player file exist
         if (FileUtils.doesFileExist(new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json"))) {
-            Gson gson = new Gson();
-            BufferedReader br = FileUtils.loadFile(new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json"));
-            player = gson.fromJson(br, Players.class);
-            if (!Essentials.playersList.containsKey(ePlayer.getPersistentID())) {
+            String br = FileUtils.loadFile(new File(Essentials.players, ePlayer.getUniqueID().toString() + ".json"));
+            player = new Gson().fromJson(br, Players.class);
+
+            if (Essentials.playersList.getIfPresent(ePlayer.getUniqueID()) == null) {
                 Essentials.playersList.put(ePlayer.getPersistentID(), player);
             }
-            if (!Essentials.playerList.containsKey(ePlayer.getPersistentID())) {
+            if (Essentials.playerList.getIfPresent(ePlayer.getUniqueID()) == null) {
                 Essentials.playerList.put(ePlayer.getPersistentID(), this);
             }
             return;
@@ -120,7 +98,7 @@ public class Player {
     }
 
     private void createOrLoadPlayer(UUID uuid) {
-        //TODO?
+        //TODO: Create a player that never joined the server
     }
 
     public String getPlayerName() {
@@ -128,7 +106,7 @@ public class Player {
     }
 
     //TODO finish implementing everything so we dont have to call this directly
-    public Players get() {
+    protected Players get() {
         return this.player;
     }
 
@@ -155,6 +133,18 @@ public class Player {
         this.player.setHome(home);
 
         save();
+    }
+
+    public boolean isMuted() {
+        return this.player.isMuted();
+    }
+
+    public boolean isBanned() {
+        return this.player.isBanned();
+    }
+
+    public boolean isJailed() {
+        return this.player.getJailed();
     }
 
     public void setHome(String name, int x, int y, int z) {
@@ -275,12 +265,14 @@ public class Player {
 
     public void updateName(Players player, String name) {
         this.player.setPlayername(name);
+        save();
     }
 
     public void updateCoords(int x, int y, int z) {
         this.player.setPosX(x);
         this.player.setPosY(y);
         this.player.setPosZ(z);
+        save();
     }
 
     public void updateCoords(Location location) {
@@ -320,15 +312,19 @@ public class Player {
         this.player.setBanned(true);
         this.player.setBanReason(reason);
         this.player.setBanTimeout(timeout);
+        save();
     }
 
     public void unban() {
-        if (this.player.isBanned()) this.player.setBanned(false);
+        if (!this.player.isBanned()) return;
+        this.player.setBanned(false);
+        save();
     }
 
     public void updateBan(String reason, int timeout) {
         if (!this.player.getBanReason().contains(reason)) this.player.setBanReason(reason);
         if (this.player.getBanTimeout() != timeout) this.player.setBanTimeout(timeout);
+        save();
     }
 
     public void save() {
@@ -339,14 +335,7 @@ public class Player {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(p);
                 File file = new File(Essentials.players, p.getUuid() + ".json");
-                if (file.exists() && file.isFile()) file.delete();
-                try {
-                    Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-                    writer.write(json);
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                FileUtils.writeToFile(file, json);
             }
         });
     }
@@ -367,9 +356,9 @@ public class Player {
         ePlayer.addChatMessage(new ChatComponentText(msg));
     }
 
-    private EntityPlayerMP resolveName(String name) {
-        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
-    }
+//    private EntityPlayerMP resolveName(String name) {
+//        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
+//    }
 
     public boolean sendMessageTo(Player target, String msg) {
         if (target == null) {
@@ -388,11 +377,6 @@ public class Player {
 
     public void strike(Player target) {
         strike(target.getLocation());
-    }
-
-    public Location getViewLocationAt() {
-
-        return null;
     }
 
     public void strike(Location loc) {

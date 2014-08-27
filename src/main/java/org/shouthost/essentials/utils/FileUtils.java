@@ -1,8 +1,10 @@
 package org.shouthost.essentials.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +17,24 @@ public class FileUtils {
         return dir.exists() && dir.isDirectory();
     }
 
-    public static BufferedReader loadFile(File file) {
-        BufferedReader br = null;
+    public static String loadFile(File file) {
+        byte[] encoded = new byte[0];
         try {
-            BufferedReader b = new BufferedReader(new FileReader(file));
-            br = b;
-            b.close();
-        } catch (java.io.IOException ignored) {
-            //ignored.printStackTrace();
+            encoded = Files.readAllBytes(Paths.get(file.toURI()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return br;
+        return new String(encoded);
+    }
+
+    public static void writeToFile(File file, String data) {
+        try {
+            FileWriter writer = new FileWriter(file, false);
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static List<String> listDirectory(File dir) {

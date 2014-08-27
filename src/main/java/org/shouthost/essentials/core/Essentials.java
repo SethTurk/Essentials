@@ -1,5 +1,7 @@
 package org.shouthost.essentials.core;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -15,10 +17,10 @@ import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.scheduler.Scheduler;
 import org.shouthost.essentials.utils.DataUtils;
 import org.shouthost.essentials.utils.Warp;
+import org.shouthost.permissionforge.api.IHandler;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 
@@ -28,17 +30,17 @@ public class Essentials {
 
     public static ArrayList<Kit> usableKit = new ArrayList<Kit>();
     public static Scheduler schedule;
-    public static HashMap<UUID, Players> playersList = new HashMap<UUID, Players>();
-	public static HashMap<UUID, Player> playerList = new HashMap<UUID, Player>();
-	public static HashMap<UUID, UUID> tpRequest = new HashMap<UUID, UUID>();
     public static ArrayList<Player> isFlying = new ArrayList<Player>();
     public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
     public static ArrayList<UUID> vanishList = new ArrayList<UUID>();
-    public static Essentials instance;
+    public static Cache<UUID, Player> playerList = CacheBuilder.newBuilder().build();
+    public static Cache<UUID, Players> playersList = CacheBuilder.newBuilder().build();
+    //public static Essentials instance;
     public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
+    public static boolean debug = false;
     private ArrayList<CommandListener> cmdList = new ArrayList<CommandListener>();
 
 	@EventHandler
@@ -66,6 +68,7 @@ public class Essentials {
         cmdList.add(new TeleportCommands());
         cmdList.add(new ToolCommands());
         cmdList.add(new UtilsCommands());
+        cmdList.add(new CommonCommands());
     }
 
 	@EventHandler
@@ -78,5 +81,9 @@ public class Essentials {
 		DataUtils.LoadWarps();
 	}
 
+    private boolean doesPermissionExExist() {
+        if (debug) return true;
+        return IHandler.permission != null && IHandler.chat != null;
+    }
 
 }

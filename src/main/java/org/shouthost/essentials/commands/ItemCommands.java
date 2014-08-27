@@ -38,12 +38,12 @@ public class ItemCommands extends CommandListener {
     public static void item(Player player, List<String> args) {
         ItemStack item = null;
         if (args.size() == 1) {
-            item = new ItemStack(CommandBase.getItemByText(player.getPlayer(), args.get(0)), 64, 64);
+            item = new ItemStack(CommandBase.getItemByText(player.getPlayer(), args.get(0)), 1, 64);
         } else if (args.size() == 2) {
-            int stackSize = Integer.parseInt(args.get(1));
+            int stackSize = CommandBase.parseInt(player.getPlayer(), args.get(1));
             System.out.println("ItemStack size = " + stackSize);
             int i = CommandBase.parseIntBounded(player.getPlayer(), args.get(1), stackSize, stackSize);
-            item = new ItemStack(CommandBase.getItemByText(player.getPlayer(), args.get(0)), stackSize, stackSize);
+            item = new ItemStack(CommandBase.getItemByText(player.getPlayer(), args.get(0)), 1, stackSize);
         }
         player.giveItem(item);
 //		EntityPlayerMP player = (EntityPlayerMP) sender;

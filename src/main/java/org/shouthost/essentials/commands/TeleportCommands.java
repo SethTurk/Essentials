@@ -2,6 +2,7 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.entity.Player;
+import org.shouthost.essentials.utils.Location;
 import org.shouthost.essentials.utils.Warp;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class TeleportCommands extends CommandListener {
 
     @Commands(name = "teleport",
             permission = "essentials.command.teleport",
-            syntax = "[<name>] [target]",
+            syntax = "<name|target> [target] [x] [y] [z]",
             alias = {"tp"},
             commandblocks = true,
             console = true)
@@ -43,6 +44,12 @@ public class TeleportCommands extends CommandListener {
         if (args.isEmpty())
             return;
         if (args.size() == 3) {
+            int x = Integer.parseInt(args.get(0));
+            int y = Integer.parseInt(args.get(1));
+            int z = Integer.parseInt(args.get(2));
+            player.teleportTo(player.getWorld(), x, y, z);
+        }
+        if (args.size() == 4) {
             //teleport player to coords
             Player target = getPlayerFromString(args.get(0));
             if (target == null) return;
@@ -50,7 +57,7 @@ public class TeleportCommands extends CommandListener {
             int x = Integer.parseInt(args.get(1));
             int y = Integer.parseInt(args.get(2));
             int z = Integer.parseInt(args.get(3));
-            player.teleportTo(target.getLocation());
+            target.teleportTo(new Location(target.getWorld(), x, y, z));
         } else if (args.size() == 2) {
             //teleport player -> player
             Player target1 = getPlayerFromString(args.get(0));
@@ -58,6 +65,8 @@ public class TeleportCommands extends CommandListener {
             //TODO: add checks for both targets to point out who is online/exist
             if (target1 == null || target2 == null) return;
             target1.teleportTo(target2.getLocation());
+        } else if (args.size() == 1) {
+            player.teleportTo(getPlayerFromString(args.get(0)).getLocation());
         }
     }
 }
