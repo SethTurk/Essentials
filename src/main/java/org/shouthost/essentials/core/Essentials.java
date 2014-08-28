@@ -7,6 +7,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.entity.Player;
@@ -28,23 +29,25 @@ import java.util.UUID;
 
 public class Essentials {
 
-    public static ArrayList<Kit> usableKit = new ArrayList<Kit>();
-    public static Scheduler schedule;
-    public static ArrayList<Player> isFlying = new ArrayList<Player>();
-    public static ArrayList<Warp> warpList = new ArrayList<Warp>();
+	public static ArrayList<Kit> usableKit = new ArrayList<Kit>();
+	public static Scheduler schedule;
+	public static ArrayList<Player> isFlying = new ArrayList<Player>();
+	public static ArrayList<Warp> warpList = new ArrayList<Warp>();
 	public static ArrayList<Books> book = new ArrayList<Books>();
 	public static File base, players, kits, books, warps;
-    public static ArrayList<UUID> vanishList = new ArrayList<UUID>();
-    public static Cache<UUID, Player> playerList = CacheBuilder.newBuilder().build();
-    public static Cache<UUID, Players> playersList = CacheBuilder.newBuilder().build();
-    //public static Essentials instance;
-    public static MinecraftServer server = MinecraftServer.getServer();
+	public static ArrayList<UUID> vanishList = new ArrayList<UUID>();
+	public static Cache<UUID, Player> playerList = CacheBuilder.newBuilder().build();
+	public static Cache<UUID, Players> playersList = CacheBuilder.newBuilder().build();
+	//public static Essentials instance;
+	public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
-    public static boolean debug = false;
-    private ArrayList<CommandListener> cmdList = new ArrayList<CommandListener>();
+	public static boolean debug = false;
+	private ArrayList<CommandListener> cmdList = new ArrayList<CommandListener>();
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		if ((event.getSide() == Side.CLIENT && !debug) || !doesPermissionExExist())
+			throw new RuntimeException((event.getSide() == Side.CLIENT ? "This mod does not work on client side" : "PermissionForge does not exist") + " DO NOT REPORT AS THIS WILL BE IGNORED");
 		base = new File("Essentials");
 		if (!base.exists()) base.mkdir();
 		players = new File(base, "players");
@@ -60,20 +63,20 @@ public class Essentials {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-        schedule = new Scheduler();
-        cmdList.add(new BansCommands());
-        cmdList.add(new HomeCommands());
-        cmdList.add(new ItemCommands());
-        cmdList.add(new MessageCommands());
-        cmdList.add(new TeleportCommands());
-        cmdList.add(new ToolCommands());
-        cmdList.add(new UtilsCommands());
-        cmdList.add(new CommonCommands());
-    }
+		schedule = new Scheduler();
+		cmdList.add(new BansCommands());
+		cmdList.add(new HomeCommands());
+		cmdList.add(new ItemCommands());
+		cmdList.add(new MessageCommands());
+		cmdList.add(new TeleportCommands());
+		cmdList.add(new ToolCommands());
+		cmdList.add(new UtilsCommands());
+		cmdList.add(new CommonCommands());
+	}
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-        CommandManager.registerCommands(cmdList);
+		CommandManager.registerCommands(cmdList);
 
 		//Data.LoadPlayers();
 		DataUtils.LoadKits();
@@ -81,9 +84,9 @@ public class Essentials {
 		DataUtils.LoadWarps();
 	}
 
-    private boolean doesPermissionExExist() {
-        if (debug) return true;
-        return IHandler.permission != null && IHandler.chat != null;
-    }
+	private boolean doesPermissionExExist() {
+		if (debug) return true;
+		return IHandler.permission != null && IHandler.chat != null;
+	}
 
 }
