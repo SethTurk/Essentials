@@ -1,5 +1,6 @@
 package org.shouthost.essentials.commands;
 
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
@@ -63,7 +64,7 @@ public class UtilsCommands extends CommandListener {
 
 	@Commands(name = "inventorysee",
 			permission = "essentials.command.inventorysee",
-			syntax = "[player]",
+			syntax = "<player>",
 			alias = {"invsee"},
 			description = "Able to see players inventory (to be rewritten)")
 	public static void invsee(Player player, List<String> args) {
@@ -73,6 +74,9 @@ public class UtilsCommands extends CommandListener {
 				return;
 			}
 			player.viewInventory(target);
+		} else {
+			player.sendMessage(EnumChatFormatting.RED + "Invalid usage of command");
+			throw new WrongUsageException(EnumChatFormatting.RED + "/invsee <player>");
 		}
 	}
 

@@ -17,6 +17,7 @@ import org.shouthost.essentials.json.kits.Kit;
 import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.scheduler.Scheduler;
 import org.shouthost.essentials.utils.DataUtils;
+import org.shouthost.essentials.utils.FileUtils;
 import org.shouthost.essentials.utils.Warp;
 import org.shouthost.permissionforge.api.IHandler;
 
@@ -48,16 +49,11 @@ public class Essentials {
 	public void preInit(FMLPreInitializationEvent event) {
 		if ((event.getSide() == Side.CLIENT && !debug) || !doesPermissionExExist())
 			throw new RuntimeException((event.getSide() == Side.CLIENT ? "This mod does not work on client side" : "PermissionForge does not exist") + " DO NOT REPORT AS THIS WILL BE IGNORED");
-		base = new File("Essentials");
-		if (!base.exists()) base.mkdir();
-		players = new File(base, "players");
-		if (!players.exists()) players.mkdir();
-		kits = new File(base, "kits");
-		if (!kits.exists()) kits.mkdir();
-		books = new File(base, "books");
-		if (!books.exists()) books.mkdir();
-		warps = new File(base, "warps");
-		if (!warps.exists()) warps.mkdir();
+		base = FileUtils.createDirectory("Essentials");
+		players = FileUtils.createDirectory(base, "players");
+		kits = FileUtils.createDirectory(base, "kits");
+		books = FileUtils.createDirectory(base, "books");
+		warps = FileUtils.createDirectory(base, "warps");
 
 	}
 

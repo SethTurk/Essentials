@@ -11,12 +11,15 @@ public class TeleportCommands extends CommandListener {
 	@Commands(name = "warp",
 			permission = "essentials.command.warp",
 			syntax = "<name>",
-			description = "",
+			description = "To teleport to a set warp point",
 			commandblocks = false,
 			console = false)
 	public static void warp(Player player, List<String> args) {
-		if (args.isEmpty())
-			return;
+		if (args.isEmpty()) {
+
+		}
+
+
 		player.warpTo(args.get(0));
 	}
 

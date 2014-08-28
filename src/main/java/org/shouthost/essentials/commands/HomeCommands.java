@@ -13,9 +13,7 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "home",
             permission = "essentials.command.home",
             syntax = "<name>",
-            description = "",
-            commandblocks = false,
-            console = false)
+		    description = "To teleport to a home")
     public static void home(Player player, List<String> args) {
         if (player.getPlayer().isRiding()) {
             player.sendMessage(EnumChatFormatting.RED + "You are not allowed to go home while riding an entity");
@@ -59,9 +57,7 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "sethome",
             permission = "essentials.command.home.set",
             syntax = "<name>",
-            description = "",
-            commandblocks = false,
-            console = false)
+		    description = "To set a home at your current position")
     public static void sethome(Player player, List<String> args) {
         if (args.isEmpty()) {
             String name = "home";
@@ -84,9 +80,7 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "delhome",
             permission = "essentials.command.home.delete",
             syntax = "<name>",
-            description = "",
-            commandblocks = false,
-            console = false)
+		    description = "To delete a home")
     public static void delhome(Player player, List<String> args) {
         Homes home = player.getHome(args.get(0));
         if (home != null) {
