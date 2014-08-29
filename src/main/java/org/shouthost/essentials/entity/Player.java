@@ -531,10 +531,7 @@ public class Player {
 
         if (ePlayer.getHealth() == 0 || isDead()) return;
         if (ePlayer.ridingEntity != null || ePlayer.isRiding()) return;
-
-        Location from = getLocation();
-        Location to = loc;
-        teleportTo(to);
+        teleportTo(loc);
 
     }
 
