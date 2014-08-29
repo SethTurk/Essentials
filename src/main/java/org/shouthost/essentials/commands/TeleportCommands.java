@@ -79,7 +79,7 @@ public class TeleportCommands extends CommandListener {
 
     }
 
-    @Commands(name = "tpa",
+    @Commands(name = "tpaccept",
             permission = "essentials.command.tpaccept",
             disableInProduction = true)
     public static void tpaccept(Player player, List<String> args) {
