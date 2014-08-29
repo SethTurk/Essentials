@@ -2,12 +2,21 @@ package org.shouthost.essentials.utils;
 
 import scala.actors.threadpool.Arrays;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DateFormat {
+public class DateUtils {
+
+    public static String toTime(long milli) {
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(milli);
+        DateFormat format = new SimpleDateFormat("HH:mm:ss");
+        return format.format(date.getTime());
+    }
 
     public static Long timeToLong(String arg_value) {
 

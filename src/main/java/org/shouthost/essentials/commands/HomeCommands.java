@@ -13,20 +13,20 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "home",
             permission = "essentials.command.home",
             syntax = "<name>",
-		    description = "To teleport to a home")
+            description = "To teleport to a home")
     public static void home(Player player, List<String> args) {
         if (player.getPlayer().isRiding()) {
-            player.sendMessage(EnumChatFormatting.RED + "You are not allowed to go home while riding an entity");
+            player.sendErrorMessage("You are not allowed to go home while riding an entity");
             return;
         }
         if (args.isEmpty()) {
             Homes home = player.getHome("home");
             //if (home == null)
             if (home == null && player.getHomeCount() == 0) {
-                player.sendMessage(EnumChatFormatting.RED + "You have no set home!");
+                player.sendErrorMessage("You have no set home!");
             } else if (home != null && player.getHomeCount() > 1) {
                 StringBuilder sb = new StringBuilder();
-                player.sendMessage(EnumChatFormatting.GREEN + "List of Homes:");
+                player.sendSuccessMessage("List of Homes:");
                 for (String hm : player.getHomeList()) {
                     sb.append(hm).append(" ");
                 }
@@ -34,7 +34,7 @@ public class HomeCommands extends CommandListener {
             } else if (home != null) {
                 WorldServer world = MinecraftServer.getServer().worldServerForDimension(home.getWorld());
                 if (world == null) {
-                    player.sendMessage(EnumChatFormatting.RED + "Dimension `" + home.getWorld() + " does not exist");
+                    player.sendErrorMessage("Dimension `" + home.getWorld() + " does not exist");
                     return;
                 }
                 player.teleportTo(world, home.getX(), home.getY(), home.getZ());
@@ -42,12 +42,12 @@ public class HomeCommands extends CommandListener {
         } else {
             Homes home = player.getHome(args.get(0));
             if (home == null) {
-                player.sendMessage(EnumChatFormatting.RED + "Home `" + args.get(0) + "` does not exist!");
+                player.sendErrorMessage("Home `" + args.get(0) + "` does not exist!");
                 return;
             }
             WorldServer world = MinecraftServer.getServer().worldServerForDimension(home.getWorld());
             if (world == null) {
-                player.sendMessage(EnumChatFormatting.RED + "Dimension `" + home.getWorld() + " does not exist");
+                player.sendErrorMessage("Dimension `" + home.getWorld() + " does not exist");
                 return;
             }
             player.teleportTo(world, home.getX(), home.getY(), home.getZ());
@@ -57,21 +57,21 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "sethome",
             permission = "essentials.command.home.set",
             syntax = "<name>",
-		    description = "To set a home at your current position")
+            description = "To set a home at your current position")
     public static void sethome(Player player, List<String> args) {
         if (args.isEmpty()) {
             String name = "home";
             player.setHome(name);
-            player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
+            player.sendSuccessMessage("Your home have been set!");
         } else {
             //find if home exist
             Homes home = player.getHome(args.get(0));
             if (home != null) {
-                player.sendMessage(EnumChatFormatting.RED + "Home '" + args.get(0) + "' already exist!");
+                player.sendErrorMessage("Home '" + args.get(0) + "' already exist!");
             } else {
                 Location loc = player.getLocation();
                 player.setHome(args.get(0), (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
-                player.sendMessage(EnumChatFormatting.GREEN + "Your home have been set!");
+                player.sendSuccessMessage("Your home have been set!");
             }
 
         }
@@ -80,14 +80,14 @@ public class HomeCommands extends CommandListener {
     @Commands(name = "delhome",
             permission = "essentials.command.home.delete",
             syntax = "<name>",
-		    description = "To delete a home")
+            description = "To delete a home")
     public static void delhome(Player player, List<String> args) {
         Homes home = player.getHome(args.get(0));
         if (home != null) {
             player.delhome(home);
-            player.sendMessage(EnumChatFormatting.GREEN + "Home '" + args.get(0) + "' has been deleted");
+            player.sendSuccessMessage("Home '" + args.get(0) + "' has been deleted");
         } else {
-            player.sendMessage(EnumChatFormatting.RED + "'" + args.get(0) + "' is not a valid home entry");
+            player.sendErrorMessage("'" + args.get(0) + "' is not a valid home entry");
         }
     }
 }

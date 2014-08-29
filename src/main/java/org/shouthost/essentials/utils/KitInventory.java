@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+//TODO: Ignore for now
 public class KitInventory implements IInventory {
     private final EntityPlayerMP player;
 

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Scheduler {
 
     private final ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+    public Object lock = new Object();
     private int count = 0;
 
     public Scheduler() {
@@ -28,16 +29,14 @@ public class Scheduler {
     }
 
     public void scheduleAsyncTaskDelay(Runnable runnable, long seconds) {
-        exec.schedule(runnable, seconds, TimeUnit.MILLISECONDS);
+        exec.schedule(runnable, seconds, TimeUnit.SECONDS);
     }
 
-    public void scheduleAsyncTimerTask(Runnable runnable, long delay, long seconds) {
-
+    public void cancelTask() {
+        exec.shutdown();
     }
 
-    public void cancelAsyncTask() {
-    }
-
+    @Deprecated
     private String generateThreadName() {
         count += 1;
         return "ESS-" + count;

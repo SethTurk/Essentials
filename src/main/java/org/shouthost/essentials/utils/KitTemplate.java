@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+//FIXME: Work on file backend api and implement this into it
 public class KitTemplate {
     private String name;
     private ItemStack[] mainInventory;

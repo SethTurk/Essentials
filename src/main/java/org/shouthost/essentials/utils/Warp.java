@@ -29,9 +29,12 @@ public class Warp {
 	public Warp(String name, World world, double x, double y, double z, float yaw, float pitch) {
 		this.name = name;
 		this.loc = new Location(world, x, y, z, yaw, pitch);
-		if (!Essentials.warpList.contains(this))
-			Essentials.warpList.add(this);
 	}
+
+    public void load() {
+        if (!Essentials.warpList.contains(this))
+            Essentials.warpList.add(this);
+    }
 
 	public void save() {
 		final Warps warp = new Warps();
