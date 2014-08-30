@@ -401,7 +401,7 @@ public class Player {
     }
 
     public void updateBan(String reason, int timeout) {
-        if (!this.player.getBanReason().contains(reason)) this.player.setBanReason(reason);
+        if (!this.player.getBanReason().equalsIgnoreCase(reason)) this.player.setBanReason(reason);
         if (this.player.getBanTimeout() != timeout) this.player.setBanTimeout(timeout);
         save();
     }
@@ -438,10 +438,6 @@ public class Player {
         }
         ePlayer.addChatMessage(new ChatComponentText(msg));
     }
-
-//    private EntityPlayerMP resolveName(String name) {
-//        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
-//    }
 
     public boolean sendMessageTo(Player target, String msg) {
         if (target == null) {
@@ -575,15 +571,16 @@ public class Player {
         return ePlayer.capabilities.allowFlying;
     }
 
+    //FIXME: find workaround for fly speed
     public void fly(float speed) {
         if (!ePlayer.capabilities.allowFlying || !ePlayer.capabilities.isFlying) {
             ePlayer.capabilities.allowFlying = true;
             ePlayer.capabilities.isFlying = true;
-            ePlayer.capabilities.setFlySpeed(speed == 0 ? 2 : speed);
+            //ePlayer.capabilities.setFlySpeed(speed);
         } else {
             ePlayer.capabilities.allowFlying = false;
             ePlayer.capabilities.isFlying = false;
-            ePlayer.capabilities.setFlySpeed(0);
+            //ePlayer.capabilities.setFlySpeed(0);
         }
         ePlayer.sendPlayerAbilities();
     }

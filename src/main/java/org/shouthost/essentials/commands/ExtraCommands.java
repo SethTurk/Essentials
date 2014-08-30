@@ -15,7 +15,7 @@ import org.shouthost.essentials.utils.Vector;
 
 import java.util.List;
 
-public class FunCommands extends CommandListener {
+public class ExtraCommands extends CommandListener {
 
     @Commands(name = "smite",
             permission = "essentials.command.smite",

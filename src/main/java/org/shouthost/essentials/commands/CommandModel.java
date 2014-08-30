@@ -11,52 +11,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandModel extends Command {
-	private final Commands cmd;
-	//private final Class clazz;
-	private final Method method;
+    private final Commands cmd;
+    private final Method method;
 
-	public CommandModel(Commands cmd, Method method) {
-		this.cmd = cmd;
-		this.method = method;
-	}
+    public CommandModel(Commands cmd, Method method) {
+        this.cmd = cmd;
+        this.method = method;
+    }
 
-	@Override
-	public List getCommandAliases() {
-		return new ArrayList<String>(Arrays.asList(cmd.alias()));
-	}
+    @Override
+    public List getCommandAliases() {
+        return new ArrayList<String>(Arrays.asList(cmd.alias()));
+    }
 
-	@Override
-	public String getPermissionNode() {
-		return cmd.permission();
-	}
+    @Override
+    public String getPermissionNode() {
+        return cmd.permission();
+    }
 
-	@Override
-	public boolean canConsoleUseCommand() {
-		return cmd.console();
-	}
+    @Override
+    public boolean canConsoleUseCommand() {
+        return cmd.console();
+    }
 
-	@Override
-	public boolean canCommandBlockUseCommand() {
-		return cmd.commandblocks();
-	}
+    @Override
+    public boolean canCommandBlockUseCommand() {
+        return cmd.commandblocks();
+    }
 
-	@Override
-	public String getCommandUsage(ICommandSender player) {
-		return "/" + cmd.name() + " " + cmd.syntax();
-	}
+    @Override
+    public String getCommandUsage(ICommandSender player) {
+        return "/" + cmd.name() + " " + cmd.syntax();
+    }
 
-	@Override
-	public void processCommand(Player player, List<String> args) {
-		try {
-			method.invoke(null, player, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-			throw new WrongUsageException(getCommandUsage(player.getPlayer()));
-		}
-	}
+    @Override
+    public void processCommand(Player player, List<String> args) {
+        try {
+            method.invoke(null, player, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            throw new WrongUsageException(getCommandUsage(player.getPlayer()));
+        }
+    }
 
-	@Override
-	public String getCommandName() {
-		return cmd.name();
-	}
+    @Override
+    public String getCommandName() {
+        return cmd.name();
+    }
 }

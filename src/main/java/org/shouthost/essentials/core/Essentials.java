@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 
-@Mod(name = "Essentials", modid = "essentials", version = "0.0.1", acceptableRemoteVersions = "*")
+@Mod(name = "EssentialsForge", modid = "essentialsforge", version = "@VERSION@", acceptableRemoteVersions = "*")
 
 public class Essentials {
 
@@ -67,7 +67,7 @@ public class Essentials {
 		cmdList.add(new ToolCommands());
 		cmdList.add(new UtilsCommands());
 		cmdList.add(new CommonCommands());
-        cmdList.add(new FunCommands());
+        cmdList.add(new ExtraCommands());
     }
 
 	@EventHandler

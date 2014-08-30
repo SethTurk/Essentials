@@ -50,20 +50,21 @@ public class PlayerEvents {
     }
 
     //FIXME: Fix hanging when checking for powertool
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void powerToolsCheck(PlayerInteractEvent event) {
-        if (event.world.isRemote) return;
-        EntityPlayerMP pl = (EntityPlayerMP) event.entityPlayer;
-        Player player = new Player(pl);
-        PlayerInteractEvent.Action action = event.action;
-        if ((action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && pl.getCurrentEquippedItem() != null) {
-            if (player.doesPowerToolExist(pl.getCurrentEquippedItem())) {
-                PowerTools pt = player.getPowerTool(pl.getCurrentEquippedItem());
-                if (pl.canCommandSenderUseCommand(0, pt.getCommand())) {
-                    player.exec(pt.getCommand());
+        if (Essentials.debug) {
+            EntityPlayerMP pl = (EntityPlayerMP) event.entityPlayer;
+            Player player = new Player(pl);
+            PlayerInteractEvent.Action action = event.action;
+            if ((action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && pl.getCurrentEquippedItem() != null) {
+                if (player.doesPowerToolExist(pl.getCurrentEquippedItem())) {
+                    PowerTools pt = player.getPowerTool(pl.getCurrentEquippedItem());
+                    if (pl.canCommandSenderUseCommand(0, pt.getCommand())) {
+                        player.exec(pt.getCommand());
+                    }
                 }
-            }
 
+            }
         }
     }
 

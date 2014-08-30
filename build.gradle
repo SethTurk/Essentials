@@ -16,13 +16,23 @@ buildscript {
 }
 apply plugin: "forge"
 
-version = "0.0.1"
+ext.buildProps = file "build.properties"
+
+buildProps.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
+version = "1.7.10-0.0.1"
 group = "org.shouthost.essentials"
-archivesBaseName = "Essentials"
+archivesBaseName = "EssentialsForge"
 
 minecraft {
     version = "1.7.10-10.13.0.1207"
     runDir = "run/"
+    replace "@VERSION@", project.version
+    replaceIn "Essentials.java"
 }
 
 sourceCompatibility = '1.7'
