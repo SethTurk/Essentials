@@ -39,7 +39,7 @@ public class Essentials {
 	//public static Essentials instance;
 	public static MinecraftServer server = MinecraftServer.getServer();
 	public static PlayerEvents playerEvent;
-	public static boolean debug = false;
+	public static boolean debug = true;
 	private ArrayList<CommandListener> cmdList = new ArrayList<CommandListener>();
 
 	@EventHandler

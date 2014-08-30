@@ -11,12 +11,20 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.entity.Player;
+import org.shouthost.essentials.tasks.BackupTask;
 import org.shouthost.essentials.utils.DateUtils;
 
 import java.lang.management.ManagementFactory;
 import java.util.List;
 
 public class UtilsCommands extends CommandListener {
+	@Commands(name = "backup",
+			permission = "essentials.command.backup",
+			disableInProduction = true)
+	public static void backup(Player player, List<String> args) {
+		Essentials.schedule.scheduleAsyncTaskDelay(new BackupTask(), 5L);
+	}
+
     @Commands(name = "refresh",
             permission = "essentials.command.refresh",
             syntax = "Resend chunks around you (Use with caution)",

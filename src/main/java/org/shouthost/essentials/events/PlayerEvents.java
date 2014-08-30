@@ -52,8 +52,8 @@ public class PlayerEvents {
     //FIXME: Fix hanging when checking for powertool
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void powerToolsCheck(PlayerInteractEvent event) {
-        if (Essentials.debug) {
-            EntityPlayerMP pl = (EntityPlayerMP) event.entityPlayer;
+	    if (Essentials.debug && !event.world.isRemote) {
+		    EntityPlayerMP pl = (EntityPlayerMP) event.entityPlayer;
             Player player = new Player(pl);
             PlayerInteractEvent.Action action = event.action;
             if ((action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && pl.getCurrentEquippedItem() != null) {

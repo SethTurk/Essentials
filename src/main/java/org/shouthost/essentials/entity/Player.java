@@ -415,10 +415,12 @@ public class Player {
         Essentials.schedule.scheduleSyncTask(new Runnable() {
             @Override
             public void run() {
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String json = gson.toJson(p);
-                File file = new File(Essentials.players, p.getUuid() + ".json");
-                FileUtils.writeToFile(file, json);
+	            synchronized (Essentials.schedule.lock) {
+		            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		            String json = gson.toJson(p);
+		            File file = new File(Essentials.players, p.getUuid() + ".json");
+		            FileUtils.writeToFile(file, json);
+	            }
             }
         });
     }
