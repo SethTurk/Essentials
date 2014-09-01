@@ -2,6 +2,7 @@ package org.shouthost.essentials.core;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.gson.Gson;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -13,6 +14,7 @@ import org.shouthost.essentials.commands.*;
 import org.shouthost.essentials.entity.Player;
 import org.shouthost.essentials.events.PlayerEvents;
 import org.shouthost.essentials.json.books.Books;
+import org.shouthost.essentials.json.configuration.Configuration;
 import org.shouthost.essentials.json.players.Players;
 import org.shouthost.essentials.scheduler.Scheduler;
 import org.shouthost.essentials.utils.DataUtils;
@@ -51,7 +53,6 @@ public class Essentials {
 		kits = FileUtils.createDirectory(base, "kits");
 		books = FileUtils.createDirectory(base, "books");
 		warps = FileUtils.createDirectory(base, "warps");
-
 	}
 
 	@EventHandler
@@ -68,6 +69,7 @@ public class Essentials {
 		cmdList.add(new UtilsCommands());
 		cmdList.add(new CommonCommands());
         cmdList.add(new ExtraCommands());
+		cmdList.add(new EconomyCommands());
     }
 
 	@EventHandler

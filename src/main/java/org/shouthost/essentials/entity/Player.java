@@ -332,6 +332,7 @@ public class Player {
 
     public List<String> getHomeList() {
         ArrayList<String> list = new ArrayList<String>();
+
         for (Homes home : get().getHomes()) {
             if (!list.contains(home.getName())) list.add(home.getName());
         }
@@ -638,9 +639,9 @@ public class Player {
             Block block = n.getBlock();
             int y = n.getBlockY();
             while (block.equals(Blocks.air)) {
-                y--;
-                block = getWorld().getBlock(loc.blockX, y, loc.blockZ);
-            }
+				y--;
+				block = getWorld().getBlock(loc.blockX, y, loc.blockZ);
+			}
             return new Location(getWorld(), loc.blockX, y, loc.blockZ);
         }
         return n;
@@ -669,4 +670,13 @@ public class Player {
     public void sendSuccessMessage(String message) {
         sendMessage(EnumChatFormatting.GREEN + message);
     }
+
+	public void setBalance(int bal){
+		player.setBalance(bal);
+		save();
+	}
+
+	public int getBalance() {
+		return player.getBalance();
+	}
 }

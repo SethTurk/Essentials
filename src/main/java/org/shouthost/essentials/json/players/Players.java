@@ -12,8 +12,17 @@ public class Players {
     private int logout;
     private Optional optional = new Optional();
     private List<PowerTools> ptools = new ArrayList<>();
+    private int balance = 0;
 
-    public List<PowerTools> getPtools() {
+	public int getBalance() {
+		return balance;
+	}
+
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
+
+	public List<PowerTools> getPtools() {
         return ptools;
     }
 
