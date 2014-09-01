@@ -6,6 +6,8 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.core.Essentials;
@@ -106,5 +108,58 @@ public class ExtraCommands extends CommandListener {
     public static void god(Player player, List<String> args) {
         player.god();
         player.sendSuccessMessage("God mode " + (player.isInvincible() ? "enabled" : "disabled"));
+    }
+
+    @Commands(name = "book",
+            permission = "essentials.command.book",
+            description = "Allowing to create or edit a book",
+            syntax = "",
+            disableInProduction = true)
+    public static void book(Player player, List<String> args) {
+        if (args.isEmpty()) {
+            player.sendErrorMessage("/book [create|edit] [author]");
+        } else if (args.size() == 1 && args.get(0).equalsIgnoreCase("edit")) {
+            if (player.getPlayer().getCurrentEquippedItem() == null || player.getPlayer().getCurrentEquippedItem().getItem() != Items.written_book) {
+                player.sendErrorMessage("You do not have a written book equiped");
+                return;
+            } else if (player.getPlayer().getCurrentEquippedItem() != null && player.getPlayer().getCurrentEquippedItem().getItem() == Items.written_book) {
+                ItemStack book = player.getPlayer().getCurrentEquippedItem();
+                player.getPlayer().displayGUIBook(book);
+            }
+        }
+    }
+
+
+    @Commands(name = "nick",
+            permission = "essentials.command.nick",
+            description = "Give a player a nickname",
+            alias = {"nickname"},
+            syntax = "[player | nick] [nick]",
+            disableInProduction = true)
+    public static void nick(Player player, List<String> args) {
+        if (!args.isEmpty()) {
+            if (args.size() == 2) {
+                Player target = getPlayerFromString(args.get(0));
+                if (target == null) {
+                    player.sendErrorMessage("Invalid player");
+                } else {
+                    target.setNickname(args.get(1));
+                    player.sendSuccessMessage("Nickname successfully been applied");
+                }
+            } else if (args.size() == 1) {
+                Player target = getPlayerFromString(args.get(0));
+                //this will remove the nick name from the player profile
+                if (target == null) {
+                    player.sendErrorMessage("Invalid player");
+                } else {
+                    if (target.getNickname() == target.getPlayerName()) {
+                        player.sendErrorMessage("Player does not have nickname");
+                        return;
+                    }
+                    target.setNickname(null);
+                    player.sendSuccessMessage("Nickname removed");
+                }
+            }
+        }
     }
 }

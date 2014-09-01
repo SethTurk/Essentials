@@ -3,8 +3,6 @@ package org.shouthost.essentials.commands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
@@ -18,12 +16,12 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 
 public class UtilsCommands extends CommandListener {
-	@Commands(name = "backup",
-			permission = "essentials.command.backup",
-			disableInProduction = true)
-	public static void backup(Player player, List<String> args) {
-		Essentials.schedule.scheduleAsyncTaskDelay(new BackupTask(), 5L);
-	}
+    @Commands(name = "backup",
+            permission = "essentials.command.backup",
+            disableInProduction = true)
+    public static void backup(Player player, List<String> args) {
+        Essentials.schedule.scheduleAsyncTaskDelay(new BackupTask(), 5L);
+    }
 
     @Commands(name = "refresh",
             permission = "essentials.command.refresh",
@@ -144,21 +142,14 @@ public class UtilsCommands extends CommandListener {
         }
     }
 
-    //TODO: Rewrite to use a packet system
+    //TODO: Test on server
     @Commands(name = "vanish",
             alias = {"v"},
             permission = "essentials.command.vanish",
             disableInProduction = true)
     public static void vanish(Player player, List<String> args) {
-        if (Essentials.vanishList.contains(player.getUniqueID())) {
-            Essentials.vanishList.remove(player.getUniqueID());
-            MinecraftServer.getServer().getConfigurationManager().playerEntityList.add(player.getPlayer());
-            player.removePotionEffect(Potion.invisibility.id);
-        } else {
-            Essentials.vanishList.add(player.getUniqueID());
-            MinecraftServer.getServer().getConfigurationManager().playerEntityList.remove(player.getPlayer());
-            player.addPotionEffect(new PotionEffect(Potion.invisibility.id, 90000, 90000));
-        }
+        player.vanish();
+        player.sendSuccessMessage("You are " + (player.isVanished() ? "vanished!" : "not vanished!"));
     }
 
     @Commands(name = "kill",

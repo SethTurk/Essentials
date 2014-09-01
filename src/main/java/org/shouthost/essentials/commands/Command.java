@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.shouthost.essentials.entity.Player;
 import org.shouthost.permissionforge.api.IHandler;
 
@@ -32,8 +33,9 @@ public abstract class Command extends CommandBase {
 				(getPermissionNode() != null || getPermissionNode() != "") &&
 				IHandler.permission != null &&
 				!canUseWithoutPermission()) {
-			Player player = CommandListener.getPlayerFromString(((EntityPlayer) commandSender).getDisplayName());
-			return player.hasPermission(getPermissionNode());
+            Player player = CommandListener.getPlayerFromEntity((EntityPlayerMP) commandSender);
+            if (player == null) return super.canCommandSenderUseCommand(commandSender);
+            return player.hasPermission(getPermissionNode());
 		} else return canUseWithoutPermission() || super.canCommandSenderUseCommand(commandSender);
 	}
 

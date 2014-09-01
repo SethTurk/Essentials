@@ -14,4 +14,12 @@ public class CommandListener {
         else
             return new Player(player);
     }
+
+    public static Player getPlayerFromEntity(EntityPlayerMP player) {
+        if (player == null) return null;
+        if (Essentials.playerList.getIfPresent(player.getPersistentID()) != null)
+            return Essentials.playerList.getIfPresent(player.getPersistentID());
+        else
+            return new Player(player);
+    }
 }

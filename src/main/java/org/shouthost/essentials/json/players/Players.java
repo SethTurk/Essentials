@@ -6,6 +6,7 @@ import java.util.List;
 public class Players {
     private String playername;
     private String uuid;
+    private String nickName;
     private Locations location = new Locations();
     private List<Homes> homes = new ArrayList<Homes>();
     private int logout;
@@ -18,6 +19,14 @@ public class Players {
 
     public void setPtools(PowerTools ptool) {
         this.ptools.add(ptool);
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPlayerName() {

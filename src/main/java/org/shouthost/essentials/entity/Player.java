@@ -410,6 +410,30 @@ public class Player {
         ePlayer.setHealth(val);
     }
 
+    public String getNickname() {
+        return (player.getNickName() != null || player.getNickName() == "") ? player.getNickName() : player.getPlayerName();
+    }
+
+    public void setNickname(String nick) {
+        player.setNickName((nick != null || nick != "") ? nick : "");
+        if (ePlayer != null) ePlayer.refreshDisplayName();
+        save();
+    }
+
+    public String getGroup() {
+        return null;
+    }
+
+    public String getPrefix() {
+        if (IHandler.chat == null) return "";
+        return IHandler.chat.getPrefix(ePlayer, ePlayer.worldObj.provider.getDimensionName());
+    }
+
+    public String getSuffix() {
+        if (IHandler.chat == null) return "";
+        return IHandler.chat.getSuffix(ePlayer, ePlayer.worldObj.provider.getDimensionName());
+    }
+
     public void save() {
         final Players p = this.player;
         Essentials.schedule.scheduleSyncTask(new Runnable() {
@@ -575,15 +599,13 @@ public class Player {
 
     //FIXME: find workaround for fly speed
     public void fly(float speed) {
-        if (!ePlayer.capabilities.allowFlying || !ePlayer.capabilities.isFlying) {
-            ePlayer.capabilities.allowFlying = true;
-            ePlayer.capabilities.isFlying = true;
-            //ePlayer.capabilities.setFlySpeed(speed);
-        } else {
+        //if (!canFly()|| !isFlying()) {
+        ePlayer.capabilities.allowFlying = isFlying() ? false : true;
+        ePlayer.capabilities.isFlying = canFly() ? false : true;
+        /*} else {
             ePlayer.capabilities.allowFlying = false;
             ePlayer.capabilities.isFlying = false;
-            //ePlayer.capabilities.setFlySpeed(0);
-        }
+        }*/
         ePlayer.sendPlayerAbilities();
     }
 
@@ -591,12 +613,20 @@ public class Player {
         return ePlayer.capabilities.disableDamage;
     }
 
+    public boolean isVanished() {
+        return ePlayer.isInvisible();
+    }
+
+    public void vanish() {
+        ePlayer.setInvisible(isVanished() ? false : true);
+    }
+
+    public void isVanishedTo(EntityPlayer player) {
+        ePlayer.isInvisibleToPlayer(player);
+    }
+
     public void god() {
-        if (!isInvincible()) {
-            ePlayer.capabilities.disableDamage = true;
-        } else {
-            ePlayer.capabilities.disableDamage = false;
-        }
+        ePlayer.capabilities.disableDamage = !isInvincible();
         ePlayer.sendPlayerAbilities();
     }
 
