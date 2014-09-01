@@ -33,6 +33,7 @@ public class EconomyCommands extends CommandListener {
 			  permission = "essentials.commands.resetbalance",
 			  disableInProduction = true)
 	public void resetbalance(Player player) {
-		player.setBalance(0);//TODO: Add configuration default balance
+        //TODO: Add additional codes
+        player.setBalance(0);//TODO: Add configuration default balance
 	}
 }
