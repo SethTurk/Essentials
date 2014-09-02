@@ -3,6 +3,7 @@ package org.shouthost.essentials.entity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
@@ -679,4 +680,29 @@ public class Player {
 	public int getBalance() {
 		return player.getBalance();
 	}
+
+	public void setHunger(int value) {
+		ePlayer.getFoodStats().addStats(value, 5.0F);
+	}
+
+	public void setXP(int value) {
+		ePlayer.experienceLevel = value;
+	}
+
+	public int getXP() {
+		return ePlayer.experienceLevel;
+	}
+
+	public void openWorkbench() {
+		//TODO: send packet to client
+	}
+
+	public ItemStack getHeldItem() {
+		return ePlayer.getHeldItem();
+	}
+
+	public void setHeldItemDurability(int value) {
+		ePlayer.getHeldItem().setItemDamage(value);
+	}
+
 }
