@@ -25,8 +25,8 @@ public class BackupTask implements Runnable {
 		FMLLog.getLogger().log(Level.INFO, "Backing up Essentials data");
 		synchronized (Essentials.schedule.lock) {
 			try {
-				zipDirectory(Essentials.base, new File("backup.zip"));
-			} catch (IOException e) {
+                zipDirectory(Essentials.base, new File("essentials-backup.zip"));
+            } catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
