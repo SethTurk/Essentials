@@ -2,20 +2,41 @@ package org.shouthost.essentials.commands;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldSettings;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.entity.Player;
 import org.shouthost.essentials.tasks.BackupTask;
 import org.shouthost.essentials.utils.DateUtils;
+import org.shouthost.essentials.utils.KitTemplate;
 
 import java.lang.management.ManagementFactory;
 import java.util.List;
 
 public class UtilsCommands extends CommandListener {
+    @Commands(name = "setkit",
+            permission = "essentials.command.setkit",
+            disableInProduction = true)
+    public static void setkit(Player player, List<String> args) {
+        InventoryPlayer pl = player.getPlayer().inventory;
+        KitTemplate kit = new KitTemplate(args.get(0), pl.mainInventory, null);
+        kit.constructKitFromInventory();
+    }
+
+    @Commands(name = "kit",
+            permission = "essentials.command.kit",
+            disableInProduction = true)
+    public static void kit(Player player, List<String> args) {
+        KitTemplate kit = new KitTemplate(args.get(0));
+        kit.reconstructKit();
+        kit.giveKitToPlayer(player.getPlayer());
+    }
+
     @Commands(name = "backup",
             permission = "essentials.command.backup",
             disableInProduction = true)
@@ -31,10 +52,10 @@ public class UtilsCommands extends CommandListener {
         if (args.size() == 2) {
             Player player2 = getPlayerFromString(args.get(0));
             int count = player2.refresh(Integer.parseInt(args.get(1)));
-            player2.sendMessage(EnumChatFormatting.GREEN + String.valueOf(count) + " chunks have been refreshed");
+            player2.sendSuccessMessage("%s chunks have been refreshed", String.valueOf(count));
         } else {
             int count = player.refresh(Integer.parseInt(args.get(0)));
-            player.sendMessage(EnumChatFormatting.GREEN + String.valueOf(count) + " chunks have been refreshed");
+            player.sendSuccessMessage("%s chunks have been refreshed", String.valueOf(count));
         }
     }
 
@@ -46,10 +67,10 @@ public class UtilsCommands extends CommandListener {
             disableInProduction = true)
     public static void sudo(Player player, List<String> args) {
         Player t = getPlayerFromString(args.get(0));
-        String arguments = "";
+        StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.size(); i++)
-            arguments += args.get(i) + " ";
-        t.exec(arguments);
+            sb.append(args.get(i)).append(" ");
+        t.exec(sb.toString());
     }
 
     @Commands(name = "inventorysee",
@@ -65,7 +86,7 @@ public class UtilsCommands extends CommandListener {
             }
             player.viewInventory(target);
         } else {
-            player.sendMessage(EnumChatFormatting.RED + "Invalid usage of command");
+            player.sendErrorMessage("Invalid usage of command");
             throw new WrongUsageException(EnumChatFormatting.RED + "/invsee <player>");
         }
     }
@@ -77,15 +98,15 @@ public class UtilsCommands extends CommandListener {
     public static void heal(Player player, List<String> args) {
         if (args.isEmpty()) {
             if (!player.hasPermission("essentials.command.heal.self")) {
-                player.sendMessage(EnumChatFormatting.RED + "You do not have permission to perform this action");
+                player.sendErrorMessage("You do not have permission to perform this action");
                 return;
             }
             player.setHealth(200);
-            player.sendMessage(EnumChatFormatting.GREEN + "You have been healed");
+            player.sendSuccessMessage("You have been healed");
         } else {
             Player target = getPlayerFromString(args.get(0));
             if (target == null) {
-                player.sendMessage(EnumChatFormatting.RED + "Player does not exist");
+                player.sendErrorMessage("Player does not exist");
                 return;
             }
             target.setHealth(200);
@@ -169,6 +190,32 @@ public class UtilsCommands extends CommandListener {
         }
     }
 
+    @Commands(name = "gamemode",
+            permission = "essentials.command.gamemode",
+            syntax = "[name|mode] [mode]",
+            description = "",
+            alias = {"gm"},
+            disableInProduction = true)
+    public static void give(Player player, List<String> args) {
+        if (args.size() == 1) {
+            String mode = args.get(0);
+
+            if (mode.equalsIgnoreCase("s") || mode.equalsIgnoreCase("survival") || mode.equalsIgnoreCase("0")) {
+                player.setGameMode(WorldSettings.GameType.SURVIVAL);
+                player.sendSuccessMessage("Your gamemode have been changed");
+            } else if (mode.equalsIgnoreCase("c") || mode.equalsIgnoreCase("creative") || mode.equalsIgnoreCase("1")) {
+                player.setGameMode(WorldSettings.GameType.CREATIVE);
+                player.sendSuccessMessage("Your gamemode have been changed");
+            } else if (mode.equalsIgnoreCase("a") || mode.equalsIgnoreCase("adventure") || mode.equalsIgnoreCase("2")) {
+                player.setGameMode(WorldSettings.GameType.ADVENTURE);
+                player.sendSuccessMessage("Your gamemode have been changed");
+            } else {
+                player.sendErrorMessage("%s is an invalid gamemode", mode);
+            }
+
+        }
+    }
+
     @Commands(name = "lag",
             permission = "essentials.command.lag",
             alias = {"gc"})
@@ -181,10 +228,10 @@ public class UtilsCommands extends CommandListener {
             long freemem = Runtime.getRuntime().freeMemory() / 1024L / 1024L;
             long memuse = maxmem - freemem / 1024L / 1024L;
 
-            player.sendMessage("Uptime: " + DateUtils.toTime(uptime));//Will implement a parser for uptime
-            player.sendMessage("Maximum memory: " + maxmem + " MB.");
-            player.sendMessage("Used Memory: " + memuse + " MB.");
-            player.sendMessage("Free memory: " + freemem + " MB.");
+            player.sendMessage("Uptime: %s", DateUtils.toTime(uptime));//Will implement a parser for uptime
+            player.sendMessage("Maximum memory: %d MB.", maxmem);
+            player.sendMessage("Used Memory: %d MB.", memuse);
+            player.sendMessage("Free memory: %d MB.", freemem);
             int count = 0;
             int totalchunks = 0;
             int totalentity = 0;
@@ -206,7 +253,7 @@ public class UtilsCommands extends CommandListener {
             int dim = CommandBase.parseInt(player.getPlayer(), args.get(0));
             WorldServer world = MinecraftServer.getServer().worldServerForDimension(dim);
             if (world == null) {
-                player.sendErrorMessage("World does not exist. Checking overworld");
+                player.sendErrorMessage("Dimension %d does not exist.", dim);
                 world = MinecraftServer.getServer().worldServerForDimension(0);
             }
             provideInfo(player, world);
@@ -221,11 +268,11 @@ public class UtilsCommands extends CommandListener {
         int loadedEntityCount = world.loadedEntityList.size();
         int loadedTileCount = world.loadedTileEntityList.size();
         double tps = getWorldTPS(world);
-        player.sendMessage("World \"" + dim + "\"");
-        player.sendMessage("    TPS: " + getColorForTPS((int) tps) + tps);
-        player.sendMessage("    Loaded Chunks: " + loadedChunksCount);
-        player.sendMessage("    Entity Count: " + loadedEntityCount);
-        player.sendMessage("    TileEntity Count: " + loadedTileCount);
+        player.sendMessage("World \"%s\"", dim);
+        player.sendMessage("    TPS: %s%s", getColorForTPS((int) tps), tps);
+        player.sendMessage("    Loaded Chunks: %d", loadedChunksCount);
+        player.sendMessage("    Entity Count: %d", loadedEntityCount);
+        player.sendMessage("    TileEntity Count: %d", loadedTileCount);
     }
 
     private static long mean(long[] values) {

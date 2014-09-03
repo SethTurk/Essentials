@@ -46,16 +46,17 @@ public class BansCommands extends CommandListener {
     public static void kick(Player player, List<String> args) {
         Player target = getPlayerFromString(args.get(0));
         if (target == null) {
-            player.sendErrorMessage("Player " + args.get(0) + " does not exist on the server.");
+            player.sendErrorMessage("Player %s does not exist on the server.", args.get(0));
             return;
         }
         //build reason
         StringBuilder sb = new StringBuilder();
         if (args.size() >= 2)
             for (int i = 1; i < args.size(); i++)
-                sb.append(args.get(i));
+                sb.append(args.get(i)).append(" ");
         else
             sb.append("You have been kicked from the server ");
+        target.save();
         target.kick(sb.toString());
     }
 
@@ -71,7 +72,7 @@ public class BansCommands extends CommandListener {
         StringBuilder sb = new StringBuilder();
         if (args.size() >= 1)
             for (int i = 1; i < args.size(); i++)
-                sb.append(args.get(i));
+                sb.append(args.get(i)).append(" ");
         else
             sb.append("You have been kicked from the server ");
 
@@ -79,6 +80,7 @@ public class BansCommands extends CommandListener {
         while (it.hasNext()) {
             Map.Entry<UUID, Player> pl = (Map.Entry<UUID, Player>) it.next();
             Player target = pl.getValue();
+            target.save();
             target.kick(sb.toString());
             it.remove();
         }

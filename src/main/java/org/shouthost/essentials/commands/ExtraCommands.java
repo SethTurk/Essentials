@@ -166,100 +166,109 @@ public class ExtraCommands extends CommandListener {
         }
     }
 
-	@Commands(name = "feed",
-			  permission = "essentials.command.feed",
-			  description = "Feed a player")
-	public static void feed(Player player, List<String> args) {
-		if(!args.isEmpty()) {
-			Player targetPlayer = getPlayerFromString(args.get(0));
-			targetPlayer.setHunger(20);
-			player.sendSuccessMessage("Succesfully fed " + targetPlayer.getNickname());
-			targetPlayer.sendSuccessMessage("" + player.getNickname() + " succesfully fed you.");//TODO:(Optional) Make an option to show a message to target
-		}else{
-			player.setHunger(20);
-			player.sendSuccessMessage("You were succesfully fed.");
-		}
-	}
+    @Commands(name = "feed",
+            permission = "essentials.command.feed",
+            description = "Feed a player")
+    public static void feed(Player player, List<String> args) {
+        if (!args.isEmpty()) {
+            Player targetPlayer = getPlayerFromString(args.get(0));
+            targetPlayer.setHunger(20);
+            player.sendSuccessMessage("Succesfully fed " + targetPlayer.getNickname());
+        } else {
+            player.setHunger(20);
+            player.sendSuccessMessage("You were succesfully fed.");
+        }
+    }
 
-	@Commands(name = "fireball",
-			  permission = "essentials.command.fireball",
-			  description = "Spit a fireball")
-	public static void fireball(Player player, List<String> args) {
-		EntityFireball entity = null;
-		if(!args.isEmpty()) {
-			if(args.get(0).equalsIgnoreCase("small") || args.get(0).equalsIgnoreCase("tiny") || args.get(0).equalsIgnoreCase("baby")) {
-				entity = new EntitySmallFireball(player.getWorld());
-			}else if(args.get(0).equalsIgnoreCase("large") || args.get(0).equalsIgnoreCase("big") || args.get(0).equalsIgnoreCase("giant")) {
-				entity = new EntityLargeFireball(player.getWorld());
-			}else{
-				player.sendErrorMessage("Specify a size.");
-				return;
-			}
-		}else{
-			entity = new EntityLargeFireball(player.getWorld());
+    @Commands(name = "fireball",
+            permission = "essentials.command.fireball",
+            description = "Spit out a fireball",
+            disableInProduction = true)
+    public static void fireball(Player player, List<String> args) {
+        EntityFireball entity = null;
+        if (!args.isEmpty()) {
+            if (args.get(0).equalsIgnoreCase("small") || args.get(0).equalsIgnoreCase("tiny") || args.get(0).equalsIgnoreCase("baby")) {
+                entity = new EntitySmallFireball(player.getWorld());
+            } else if (args.get(0).equalsIgnoreCase("large") || args.get(0).equalsIgnoreCase("big") || args.get(0).equalsIgnoreCase("giant")) {
+                entity = new EntityLargeFireball(player.getWorld());
+            } else {
+                player.sendErrorMessage("Invalid size");
+                return;
+            }
+        } else {
+            entity = new EntityLargeFireball(player.getWorld());
+        }
+        //TODO: Work on projectile of the entity fireball
+        entity.setPosition(player.getPosX(), player.getPosY() + 1, player.getPosZ());
+        Vector dir = player.getLocation().getDirection();
+        entity.setVelocity(dir.getX(), dir.multiply(2).getY(), dir.getZ());
+        player.getWorld().spawnEntityInWorld(entity);
+    }
 
-		}
-		entity.setPosition(player.getPosX(), player.getPosY() + 1, player.getPosZ());
-		Vector dir = player.getLocation().getDirection();
-		entity.setVelocity(dir.getX(), dir.multiply(2).getY(), dir.getZ());
-		player.getWorld().spawnEntityInWorld(entity);
-	}
+    @Commands(name = "xp",
+            permission = "essentials.commands.xp",
+            description = "Give a player xp",
+            alias = {"exp"},
+            disableInProduction = true)
+    public static void xp(Player player, List<String> args) {
+        if (!args.isEmpty()) {
+            if (args.size() == 2 && args.get(0).equalsIgnoreCase("add")) {
+                player.setXP(Integer.parseInt(args.get(1)));
+                player.sendSuccessMessage("Succesfully added %s levels .", args.get(1));
+            } else if (args.size() == 2 && args.get(0).equalsIgnoreCase("reset")) {
+                player.setXP(player.getXP() - Integer.parseInt(args.get(1)));
+                player.sendSuccessMessage("Succesfully removed %s levels.", args.get(1));
+            } else if (args.size() == 3 && args.get(0).equalsIgnoreCase("set")) {
+                Player targetPlayer = getPlayerFromString(args.get(3));
+                targetPlayer.setXP(Integer.parseInt(args.get(1)));
+            } else if (args.size() == 3 && args.get(0).equalsIgnoreCase("remove")) {
+                Player targetPlayer = getPlayerFromString(args.get(3));
+                targetPlayer.setXP(targetPlayer.getXP() - Integer.parseInt(args.get(1)));
+                player.sendSuccessMessage("Succesfully removed %s levels from %s.", args.get(1), targetPlayer.getPlayerName());
+            }
+        }
 
-	@Commands(name = "xp",
-			  permission = "essentials.commands.xp",
-			  description = "Give a player xp",
-			  alias = {"exp"})
-	public static void xp(Player player, List<String> args) {
-		if(!args.isEmpty()) {
-			if(args.size() == 2) {
-				if(args.get(0).equalsIgnoreCase("set")) {
-					player.setXP(Integer.parseInt(args.get(1)));
-					player.sendSuccessMessage("Succesfully set your xp to" + args.get(1) + ".");
-				}else if(args.get(0).equalsIgnoreCase("remove")) {
-					player.setXP(player.getXP() - Integer.parseInt(args.get(1)));
-					player.sendSuccessMessage("Succesfully removed " + args.get(1) + " levels.");
-				}
-			}else if(args.size() == 3) {
-				if(args.get(0).equalsIgnoreCase("set")) {
-					Player targetPlayer = getPlayerFromString(args.get(3));
-					targetPlayer.setXP(Integer.parseInt(args.get(1)));
-					targetPlayer.sendSuccessMessage("Succesfully set your xp to" + args.get(1) + ".");
-				}else if(args.get(0).equalsIgnoreCase("remove")) {
-					Player targetPlayer = getPlayerFromString(args.get(3));
-					targetPlayer.setXP(targetPlayer.getXP() - Integer.parseInt(args.get(1)));
-					player.sendSuccessMessage("Succesfully removed " + args.get(1) + " levels from " + targetPlayer.getNickname() + ".");
-				}
-			}
-		}
-	}
+    }
 
-	@Commands(name = "workbench",
-			  permission = "essentials.commands.workbench",
-			  description = "Opens a workbench interface")
-	public static void workbench(Player player, List<String> args) {
-		player.openWorkbench();
-	}
+    @Commands(name = "workbench",
+            permission = "essentials.commands.workbench",
+            description = "Opens a workbench interface")
+    public static void workbench(Player player, List<String> args) {
+        player.openWorkbench();
+    }
 
-	@Commands(name = "whois",
-			  permission = "essentials.commands.whois",
-			  description = "Provides information of a user",
-			  alias = "lookup")
-	public static void whois(Player player, List<String> args) {
-		if(!args.isEmpty()) {
-			String targetPlayer = args.get(0);
+    @Commands(name = "whois",
+            permission = "essentials.commands.whois",
+            description = "Provides information of a user",
+            alias = {"lookup"})
+    public static void whois(Player player, List<String> args) {
+        if (!args.isEmpty()) {
+            Player target = getPlayerFromString(args.get(0));
+            if (target == null) {
+            }
+        }
+    }
 
-		}
-	}
+    @Commands(name = "repair",
+            permission = "essentials.commands.repair",
+            description = "Repairs held item.")
+    public static void repair(Player player, List<String> args) {
+        player.setEquipedItemDurability(0);
+    }
 
-	@Commands(name = "repair",
-			  permission = "essentials.commands.repair",
-			  description = "Repairs held item.")
-	public static void repair(Player player, List<String> args) {
-		player.setHeldItemDurability(0);
-	}
+    @Commands(name = "ptime",
+            permission = "essentials.commands.ptime",
+            disableInProduction = true,
+            syntax = "[morning|noon|night|]",
+            alias = {"personaltime", "owntime", "privatetime"})
+    public static void ptime(Player player, List<String> args) {
+        if (!args.isEmpty()) {
+            switch (args.get(0)) {
+                case "":
+                    break;
 
-	public Player getPlayerFromNickname(String nick) {
-//		Player player = get;
-		return null;
-	}
+            }
+        }
+    }
+
 }

@@ -3,17 +3,20 @@ package org.shouthost.essentials.entity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -441,14 +444,18 @@ public class Player {
         Essentials.schedule.scheduleSyncTask(new Runnable() {
             @Override
             public void run() {
-	            synchronized (Essentials.schedule.lock) {
-		            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		            String json = gson.toJson(p);
-		            File file = new File(Essentials.players, p.getUuid() + ".json");
-		            FileUtils.writeToFile(file, json);
-	            }
+                synchronized (Essentials.schedule.lock) {
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    String json = gson.toJson(p);
+                    File file = new File(Essentials.players, p.getUuid() + ".json");
+                    FileUtils.writeToFile(file, json);
+                }
             }
         });
+    }
+
+    public void sendMessage(String message, Object... args) {
+        sendMessage(String.format(message, args));
     }
 
     public void sendMessage(String... lines) {
@@ -469,11 +476,11 @@ public class Player {
 
     public boolean sendMessageTo(Player target, String msg) {
         if (target == null) {
-            sendMessage(EnumChatFormatting.RED + "Player does not exist");
+            //sendErrorMessage("Player does not exist");
             return false;
         }
-        sendMessage(String.format("[me -> " + getPlayerName() + "] %s", msg));
-        target.sendMessage(String.format("[" + getPlayerName() + " -> me] %s", msg));
+        sendMessage("[me -> %s] %s", getPlayerName(), msg);
+        target.sendMessage("[%s -> me] %s", getPlayerName(), msg);
 
         return true;
     }
@@ -601,13 +608,9 @@ public class Player {
 
     //FIXME: find workaround for fly speed
     public void fly(float speed) {
-        //if (!canFly()|| !isFlying()) {
         ePlayer.capabilities.allowFlying = isFlying() ? false : true;
-        ePlayer.capabilities.isFlying = canFly() ? false : true;
-        /*} else {
-            ePlayer.capabilities.allowFlying = false;
+        if (!ePlayer.capabilities.allowFlying)
             ePlayer.capabilities.isFlying = false;
-        }*/
         ePlayer.sendPlayerAbilities();
     }
 
@@ -623,10 +626,6 @@ public class Player {
         ePlayer.setInvisible(isVanished() ? false : true);
     }
 
-    public void isVanishedTo(EntityPlayer player) {
-        ePlayer.isInvisibleToPlayer(player);
-    }
-
     public void god() {
         ePlayer.capabilities.disableDamage = !isInvincible();
         ePlayer.sendPlayerAbilities();
@@ -640,9 +639,9 @@ public class Player {
             Block block = n.getBlock();
             int y = n.getBlockY();
             while (block.equals(Blocks.air)) {
-				y--;
-				block = getWorld().getBlock(loc.blockX, y, loc.blockZ);
-			}
+                y--;
+                block = getWorld().getBlock(loc.blockX, y, loc.blockZ);
+            }
             return new Location(getWorld(), loc.blockX, y, loc.blockZ);
         }
         return n;
@@ -664,6 +663,14 @@ public class Player {
         return ePlayer.getUniqueID();
     }
 
+    public void sendErrorMessage(String message, Object... args) {
+        sendMessage(EnumChatFormatting.RED + message, args);
+    }
+
+    public void sendSuccessMessage(String message, Object... args) {
+        sendMessage(EnumChatFormatting.GREEN + message, args);
+    }
+
     public void sendErrorMessage(String message) {
         sendMessage(EnumChatFormatting.RED + message);
     }
@@ -672,37 +679,75 @@ public class Player {
         sendMessage(EnumChatFormatting.GREEN + message);
     }
 
-	public void setBalance(int bal){
-		player.setBalance(bal);
-		save();
-	}
+    public int getBalance() {
+        return player.getBalance();
+    }
 
-	public int getBalance() {
-		return player.getBalance();
-	}
+    public void setBalance(int bal) {
+        player.setBalance(bal);
+        save();
+    }
 
-	public void setHunger(int value) {
-		ePlayer.getFoodStats().addStats(value, 5.0F);
-	}
+    public void setHunger(int value) {
+        ePlayer.getFoodStats().addStats(value, 5.0F);
+    }
 
-	public void setXP(int value) {
-		ePlayer.experienceLevel = value;
-	}
+    public float getFoodLevel() {
+        return ePlayer.getFoodStats().getFoodLevel();
+    }
 
-	public int getXP() {
-		return ePlayer.experienceLevel;
-	}
+    public float getSaturationLevel() {
+        return ePlayer.getFoodStats().getSaturationLevel();
+    }
 
-	public void openWorkbench() {
-		//TODO: send packet to client
-	}
+    public int getXP() {
+        return ePlayer.experienceLevel;
+    }
 
-	public ItemStack getHeldItem() {
-		return ePlayer.getHeldItem();
-	}
+    public void setXP(int value) {
+        ePlayer.addExperienceLevel(value);
+    }
 
-	public void setHeldItemDurability(int value) {
-		ePlayer.getHeldItem().setItemDamage(value);
-	}
+    public void openWorkbench() {
+        ePlayer.getNextWindowId();
+        sendPacket(new S2DPacketOpenWindow(ePlayer.currentWindowId, 1, "Workbench", 9, true));
+        ePlayer.openContainer = new ContainerWorkbench(ePlayer.inventory, ePlayer.worldObj, 0, 0, 0) {
+            //Might move this into its own class
+            @Override
+            public void onCraftMatrixChanged(IInventory par1IInventory) {
+                craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, ePlayer.worldObj));
+            }
+
+            @Override
+            public void onContainerClosed(EntityPlayer par1EntityPlayer) {
+                super.onContainerClosed(par1EntityPlayer);
+
+                if (!ePlayer.worldObj.isRemote) {
+                    for (int var2 = 0; var2 < 9; ++var2) {
+                        ItemStack var3 = craftMatrix.getStackInSlotOnClosing(var2);
+
+                        if (var3 != null) {
+                            par1EntityPlayer.dropPlayerItemWithRandomChoice(var3, true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public boolean canInteractWith(EntityPlayer par1EntityPlayer) {
+                return true;
+            }
+        };
+        ePlayer.openContainer.windowId = ePlayer.currentWindowId;
+        ePlayer.openContainer.addCraftingToCrafters(ePlayer);
+    }
+
+    public ItemStack getEquipedItem() {
+        return ePlayer.getHeldItem();
+    }
+
+    public void setEquipedItemDurability(int value) {
+        ePlayer.getHeldItem().setItemDamage(value);
+    }
 
 }

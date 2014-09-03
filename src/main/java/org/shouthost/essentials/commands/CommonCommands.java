@@ -1,6 +1,5 @@
 package org.shouthost.essentials.commands;
 
-import net.minecraft.util.EnumChatFormatting;
 import org.shouthost.essentials.entity.Player;
 
 import java.util.List;
@@ -10,8 +9,8 @@ public class CommonCommands extends CommandListener {
 			permission = "essentials.command.ping",
 			description = "To test the server response time.")
 	public static void ping(Player player, List<String> args) {
-		player.sendMessage(EnumChatFormatting.GREEN + "pong");
-	}
+        player.sendSuccessMessage("pong");
+    }
 
 	@Commands(name = "suicide",
 			permission = "essentials.command.suicide",

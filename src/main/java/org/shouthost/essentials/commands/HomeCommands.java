@@ -34,7 +34,7 @@ public class HomeCommands extends CommandListener {
             } else if (home != null) {
                 WorldServer world = MinecraftServer.getServer().worldServerForDimension(home.getWorld());
                 if (world == null) {
-                    player.sendErrorMessage("Dimension `" + home.getWorld() + " does not exist");
+                    player.sendErrorMessage("Dimension `%s` does not exist", home.getWorld());
                     return;
                 }
                 player.teleportTo(world, home.getX(), home.getY(), home.getZ());
@@ -42,12 +42,12 @@ public class HomeCommands extends CommandListener {
         } else {
             Homes home = player.getHome(args.get(0));
             if (home == null) {
-                player.sendErrorMessage("Home `" + args.get(0) + "` does not exist!");
+                player.sendErrorMessage("Home `%s` does not exist!", args.get(0));
                 return;
             }
             WorldServer world = MinecraftServer.getServer().worldServerForDimension(home.getWorld());
             if (world == null) {
-                player.sendErrorMessage("Dimension `" + home.getWorld() + " does not exist");
+                player.sendErrorMessage("Dimension `%s` does not exist", home.getWorld());
                 return;
             }
             player.teleportTo(world, home.getX(), home.getY(), home.getZ());
@@ -67,7 +67,7 @@ public class HomeCommands extends CommandListener {
             //find if home exist
             Homes home = player.getHome(args.get(0));
             if (home != null) {
-                player.sendErrorMessage("Home '" + args.get(0) + "' already exist!");
+                player.sendErrorMessage("Home '%s' already exist!", args.get(0));
             } else {
                 Location loc = player.getLocation();
                 player.setHome(args.get(0), (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
@@ -85,9 +85,9 @@ public class HomeCommands extends CommandListener {
         Homes home = player.getHome(args.get(0));
         if (home != null) {
             player.delhome(home);
-            player.sendSuccessMessage("Home '" + args.get(0) + "' has been deleted");
+            player.sendSuccessMessage("Home '%s' has been deleted", args.get(0));
         } else {
-            player.sendErrorMessage("'" + args.get(0) + "' is not a valid home entry");
+            player.sendErrorMessage("'%s' is not a valid home entry", args.get(0));
         }
     }
 }

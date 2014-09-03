@@ -6,10 +6,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.shouthost.essentials.commands.CommandListener;
 import org.shouthost.essentials.core.Essentials;
@@ -21,25 +18,6 @@ public class PlayerEvents {
     public PlayerEvents() {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-    }
-
-    @SubscribeEvent
-    public void onNameFormatEvent(NameFormat event) {
-        //This event is used to format the player name. This will get moved to its own module in the future
-        Player player = CommandListener.getPlayerFromString(event.username);
-        if (player == null) return;
-        event.displayname = String.format("%s%s%s", player.getPrefix().replaceAll("&", "§"), player.getNickname().replaceAll("&", "§"), player.getSuffix().replaceAll("&", "§"));
-        //event.entityPlayer.refreshDisplayName();
-    }
-
-    @SubscribeEvent
-    public void onServerChatEvent(ServerChatEvent event) {
-        Player player = CommandListener.getPlayerFromString(event.username);
-        if (player == null) return;
-        if (player.isMuted()) {
-            player.sendMessage(EnumChatFormatting.RED + "You are muted for: " + EnumChatFormatting.YELLOW + player.getMuteReason());
-            event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent
