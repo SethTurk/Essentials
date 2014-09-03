@@ -9,8 +9,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.Packet;
@@ -741,6 +740,18 @@ public class Player {
         ePlayer.openContainer.windowId = ePlayer.currentWindowId;
         ePlayer.openContainer.addCraftingToCrafters(ePlayer);
     }
+
+	public void openEnderchest() {
+		if(ePlayer.openContainer != ePlayer.inventoryContainer){
+			ePlayer.closeScreen();
+		}
+		ePlayer.getNextWindowId();
+		InventoryEnderChest chest = ePlayer.getInventoryEnderChest();
+		sendPacket(new S2DPacketOpenWindow(ePlayer.currentWindowId, 0, chest.getInventoryName(), chest.getSizeInventory(), true));
+		ePlayer.openContainer = new ContainerChest(ePlayer.inventory, chest);
+		ePlayer.openContainer.windowId = ePlayer.currentWindowId;
+		ePlayer.openContainer.addCraftingToCrafters(ePlayer);
+	}
 
     public ItemStack getEquipedItem() {
         return ePlayer.getHeldItem();

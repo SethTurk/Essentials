@@ -203,6 +203,19 @@ public class ExtraCommands extends CommandListener {
         Vector dir = player.getLocation().getDirection();
         entity.setVelocity(dir.getX(), dir.multiply(2).getY(), dir.getZ());
         player.getWorld().spawnEntityInWorld(entity);
+		class entitycheck implements Runnable{
+			private Entity entity;
+			public entitycheck(Entity entity){
+				this.entity = entity;
+			}
+
+			@Override
+			public void run() {
+				if(entity.isDead) Thread.currentThread().interrupt();
+				entity.setDead();
+			}
+		}
+		Essentials.schedule.scheduleAsyncTaskDelay(new entitycheck(entity), 2);
     }
 
     @Commands(name = "xp",
@@ -271,4 +284,10 @@ public class ExtraCommands extends CommandListener {
         }
     }
 
+	@Commands(name = "enderchest",
+			  permission = "essentials.commands.enderchest",
+			  description = "Opens a enderchest")
+	public static void enderchest(Player player, List<String> args) {
+		player.openEnderchest();
+	}
 }
