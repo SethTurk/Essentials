@@ -33,11 +33,11 @@ public class EcoSignsEvents {
                 TileEntitySign sign = (TileEntitySign) event.world.getTileEntity(event.x, event.y, event.z);
                 List<String> text = Arrays.asList(sign.signText);
                 if (!sign.isInvalid() && text.get(0) == "SignShop") {
-                    Item item = (Item) Item.itemRegistry.getObject(text.get(1));
                     Player player = CommandListener.getPlayerFromEntity((EntityPlayerMP) event.entityPlayer);
-                    int amount = Integer.parseInt(text.get(2));
-                    int cost = Integer.parseInt(text.get(3));
-                    int sellPrice = Integer.parseInt(text.get(4));
+                    int cost = Integer.parseInt(text.get(1));
+                    int sellPrice = Integer.parseInt(text.get(2));
+					Item item = (Item) Item.itemRegistry.getObject(text.get(3));
+					int amount = Integer.parseInt(text.get(3));
 
                     //TODO: Rework this check
                     Player seller = CommandListener.getPlayerFromString(text.get(5));//TODO:
@@ -53,7 +53,7 @@ public class EcoSignsEvents {
                         }
                     } else if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
                         //TODO:Check to see if the player has what the shops buying.
-                        seller.setBalance(seller.getBalance() - sellPrice);
+//						if(player.hasItem(item) && player.getItemStackAmount(item) == amount)
                         player.setBalance(player.getBalance() + sellPrice);
                         player.sendSuccessMessage("Succesfully sold " + amount + " " + item.getItemStackDisplayName(new ItemStack(item)) + " for " + sellPrice + ".");
                     }

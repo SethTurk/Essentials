@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.Packet;
@@ -766,4 +767,12 @@ public class Player {
 			ePlayer.inventory.setInventorySlotContents(i, null);
 		}
 	}
+
+	public boolean hasItem(Item item) {
+		return ePlayer.inventory.hasItem(item);
+	}
+
+//	public int getItemStackAmount(Item item) {
+//		return ePlayer.inventory.getItemStack().getItem;
+//	}
 }

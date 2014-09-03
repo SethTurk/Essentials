@@ -128,7 +128,7 @@ public class ExtraCommands extends CommandListener {
         if (args.isEmpty()) {
             player.sendErrorMessage("/book [create|edit] [author]");
         } else if (args.size() == 1 && args.get(0).equalsIgnoreCase("edit")) {
-            if (player.getPlayer().getCurrentEquippedItem() == null || player.getPlayer().getCurrentEquippedItem().getItem() != Items.written_book) {
+            if (player.getPlayer().getCurrentEquippedItem() == null || player.getEquipedItem().getItem() != Items.written_book) {
                 player.sendErrorMessage("You do not have a written book equiped");
                 return;
             } else if (player.getPlayer().getCurrentEquippedItem() != null && player.getPlayer().getCurrentEquippedItem().getItem() == Items.written_book) {
