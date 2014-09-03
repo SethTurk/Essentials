@@ -12,10 +12,14 @@ import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.WorldServer;
 import org.shouthost.essentials.core.Essentials;
 import org.shouthost.essentials.entity.Player;
 import org.shouthost.essentials.tasks.EntityBombTask;
+import org.shouthost.essentials.utils.Location;
 import org.shouthost.essentials.utils.Vector;
 
 import java.util.List;
@@ -286,8 +290,24 @@ public class ExtraCommands extends CommandListener {
 
 	@Commands(name = "enderchest",
 			  permission = "essentials.commands.enderchest",
-			  description = "Opens a enderchest")
+			  description = "Opens a enderchest.")
 	public static void enderchest(Player player, List<String> args) {
 		player.openEnderchest();
+	}
+
+	@Commands(name = "world",
+			  permission = "essentials.commands.world",
+			  description = "Takes you to specified world.")
+	public static void world(Player player, List<String> args) {
+		if(!args.isEmpty()) {
+			WorldServer world = MinecraftServer.getServer().worldServerForDimension(Integer.parseInt(args.get(0)));
+			if(world == null){
+				player.sendErrorMessage("%s is an invalid dimension", args.get(0));
+				return;
+			}
+			ChunkCoordinates chunk = world.getSpawnPoint();
+			Location loc = new Location(world, chunk.posX, chunk.posY, chunk.posZ);
+			player.teleport(loc);
+		}
 	}
 }

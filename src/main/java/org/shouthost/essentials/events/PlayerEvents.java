@@ -32,7 +32,7 @@ public class PlayerEvents {
     public void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (Essentials.playerList.getIfPresent(event.player.getPersistentID()) == null) {
             Player player = Essentials.playerList.getIfPresent(event.player.getPersistentID());
-            player.updateCoords(player.getLocation());
+            //player.updateCoords(player.getLocation());
             player.save();
             Essentials.playerList.invalidate(event.player.getPersistentID());
             Essentials.playersList.invalidate(event.player.getPersistentID());
