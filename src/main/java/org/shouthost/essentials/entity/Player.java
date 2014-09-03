@@ -761,4 +761,9 @@ public class Player {
         ePlayer.getHeldItem().setItemDamage(value);
     }
 
+	public void clearInventory() {
+		for(int i=0; i<36; i++) {
+			ePlayer.inventory.setInventorySlotContents(i, null);
+		}
+	}
 }

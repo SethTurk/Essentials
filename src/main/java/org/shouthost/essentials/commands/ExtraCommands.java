@@ -64,7 +64,9 @@ public class ExtraCommands extends CommandListener {
         entity.setVelocity(dir.getX(), dir.multiply(2).getY(), dir.getZ());
         player.getWorld().spawnEntityInWorld(entity);
 
-        Essentials.schedule.scheduleAsyncTaskDelay(new EntityBombTask(entity), 2L);
+		if(entity.isCollided) {
+			Essentials.schedule.scheduleSyncTask(new EntityBombTask(entity));
+		}
     }
 
 
@@ -308,6 +310,25 @@ public class ExtraCommands extends CommandListener {
 			ChunkCoordinates chunk = world.getSpawnPoint();
 			Location loc = new Location(world, chunk.posX, chunk.posY, chunk.posZ);
 			player.teleport(loc);
+		}
+	}
+
+	@Commands(name = "clearinventory",
+			  permission = "essentials.commands.clearinventory",
+			  description = "Clears players inventory",
+			  alias = {"ci"})
+	public static void clearInventory(Player player, List<String> args) {
+		if(!args.isEmpty()) {
+			Player targetPlayer = getPlayerFromString(args.get(0));
+			if(targetPlayer != null) {
+				targetPlayer.clearInventory();
+				player.sendSuccessMessage("Succesfully cleared %s's inventory.", args.get(0));
+			}else{
+				player.sendErrorMessage("%s is currently not online.", args.get(0));
+			}
+		}else{
+			player.clearInventory();
+			player.sendSuccessMessage("Your inventory was succesfully cleared");
 		}
 	}
 }
